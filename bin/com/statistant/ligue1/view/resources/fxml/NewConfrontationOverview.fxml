@@ -34,14 +34,8 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label alignment="CENTER" text="Match" textAlignment="CENTER" GridPane.columnIndex="1">
-            <cursor>
-                  <Cursor fx:constant="HAND" />
-            </cursor></Button>
-            <Label text="Match le plus récent" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
-            <cursor>
-                  <Cursor fx:constant="HAND" />
-            </cursor></Button>
+            <Label alignment="CENTER" text="Match" textAlignment="CENTER" GridPane.columnIndex="1"/>
+            <Label text="Match le plus récent" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
             <Button mnemonicParsing="false" onAction="#handleValidate" text="Valider" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="9">
             <cursor>
                   <Cursor fx:constant="HAND" />

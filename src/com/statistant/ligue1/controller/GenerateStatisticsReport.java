@@ -52,24 +52,41 @@ public class GenerateStatisticsReport {
 	 * @throws NullConfrontationException
 	 * @throws NullMatchException
 	 * @throws InvalidNumberToConvertFromBooleanException
+	 * @throws NullStatisticException
 	 */
-	public static void generateReport(Statistic statistics) throws IOException, NullTeamException,
-			NullConfrontationException, NullMatchException, InvalidNumberToConvertFromBooleanException {
+	public static void generateReport(Statistic statistics, boolean isReversed)
+			throws IOException, NullTeamException, NullConfrontationException, NullMatchException,
+			InvalidNumberToConvertFromBooleanException, NullStatisticException {
 
 		String match = statistics.getMatch();
-		Match matchEntity = DatabaseConnection.getMatch(match);
+		String[] teams = match.split("-");
+		String homeTeam = teams[0];
+		String awayTeam = teams[1];
+		Match matchEntity = null;
+		String reversedMatch = awayTeam + "-" + homeTeam;
+		if (isReversed) {
+			matchEntity = DatabaseConnection.getMatch(reversedMatch);
+
+			homeTeam = teams[1];
+			awayTeam = teams[0];
+
+		} else {
+			matchEntity = DatabaseConnection.getMatch(match);
+		}
 		int journey = matchEntity.getJourney();
 
 		XWPFDocument document = new XWPFDocument();
 		File dossier = new File("C:\\perso\\Ligue1\\Journee_" + journey);
 		dossier.mkdir();
-		File rapport_match = new File("C:\\perso\\Ligue1\\Journee_" + journey + "\\rapport_" + match + ".docx");
+		File rapport_match = null;
+		if (isReversed) {
+			rapport_match = new File("C:\\perso\\Ligue1\\Journee_" + journey + "\\rapport_" + reversedMatch + ".docx");
+		} else {
+			rapport_match = new File("C:\\perso\\Ligue1\\Journee_" + journey + "\\rapport_" + match + ".docx");
+		}
 		FileOutputStream out = new FileOutputStream(rapport_match);
 
-		TreeMap<String, String> mapTreeStatsGenerales = getTreeMapStatsVictoires(statistics, match);
-		String[] teams = match.split("-");
-		String homeTeam = teams[0];
-		String awayTeam = teams[1];
+		TreeMap<String, String> mapTreeStatsGenerales = getTreeMapStatsVictoires(statistics, match, homeTeam, awayTeam, isReversed);
 		String generalStandingOfHomeTeam;
 		String generalStandingOfAwayTeam;
 		try {
@@ -94,10 +111,10 @@ public class GenerateStatisticsReport {
 						+ confrontation.getRecent4() + "\n" + "----- " + confrontation.getRecent5()
 						+ " <-- Match le plus ancien");
 
-		Map<String, String> mapStatsLDEM = getTreeMapStatsLDEM(statistics, match);
+		Map<String, String> mapStatsLDEM = getTreeMapStatsLDEM(statistics, match, homeTeam, awayTeam);
 		writeMapInWordDocument("" + match, mapStatsLDEM, document);
 
-		TreeMap<String, String> mapTreeStatsMoyennes = getTreeMapStatsMoyennes(statistics, match);
+		TreeMap<String, String> mapTreeStatsMoyennes = getTreeMapStatsMoyennes(statistics, match, homeTeam, awayTeam);
 		writeMapInWordDocument("Statistiques des moyennes de buts du match lors des dernières confrontations " + match,
 				mapTreeStatsMoyennes, document);
 
@@ -105,34 +122,34 @@ public class GenerateStatisticsReport {
 		writeMapInWordDocument("Statistiques sur le nombre de buts du match lors des dernières confrontations " + match,
 				mapTreeStatsNombreDeButsMatch, document);
 
-		TreeMap<String, String> mapTreeStatsNombreDeButsE1 = getTreeMapStatsNombreButsE1(statistics, match);
+		TreeMap<String, String> mapTreeStatsNombreDeButsE1 = getTreeMapStatsNombreButsE1(statistics, match, homeTeam);
 		writeMapInWordDocument(
 				"Statistiques sur le nombre de buts de l'équipe à domicile lors des dernières confrontations ",
 				mapTreeStatsNombreDeButsE1, document);
 
-		TreeMap<String, String> mapTreeStatsNombreDeButsE2 = getTreeMapStatsNombreButsE2(statistics, match);
+		TreeMap<String, String> mapTreeStatsNombreDeButsE2 = getTreeMapStatsNombreButsE2(statistics, match, awayTeam);
 		writeMapInWordDocument(
 				"Statistiques sur le nombre de buts de l'équipe à l'extérieur lors des dernières confrontations ",
 				mapTreeStatsNombreDeButsE2, document);
 
 		TreeMap<String, String> mapTreeStatsNombreExactDeButsE1 = getTreeMapStatsHomeTeamExactGoalsNumber(statistics,
-				match);
+				match, homeTeam);
 		writeMapInWordDocument(
 				"Statistiques sur le nombre exact de buts marqués lors des dernières confrontations par l'équipe à domicile ",
 				mapTreeStatsNombreExactDeButsE1, document);
 
 		TreeMap<String, String> mapTreeStatsNombreExactDeButsE2 = getTreeMapStatsAwayTeamExactGoalsNumber(statistics,
-				match);
+				match, awayTeam);
 		writeMapInWordDocument(
 				"Statistiques sur le nombre exact de buts marqués lors des dernières confrontations par l'équipe à l'extérieur ",
 				mapTreeStatsNombreExactDeButsE2, document);
 
-		TreeMap<String, String> mapTreeStatsEcartButE1 = getTreeMapStatsEcartButsE1(statistics, match);
+		TreeMap<String, String> mapTreeStatsEcartButE1 = getTreeMapStatsEcartButsE1(statistics, match, homeTeam);
 		writeMapInWordDocument(
 				"Statistiques sur l'écart de score en faveur de l'équipe à domicile lors des dernières confrontations ",
 				mapTreeStatsEcartButE1, document);
 
-		TreeMap<String, String> mapTreeStatsEcartButE2 = getTreeMapStatsEcartButsE2(statistics, match);
+		TreeMap<String, String> mapTreeStatsEcartButE2 = getTreeMapStatsEcartButsE2(statistics, match, awayTeam);
 		writeMapInWordDocument(
 				"Statistiques sur l'écart de score en faveur de l'équipe à l'extérieur lors des dernières confrontations ",
 				mapTreeStatsEcartButE2, document);
@@ -151,7 +168,8 @@ public class GenerateStatisticsReport {
 
 		writeAwayTeamStatsFromTableEquipes(document, formE2, e1MieuxClassee, e2MatchImportant);
 
-		TreeMap<String, String> mapTreeStatsPronostics = getTreeMapStatsPronostics(statistics, match);
+		TreeMap<String, String> mapTreeStatsPronostics = getTreeMapStatsPronostics(statistics, match, homeTeam,
+				awayTeam);
 		writeMapInWordDocument("Probabilités du résultat : ", mapTreeStatsPronostics, document);
 
 		document.write(out);
@@ -1039,13 +1057,13 @@ public class GenerateStatisticsReport {
 
 	}
 
-	private static TreeMap<String, String> getTreeMapStatsAwayTeamExactGoalsNumber(Statistic statistiques,
-			String match) {
+	private static TreeMap<String, String> getTreeMapStatsAwayTeamExactGoalsNumber(Statistic statistiques, String match,
+			String e2) {
 
 		Map<String, String> stats = new HashMap<String, String>();
 
-		String[] score = match.split("-");
-		String e2 = score[1];
+//		String[] score = match.split("-");
+//		String e2 = score[1];
 
 		Float E2marque0 = statistiques.getAwayTeamScoredExactly0GoalPercentage();
 		Float E2marque1 = statistiques.getAwayTeamScoredExactly1GoalPercentage();
@@ -1074,13 +1092,13 @@ public class GenerateStatisticsReport {
 		return mapTree;
 	}
 
-	private static TreeMap<String, String> getTreeMapStatsHomeTeamExactGoalsNumber(Statistic statistiques,
-			String match) {
+	private static TreeMap<String, String> getTreeMapStatsHomeTeamExactGoalsNumber(Statistic statistiques, String match,
+			String e1) {
 
 		Map<String, String> stats = new HashMap<String, String>();
 
-		String[] score = match.split("-");
-		String e1 = score[0];
+//		String[] score = match.split("-");
+//		String e1 = score[0];
 
 		Float E1marque0 = statistiques.getHomeTeamScoredExactly0GoalPercentage();
 		Float E1marque1 = statistiques.getHomeTeamScoredExactly1GoalPercentage();
@@ -1109,12 +1127,12 @@ public class GenerateStatisticsReport {
 		return mapTree;
 	}
 
-	private static TreeMap<String, String> getTreeMapStatsEcartButsE2(Statistic statistiques, String match) {
+	private static TreeMap<String, String> getTreeMapStatsEcartButsE2(Statistic statistiques, String match, String e2) {
 
 		Map<String, String> stats = new HashMap<String, String>();
 
-		String[] score = match.split("-");
-		String e2 = score[1];
+//		String[] score = match.split("-");
+//		String e2 = score[1];
 
 		Float E2par1 = statistiques.getAwayTeamWinByExactly1GoalPercentage();
 		Float E2par2 = statistiques.getAwayTeamWinByExactly2GoalsPercentage();
@@ -1143,12 +1161,12 @@ public class GenerateStatisticsReport {
 		return mapTree;
 	}
 
-	private static TreeMap<String, String> getTreeMapStatsEcartButsE1(Statistic statistiques, String match) {
+	private static TreeMap<String, String> getTreeMapStatsEcartButsE1(Statistic statistiques, String match, String e1) {
 
 		Map<String, String> stats = new HashMap<String, String>();
 
-		String[] score = match.split("-");
-		String e1 = score[0];
+//		String[] score = match.split("-");
+//		String e1 = score[0];
 
 		Float E1par1 = statistiques.getHomeTeamWinByExactly1GoalPercentage();
 		Float E1par2 = statistiques.getHomeTeamWinByExactly2GoalsPercentage();
@@ -1178,12 +1196,13 @@ public class GenerateStatisticsReport {
 
 	}
 
-	private static TreeMap<String, String> getTreeMapStatsNombreButsE2(Statistic statistiques, String match) {
+	private static TreeMap<String, String> getTreeMapStatsNombreButsE2(Statistic statistiques, String match,
+			String e2) {
 
 		Map<String, String> stats = new HashMap<String, String>();
 
-		String[] score = match.split("-");
-		String e2 = score[1];
+//		String[] score = match.split("-");
+//		String e2 = score[1];
 
 		Float E2plus05 = statistiques.getAwayTeamScoredMoreThan05GoalPercentage();
 		Float E2plus15 = statistiques.getAwayTeamScoredMoreThan15GoalPercentage();
@@ -1225,12 +1244,13 @@ public class GenerateStatisticsReport {
 		return mapTree;
 	}
 
-	private static TreeMap<String, String> getTreeMapStatsNombreButsE1(Statistic statistiques, String match) {
+	private static TreeMap<String, String> getTreeMapStatsNombreButsE1(Statistic statistiques, String match,
+			String e1) {
 
 		Map<String, String> stats = new HashMap<String, String>();
 
-		String[] score = match.split("-");
-		String e1 = score[0];
+//		String[] score = match.split("-");
+//		String e1 = score[0];
 
 		Float E1plus05 = statistiques.getHomeTeamScoredMoreThan05GoalPercentage();
 		Float E1plus15 = statistiques.getHomeTeamScoredMoreThan15GoalPercentage();
@@ -1317,13 +1337,14 @@ public class GenerateStatisticsReport {
 		return mapTree;
 	}
 
-	private static Map<String, String> getTreeMapStatsLDEM(Statistic statistiques, String match) {
+	private static Map<String, String> getTreeMapStatsLDEM(Statistic statistiques, String match, String homeTeam,
+			String awayTeam) {
 
 		Map<String, String> stats = new HashMap<String, String>();
 
-		String[] teams = match.split("-");
-		String homeTeam = teams[0];
-		String awayTeam = teams[1];
+//		String[] teams = match.split("-");
+//		String homeTeam = teams[0];
+//		String awayTeam = teams[1];
 		Float pourcentageLDEM = statistiques.getBothTeamsToScorePercentage();
 		int classementDomicile = 0;
 		int classementExterieur = 0;
@@ -1343,17 +1364,28 @@ public class GenerateStatisticsReport {
 		return stats;
 	}
 
-	private static TreeMap<String, String> getTreeMapStatsVictoires(Statistic statistiques, String match) {
+	private static TreeMap<String, String> getTreeMapStatsVictoires(Statistic statistiques, String match, String e1,
+			String e2, boolean isReversed) {
 
 		Map<String, String> stats = new HashMap<String, String>();
 
-		String[] score = match.split("-");
-		String e1 = score[0];
-		String e2 = score[1];
+//		String[] score = match.split("-");
+//		String e1 = score[0];
+//		String e2 = score[1];
 
-		Float pourcentageVDOM = statistiques.getHomeTeamWinPercentage();
-		Float pourcentageNul = statistiques.getDrawPercentage();
-		Float pourcentageVEXT = statistiques.getAwayTeamWinPercentage();
+		Float pourcentageVDOM = 0F;
+		Float pourcentageNul = 0F;
+		Float pourcentageVEXT = 0F;
+
+		if (isReversed) {
+			pourcentageVDOM = statistiques.getAwayTeamWinPercentage();
+			pourcentageNul = statistiques.getDrawPercentage();
+			pourcentageVEXT = statistiques.getHomeTeamWinPercentage();
+		} else {
+			pourcentageVDOM = statistiques.getHomeTeamWinPercentage();
+			pourcentageNul = statistiques.getDrawPercentage();
+			pourcentageVEXT = statistiques.getAwayTeamWinPercentage();
+		}
 
 		stats.put("Pourcentage de victoires de l'équipe " + e2, pourcentageVEXT + "%");
 		stats.put("Pourcentage de matchs nuls", pourcentageNul + "%");
@@ -1366,18 +1398,18 @@ public class GenerateStatisticsReport {
 		return mapTree;
 	}
 
-	private static TreeMap<String, String> getTreeMapStatsPronostics(Statistic statistiques, String match)
-			throws NullTeamException, NullMatchException, InvalidNumberToConvertFromBooleanException {
+	private static TreeMap<String, String> getTreeMapStatsPronostics(Statistic statistiques, String match, String e1,
+			String e2) throws NullTeamException, NullMatchException, InvalidNumberToConvertFromBooleanException {
 
-		String[] score = match.split("-");
-		String e1 = score[0];
-		String e2 = score[1];
+//		String[] score = match.split("-");
+//		String e1 = score[0];
+//		String e2 = score[1];
 
 		Map<String, String> stats = new HashMap<String, String>();
 
-		Float totalPointsE1 = getProbabilityPointsForHomeTeam(statistiques, match);
-		Float totalPointsNul = getDrawProbabilityPoints(statistiques, match);
-		Float totalPointsE2 = getProbabilityPointsForAwayTeam(statistiques, match);
+		Float totalPointsE1 = getProbabilityPointsForHomeTeam(statistiques, match, e1, e2);
+		Float totalPointsNul = getDrawProbabilityPoints(statistiques, match, e1, e2);
+		Float totalPointsE2 = getProbabilityPointsForAwayTeam(statistiques, match, e1, e2);
 
 		Float total = totalPointsE1 + totalPointsE2 + totalPointsNul;
 
@@ -1402,14 +1434,14 @@ public class GenerateStatisticsReport {
 		return mapTree;
 	}
 
-	private static Float getProbabilityPointsForAwayTeam(Statistic statistiques, String match)
+	private static Float getProbabilityPointsForAwayTeam(Statistic statistiques, String match, String e1, String e2)
 			throws NullTeamException, NullMatchException, InvalidNumberToConvertFromBooleanException {
 
 		Float totalPoints = 0F;
 
-		String[] score = match.split("-");
-		String e1 = score[0];
-		String e2 = score[1];
+//		String[] score = match.split("-");
+//		String e1 = score[0];
+//		String e2 = score[1];
 		Team homeTeam = DatabaseConnection.getTeam(e1);
 		Team awayTeam = DatabaseConnection.getTeam(e2);
 
@@ -1421,7 +1453,7 @@ public class GenerateStatisticsReport {
 		if (Ligue1Utils.isAllowed(classementE2) && Ligue1Utils.isAllowed(classementE1)) {
 			// e2 mieux classée que e1
 			if (classementE2 < classementE1) {
-				nbPointsRapportesParClassement = (classementE1 - classementE2)*10;
+				nbPointsRapportesParClassement = (classementE1 - classementE2) * 10;
 			}
 		}
 
@@ -1431,7 +1463,7 @@ public class GenerateStatisticsReport {
 		if (Ligue1Utils.isAllowed(classementE2Exterieur) && Ligue1Utils.isAllowed(classementE1Domicile)) {
 			// e2 mieux classée que e1
 			if (classementE2Exterieur < classementE1Domicile) {
-				nbPointsRapportesParClassementsDomEtExt = (classementE1Domicile - classementE2Exterieur)*10;
+				nbPointsRapportesParClassementsDomEtExt = (classementE1Domicile - classementE2Exterieur) * 10;
 			}
 		}
 
@@ -1924,13 +1956,14 @@ public class GenerateStatisticsReport {
 		return null;
 	}
 
-	private static Float getDrawProbabilityPoints(Statistic statistiques, String match) throws InvalidNumberToConvertFromBooleanException, NullTeamException, NullMatchException {
+	private static Float getDrawProbabilityPoints(Statistic statistiques, String match, String e1, String e2)
+			throws InvalidNumberToConvertFromBooleanException, NullTeamException, NullMatchException {
 
 		Float totalPoints = 0F;
 
-		String[] score = match.split("-");
-		String e1 = score[0];
-		String e2 = score[1];
+//		String[] score = match.split("-");
+//		String e1 = score[0];
+//		String e2 = score[1];
 
 		Match matchEntity = DatabaseConnection.getMatch(match);
 
@@ -2205,13 +2238,15 @@ public class GenerateStatisticsReport {
 			Float pourcentageNulsE2ContreClassementSuperieurExterieur = 0F;
 			Float pourcentageNulsE1ContreClassementInferieurDomicile = 0F;
 
-			Integer jouesE2ContreClassementSuperieurExterieur = awayTeam.getNbMatchesPlayedAgainstStandingSuperiorAway();
+			Integer jouesE2ContreClassementSuperieurExterieur = awayTeam
+					.getNbMatchesPlayedAgainstStandingSuperiorAway();
 			Integer nulsE2ContreClassementSuperieurExterieur = awayTeam.getNbDrawsAgainstStandingSuperiorAway();
 			if (jouesE2ContreClassementSuperieurExterieur > 0) {
 				pourcentageNulsE2ContreClassementSuperieurExterieur = (float) ((nulsE2ContreClassementSuperieurExterieur
 						/ jouesE2ContreClassementSuperieurExterieur)) * 100;
 			}
-			Integer jouesE1ContreClassementInferieurDomicile = homeTeam.getNbMatchesPlayedAgainstStandingInferiorAtHome();
+			Integer jouesE1ContreClassementInferieurDomicile = homeTeam
+					.getNbMatchesPlayedAgainstStandingInferiorAtHome();
 			Integer nulsE1ContreClassementInferieurDomicile = homeTeam.getNbDrawsAgainstStandingInferiorAtHome();
 			if (jouesE1ContreClassementInferieurDomicile > 0) {
 				pourcentageNulsE1ContreClassementInferieurDomicile = (float) ((nulsE1ContreClassementInferieurDomicile
@@ -2242,13 +2277,15 @@ public class GenerateStatisticsReport {
 			Float pourcentageNulsE2ContreClassementInferieurExterieur = 0F;
 			Float pourcentageNulsE1ContreClassementSuperieurDomicile = 0F;
 
-			Integer jouesE2ContreClassementInferieurExterieur = awayTeam.getNbMatchesPlayedAgainstStandingInferiorAway();
+			Integer jouesE2ContreClassementInferieurExterieur = awayTeam
+					.getNbMatchesPlayedAgainstStandingInferiorAway();
 			Integer nulsE2ContreClassementInferieurExterieur = awayTeam.getNbDrawsAgainstStandingInferiorAway();
 			if (jouesE2ContreClassementInferieurExterieur > 0) {
 				pourcentageNulsE2ContreClassementInferieurExterieur = (float) ((nulsE2ContreClassementInferieurExterieur
 						/ jouesE2ContreClassementInferieurExterieur)) * 100;
 			}
-			Integer jouesE1ContreClassementSuperieurDomicile = homeTeam.getNbMatchesPlayedAgainstStandingSuperiorAtHome();
+			Integer jouesE1ContreClassementSuperieurDomicile = homeTeam
+					.getNbMatchesPlayedAgainstStandingSuperiorAtHome();
 			Integer nulsE1ContreClassementSuperieurDomicile = homeTeam.getNbDrawsAgainstStandingSuperiorAtHome();
 			if (jouesE1ContreClassementSuperieurDomicile > 0) {
 				pourcentageNulsE1ContreClassementSuperieurDomicile = (float) ((nulsE1ContreClassementSuperieurDomicile
@@ -2270,13 +2307,14 @@ public class GenerateStatisticsReport {
 		return totalPoints;
 	}
 
-	private static Float getProbabilityPointsForHomeTeam(Statistic statistiques, String match) throws InvalidNumberToConvertFromBooleanException, NullTeamException, NullMatchException {
+	private static Float getProbabilityPointsForHomeTeam(Statistic statistiques, String match, String e1, String e2)
+			throws InvalidNumberToConvertFromBooleanException, NullTeamException, NullMatchException {
 
 		Float totalPoints = 0F;
 
-		String[] score = match.split("-");
-		String e1 = score[0];
-		String e2 = score[1];
+//		String[] score = match.split("-");
+//		String e1 = score[0];
+//		String e2 = score[1];
 		Team homeTeam = DatabaseConnection.getTeam(e1);
 		Team awayTeam = DatabaseConnection.getTeam(e2);
 		Match matchEntity = DatabaseConnection.getMatch(match);
@@ -2563,13 +2601,15 @@ public class GenerateStatisticsReport {
 			Float pourcentageDefaitesE2ContreClassementSuperieurExterieur = 0F;
 			Float pourcentageVictoiresE1ContreClassementInferieurDomicile = 0F;
 
-			Integer jouesE2ContreClassementSuperieurExterieur = awayTeam.getNbMatchesPlayedAgainstStandingSuperiorAway();
+			Integer jouesE2ContreClassementSuperieurExterieur = awayTeam
+					.getNbMatchesPlayedAgainstStandingSuperiorAway();
 			Integer perdusE2ContreClassementSuperieurExterieur = awayTeam.getNbLossesAgainstStandingSuperiorAway();
 			if (jouesE2ContreClassementSuperieurExterieur > 0) {
 				pourcentageDefaitesE2ContreClassementSuperieurExterieur = (float) ((perdusE2ContreClassementSuperieurExterieur
 						/ jouesE2ContreClassementSuperieurExterieur)) * 100;
 			}
-			Integer jouesE1ContreClassementInferieurDomicile = homeTeam.getNbMatchesPlayedAgainstStandingInferiorAtHome();
+			Integer jouesE1ContreClassementInferieurDomicile = homeTeam
+					.getNbMatchesPlayedAgainstStandingInferiorAtHome();
 			Integer gagnesE1ContreClassementInferieurDomicile = homeTeam.getNbWinsAgainstStandingInferiorAtHome();
 			if (jouesE1ContreClassementInferieurDomicile > 0) {
 				pourcentageVictoiresE1ContreClassementInferieurDomicile = (float) ((gagnesE1ContreClassementInferieurDomicile
@@ -2600,13 +2640,15 @@ public class GenerateStatisticsReport {
 			Float pourcentageDefaitesE2ContreClassementInferieurExterieur = 0F;
 			Float pourcentageVictoiresE1ContreClassementSuperieurDomicile = 0F;
 
-			Integer jouesE2ContreClassementInferieurExterieur = awayTeam.getNbMatchesPlayedAgainstStandingInferiorAway();
+			Integer jouesE2ContreClassementInferieurExterieur = awayTeam
+					.getNbMatchesPlayedAgainstStandingInferiorAway();
 			Integer perdusE2ContreClassementInferieurExterieur = awayTeam.getNbLossesAgainstStandingInferiorAway();
 			if (jouesE2ContreClassementInferieurExterieur > 0) {
 				pourcentageDefaitesE2ContreClassementInferieurExterieur = (float) ((perdusE2ContreClassementInferieurExterieur
 						/ jouesE2ContreClassementInferieurExterieur)) * 100;
 			}
-			Integer jouesE1ContreClassementSuperieurDomicile = homeTeam.getNbMatchesPlayedAgainstStandingSuperiorAtHome();
+			Integer jouesE1ContreClassementSuperieurDomicile = homeTeam
+					.getNbMatchesPlayedAgainstStandingSuperiorAtHome();
 			Integer gagnesE1ContreClassementSuperieurDomicile = homeTeam.getNbWinsAgainstStandingSuperiorAtHome();
 			if (jouesE1ContreClassementSuperieurDomicile > 0) {
 				pourcentageVictoiresE1ContreClassementSuperieurDomicile = (float) ((gagnesE1ContreClassementSuperieurDomicile
@@ -2628,13 +2670,14 @@ public class GenerateStatisticsReport {
 		return totalPoints;
 	}
 
-	private static TreeMap<String, String> getTreeMapStatsMoyennes(Statistic statistiques, String match) {
+	private static TreeMap<String, String> getTreeMapStatsMoyennes(Statistic statistiques, String match, String e1,
+			String e2) {
 
 		Map<String, String> stats = new HashMap<String, String>();
 
-		String[] score = match.split("-");
-		String e1 = score[0];
-		String e2 = score[1];
+//		String[] score = match.split("-");
+//		String e1 = score[0];
+//		String e2 = score[1];
 
 		Float moyenneButsDomicile = statistiques.getHomeTeamGoalAverage();
 		Float moyenneButsMatch = statistiques.getGoalAverage();

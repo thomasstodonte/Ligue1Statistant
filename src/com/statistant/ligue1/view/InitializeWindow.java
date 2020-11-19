@@ -489,9 +489,11 @@ public class InitializeWindow extends Application {
 			if (option.get() == ButtonType.OK) {
 				Ligue1Utils.resetAllSeason();
 				Ligue1Utils.reportInfo("La saison a été réinitialisée avec succès.");
+				InitializeWindow.alertInfo("La saison a été réinitialisée avec succès.");
 			}
 			else if (option.get() == save) {
 				DatabaseConnection.saveAllSeason();
+				InitializeWindow.alertInfo("La saison a été enregistrée dans le dossier \"C:\\perso\\Ligue1\\sauvegardes\" avec succès.");
 			}
 			else if (option.get() == ButtonType.CANCEL) {
 				Ligue1Utils.reportInfo("La saison de ligue 1 n'a finalement pas été réinitialisée.");

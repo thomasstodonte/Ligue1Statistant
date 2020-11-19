@@ -251,6 +251,15 @@ public class CountMatch {
 						confrontation.setRecent3(recent2);
 						confrontation.setRecent2(recent1);
 						confrontation.setRecent1(scoreInverse);
+						
+						if(confrontation.getRecent1().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent1()))
+							confrontation.setRecent1(null);
+						if(confrontation.getRecent2().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent2()))
+							confrontation.setRecent2(null);
+						if(confrontation.getRecent3().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent3()))
+							confrontation.setRecent3(null);
+						if(confrontation.getRecent4().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent4()))
+							confrontation.setRecent4(null);
 
 					} else {
 						throw new NullConfrontationException("Confrontation non trouvée dans la table");
@@ -266,6 +275,15 @@ public class CountMatch {
 					confrontation.setRecent3(recent2);
 					confrontation.setRecent2(recent1);
 					confrontation.setRecent1(score);
+					
+					if(confrontation.getRecent1().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent1()))
+						confrontation.setRecent1(null);
+					if(confrontation.getRecent2().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent2()))
+						confrontation.setRecent2(null);
+					if(confrontation.getRecent3().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent3()))
+						confrontation.setRecent3(null);
+					if(confrontation.getRecent4().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent4()))
+						confrontation.setRecent4(null);
 				}
 				DatabaseConnection.createOrUpdateConfrontation(confrontation);
 

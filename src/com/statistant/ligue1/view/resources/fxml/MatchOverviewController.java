@@ -57,6 +57,7 @@ public class MatchOverviewController {
 			e.printStackTrace();
 			return;
 		}
+		InitializeWindow.showMatchOverview();
 	}
 
 	@FXML
@@ -80,13 +81,25 @@ public class MatchOverviewController {
 
 			try {
 				String matchName = homeTeam + "-" + awayTeam;
-				Statistic stat = DatabaseConnection.getStatistic(matchName);
+				Statistic stat = null;
+				boolean isReversed = false;
+				try {
+					stat = DatabaseConnection.getStatistic(matchName);
+				}
+				catch (NullStatisticException e) {
+					
+				}
+				if (stat == null) {
+					matchName = awayTeam + "-" + homeTeam;
+					stat = DatabaseConnection.getStatistic(matchName);
+					isReversed = true;
+				}
 				if (stat != null) {
 					Ligue1Utils.reportInfo("Les statistiques du match " + matchName + " ont récupérées avec succès.");
-					GenerateStatisticsReport.generateReport(stat);
+					GenerateStatisticsReport.generateReport(stat, isReversed);
 					Ligue1Utils.reportInfo("Le rapport du match " + matchName + " a été généré avec succès.");
 				}
-			} catch (IOException | NullTeamException | NullConfrontationException | NullMatchException | NullStatisticException | InvalidNumberToConvertFromBooleanException ex) {
+			} catch (IOException | NullTeamException | NullConfrontationException | NullMatchException | InvalidNumberToConvertFromBooleanException | NullStatisticException ex) {
 				Ligue1Utils.reportError("Erreur à la génération du rapport de statistiques !"+ex.getMessage());
 				ex.printStackTrace();
 				return;
