@@ -261,6 +261,7 @@ public class CountMatch {
 					if (confrontation.getRecent5().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent5()))
 						confrontation.setRecent5(null);
 					
+					DatabaseConnection.createOrUpdateConfrontation(confrontation);
 					
 					String reversedScore = split[1] + "-" + split[0];
 					String reversedRecent1 = reversedConfrontation.getRecent1();

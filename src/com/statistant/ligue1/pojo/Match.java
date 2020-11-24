@@ -58,7 +58,7 @@ public class Match {
 		this.homeTeamHasABetterStanding = homeTeamHasABetterStanding;
 		this.resetAllSeason = 0;
 		this.countMatch = 0;
-		this.activeStatisticsReportGeneration = 1;
+		this.activeStatisticsReportGeneration = 0;
 		this.journey = journey;
 	}
 	
