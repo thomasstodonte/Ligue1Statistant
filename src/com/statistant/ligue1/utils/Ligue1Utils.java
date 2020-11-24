@@ -1450,27 +1450,27 @@ public class Ligue1Utils {
 		String reversedMatch = switchValues(originalMatch);
 		String originalRecent1 = confrontation.getRecent1();
 		String reversedRecent1 = null;
-		if (!Ligue1Utils.isEmpty(originalRecent1)) {
+		if (!Ligue1Utils.isEmpty(originalRecent1) && ! originalRecent1.equals("null")) {
 			reversedRecent1 = switchValues(originalRecent1);
 		}
 		String originalRecent2 = confrontation.getRecent2();
 		String reversedRecent2 = null;
-		if (!Ligue1Utils.isEmpty(originalRecent2)) {
+		if (!Ligue1Utils.isEmpty(originalRecent2) && ! originalRecent2.equals("null")) {
 			reversedRecent2 = switchValues(originalRecent2);
 		}
 		String originalRecent3 = confrontation.getRecent3();
 		String reversedRecent3 = null;
-		if (!Ligue1Utils.isEmpty(originalRecent3)) {
+		if (!Ligue1Utils.isEmpty(originalRecent3) && ! originalRecent3.equals("null")) {
 			reversedRecent3 = switchValues(originalRecent3);
 		}
 		String originalRecent4 = confrontation.getRecent4();
 		String reversedRecent4 = null;
-		if (!Ligue1Utils.isEmpty(originalRecent4)) {
+		if (!Ligue1Utils.isEmpty(originalRecent4) && ! originalRecent4.equals("null")) {
 			reversedRecent4 = switchValues(originalRecent4);
 		}
 		String originalRecent5 = confrontation.getRecent5();
 		String reversedRecent5 = null;
-		if (!Ligue1Utils.isEmpty(originalRecent5)) {
+		if (!Ligue1Utils.isEmpty(originalRecent5) && ! originalRecent5.equals("null")) {
 			reversedRecent5 = switchValues(originalRecent5);
 		}
 		Confrontation reversedConfrontation = new Confrontation(reversedMatch, reversedRecent1, reversedRecent2,

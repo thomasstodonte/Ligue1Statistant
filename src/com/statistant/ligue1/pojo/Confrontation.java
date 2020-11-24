@@ -125,6 +125,10 @@ public class Confrontation {
 			if (Ligue1Utils.isEmpty(teamScore)) {
 				return -1;
 			}
+			if (! Ligue1Utils.isScoreWellFormed(this.recent1)) {
+				setRecent1(null);
+				return -1;
+			}
 		}
 		return Integer.parseInt(score[1]);
 	}
@@ -136,6 +140,10 @@ public class Confrontation {
 		String[] score = this.recent2.split("-");
 		for (String teamScore : score) {
 			if (Ligue1Utils.isEmpty(teamScore)) {
+				return -1;
+			}
+			if (! Ligue1Utils.isScoreWellFormed(this.recent2)) {
+				setRecent2(null);
 				return -1;
 			}
 		}
@@ -151,6 +159,10 @@ public class Confrontation {
 			if (Ligue1Utils.isEmpty(teamScore)) {
 				return -1;
 			}
+			if (! Ligue1Utils.isScoreWellFormed(this.recent3)) {
+				setRecent3(null);
+				return -1;
+			}
 		}
 		return Integer.parseInt(score[1]);
 	}
@@ -164,6 +176,10 @@ public class Confrontation {
 			if (Ligue1Utils.isEmpty(teamScore)) {
 				return -1;
 			}
+			if (! Ligue1Utils.isScoreWellFormed(this.recent4)) {
+				setRecent4(null);
+				return -1;
+			}
 		}
 		return Integer.parseInt(score[1]);
 	}
@@ -175,6 +191,10 @@ public class Confrontation {
 		String[] score = this.recent5.split("-");
 		for (String teamScore : score) {
 			if (Ligue1Utils.isEmpty(teamScore)) {
+				return -1;
+			}
+			if (! Ligue1Utils.isScoreWellFormed(this.recent5)) {
+				setRecent5(null);
 				return -1;
 			}
 		}
