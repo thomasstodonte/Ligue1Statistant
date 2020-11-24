@@ -54,7 +54,7 @@ public class GenerateStatisticsReport {
 	 * @throws InvalidNumberToConvertFromBooleanException
 	 * @throws NullStatisticException
 	 */
-	public static void generateReport(Statistic statistics, boolean isReversed)
+	public static void generateReport(Statistic statistics)
 			throws IOException, NullTeamException, NullConfrontationException, NullMatchException,
 			InvalidNumberToConvertFromBooleanException, NullStatisticException {
 
@@ -62,31 +62,17 @@ public class GenerateStatisticsReport {
 		String[] teams = match.split("-");
 		String homeTeam = teams[0];
 		String awayTeam = teams[1];
-		Match matchEntity = null;
-		String reversedMatch = awayTeam + "-" + homeTeam;
-		if (isReversed) {
-			matchEntity = DatabaseConnection.getMatch(reversedMatch);
-
-			homeTeam = teams[1];
-			awayTeam = teams[0];
-
-		} else {
-			matchEntity = DatabaseConnection.getMatch(match);
-		}
+		Match matchEntity = DatabaseConnection.getMatch(match);
+		;
 		int journey = matchEntity.getJourney();
 
 		XWPFDocument document = new XWPFDocument();
 		File dossier = new File("C:\\perso\\Ligue1\\Journee_" + journey);
 		dossier.mkdir();
-		File rapport_match = null;
-		if (isReversed) {
-			rapport_match = new File("C:\\perso\\Ligue1\\Journee_" + journey + "\\rapport_" + reversedMatch + ".docx");
-		} else {
-			rapport_match = new File("C:\\perso\\Ligue1\\Journee_" + journey + "\\rapport_" + match + ".docx");
-		}
+		File rapport_match = new File("C:\\perso\\Ligue1\\Journee_" + journey + "\\rapport_" + match + ".docx");
 		FileOutputStream out = new FileOutputStream(rapport_match);
-
-		TreeMap<String, String> mapTreeStatsGenerales = getTreeMapStatsVictoires(statistics, match, homeTeam, awayTeam, isReversed);
+		TreeMap<String, String> mapTreeStatsGenerales = new TreeMap<>();
+		mapTreeStatsGenerales = getTreeMapStatsVictoires(statistics, match, homeTeam, awayTeam);
 		String generalStandingOfHomeTeam;
 		String generalStandingOfAwayTeam;
 		try {
@@ -106,9 +92,9 @@ public class GenerateStatisticsReport {
 		Confrontation confrontation = DatabaseConnection.getConfrontation(match);
 
 		document.createParagraph().createRun()
-				.setText("Match le plus récent " + match + "--> " + confrontation.getRecent1() + "\n" + "----- "
-						+ confrontation.getRecent2() + "\n" + "----- " + confrontation.getRecent3() + "\n" + "----- "
-						+ confrontation.getRecent4() + "\n" + "----- " + confrontation.getRecent5()
+				.setText("Match le plus récent " + statistics.getMatch() + "--> " + confrontation.getRecent1() + "\n"
+						+ "----- " + confrontation.getRecent2() + "\n" + "----- " + confrontation.getRecent3() + "\n"
+						+ "----- " + confrontation.getRecent4() + "\n" + "----- " + confrontation.getRecent5()
 						+ " <-- Match le plus ancien");
 
 		Map<String, String> mapStatsLDEM = getTreeMapStatsLDEM(statistics, match, homeTeam, awayTeam);
@@ -163,17 +149,20 @@ public class GenerateStatisticsReport {
 		if (Ligue1Utils.isEmpty(formE1) || Ligue1Utils.isEmpty(formE2)) {
 			InitializeWindow.alertError("Au moins l'une des deux équipes n'est pas renseignée");
 		}
-
 		writeHomeTeamStatsFromTableEquipes(document, formE1, e1MieuxClassee, e1MatchImportant);
 
 		writeAwayTeamStatsFromTableEquipes(document, formE2, e1MieuxClassee, e2MatchImportant);
 
-		TreeMap<String, String> mapTreeStatsPronostics = getTreeMapStatsPronostics(statistics, match, homeTeam,
-				awayTeam);
+		TreeMap<String, String> mapTreeStatsPronostics = new TreeMap<>();
+		mapTreeStatsPronostics = getTreeMapStatsPronostics(statistics, match, homeTeam, awayTeam);
 		writeMapInWordDocument("Probabilités du résultat : ", mapTreeStatsPronostics, document);
 
 		document.write(out);
 		out.close();
+
+		matchEntity.setActiveStatisticsReportGeneration(0);
+		DatabaseConnection.createOrUpdateMatch(matchEntity);
+
 		InitializeWindow.alertInfo("Le rapport du match " + match + " a bien été enregistré dans le dossier "
 				+ rapport_match.getAbsolutePath());
 	}
@@ -1365,7 +1354,7 @@ public class GenerateStatisticsReport {
 	}
 
 	private static TreeMap<String, String> getTreeMapStatsVictoires(Statistic statistiques, String match, String e1,
-			String e2, boolean isReversed) {
+			String e2) {
 
 		Map<String, String> stats = new HashMap<String, String>();
 
@@ -1377,15 +1366,9 @@ public class GenerateStatisticsReport {
 		Float pourcentageNul = 0F;
 		Float pourcentageVEXT = 0F;
 
-		if (isReversed) {
-			pourcentageVDOM = statistiques.getAwayTeamWinPercentage();
-			pourcentageNul = statistiques.getDrawPercentage();
-			pourcentageVEXT = statistiques.getHomeTeamWinPercentage();
-		} else {
-			pourcentageVDOM = statistiques.getHomeTeamWinPercentage();
-			pourcentageNul = statistiques.getDrawPercentage();
-			pourcentageVEXT = statistiques.getAwayTeamWinPercentage();
-		}
+		pourcentageVDOM = statistiques.getHomeTeamWinPercentage();
+		pourcentageNul = statistiques.getDrawPercentage();
+		pourcentageVEXT = statistiques.getAwayTeamWinPercentage();
 
 		stats.put("Pourcentage de victoires de l'équipe " + e2, pourcentageVEXT + "%");
 		stats.put("Pourcentage de matchs nuls", pourcentageNul + "%");

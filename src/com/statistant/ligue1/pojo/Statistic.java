@@ -207,6 +207,10 @@ public class Statistic {
 		this.awayTeamConcededExactly5GoalsPercentage = awayTeamConcededExactly5GoalsPercentage;
 	}
 
+	public Statistic(String match) {
+		this.match = match;
+	}
+
 	public String getMatch() {
 		return match;
 	}

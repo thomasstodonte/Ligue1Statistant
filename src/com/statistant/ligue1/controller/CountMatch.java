@@ -24,7 +24,7 @@ import java.util.TreeMap;
  */
 public class CountMatch {
 
-	public static void execute() throws NullConfrontationException, NullTeamException {
+	public static int execute() throws NullConfrontationException, NullTeamException {
 		int nbMatchsComptabilises = countMatchInStandingsAndOppositions();
 		if (nbMatchsComptabilises > 0) {
 			updateAllStandings();
@@ -32,6 +32,7 @@ public class CountMatch {
 			Ligue1Utils.reportInfo("Aucun match n'a été comptabilisé, les classements n'ont pas été modifiés.");
 			InitializeWindow.alertInfo("Aucun match n'a été comptabilisé, les classements n'ont pas été modifiés.");
 		}
+		return nbMatchsComptabilises;
 	}
 
 	/**
@@ -83,7 +84,7 @@ public class CountMatch {
 				Ligue1Utils.reportInfo("Le match " + e1 + " - " + e2 + " n'a pas encore été disputé.");
 			}
 		}
-		if (nbMatchsComptabilises > 0 )
+		if (nbMatchsComptabilises > 0)
 			Ligue1Utils.reportInfo("Les scores ont bien été mis à jour dans la table Confrontations");
 		return nbMatchsComptabilises;
 	}
@@ -108,7 +109,7 @@ public class CountMatch {
 
 		updateStanding(teams, "classementExterieur");
 		Ligue1Utils.reportInfo("Le classement extérieur a bien été mis à jour.");
-		
+
 		InitializeWindow.alertInfo("Tous les classements ont été mis à jour.");
 	}
 
@@ -230,41 +231,14 @@ public class CountMatch {
 					}
 				}
 
-				String scoreInverse = null;
-
 				Confrontation confrontation = DatabaseConnection.getConfrontation(team1NickName + "-" + team2NickName);
+				Confrontation reversedConfrontation = DatabaseConnection
+						.getConfrontation(team2NickName + "-" + team1NickName);
 
-				if (confrontation == null) {
-					confrontation = DatabaseConnection.getConfrontation(team2NickName + "-" + team1NickName);
-					if (confrontation != null) {
+				if (confrontation != null && reversedConfrontation != null) {
 
-						String[] split = score.split("-");
-						scoreInverse = split[1] + "-" + split[0];
+					String[] split = score.split("-");
 
-						String recent1 = confrontation.getRecent1();
-						String recent2 = confrontation.getRecent2();
-						String recent3 = confrontation.getRecent3();
-						String recent4 = confrontation.getRecent4();
-
-						confrontation.setRecent5(recent4);
-						confrontation.setRecent4(recent3);
-						confrontation.setRecent3(recent2);
-						confrontation.setRecent2(recent1);
-						confrontation.setRecent1(scoreInverse);
-						
-						if(confrontation.getRecent1().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent1()))
-							confrontation.setRecent1(null);
-						if(confrontation.getRecent2().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent2()))
-							confrontation.setRecent2(null);
-						if(confrontation.getRecent3().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent3()))
-							confrontation.setRecent3(null);
-						if(confrontation.getRecent4().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent4()))
-							confrontation.setRecent4(null);
-
-					} else {
-						throw new NullConfrontationException("Confrontation non trouvée dans la table");
-					}
-				} else {
 					String recent1 = confrontation.getRecent1();
 					String recent2 = confrontation.getRecent2();
 					String recent3 = confrontation.getRecent3();
@@ -275,18 +249,46 @@ public class CountMatch {
 					confrontation.setRecent3(recent2);
 					confrontation.setRecent2(recent1);
 					confrontation.setRecent1(score);
-					
-					if(confrontation.getRecent1().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent1()))
-						confrontation.setRecent1(null);
-					if(confrontation.getRecent2().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent2()))
-						confrontation.setRecent2(null);
-					if(confrontation.getRecent3().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent3()))
-						confrontation.setRecent3(null);
-					if(confrontation.getRecent4().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent4()))
-						confrontation.setRecent4(null);
-				}
-				DatabaseConnection.createOrUpdateConfrontation(confrontation);
 
+					if (confrontation.getRecent1().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent1()))
+						confrontation.setRecent1(null);
+					if (confrontation.getRecent2().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent2()))
+						confrontation.setRecent2(null);
+					if (confrontation.getRecent3().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent3()))
+						confrontation.setRecent3(null);
+					if (confrontation.getRecent4().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent4()))
+						confrontation.setRecent4(null);
+					if (confrontation.getRecent5().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent5()))
+						confrontation.setRecent5(null);
+					
+					
+					String reversedScore = split[1] + "-" + split[0];
+					String reversedRecent1 = reversedConfrontation.getRecent1();
+					String reversedRecent2 = reversedConfrontation.getRecent2();
+					String reversedRecent3 = reversedConfrontation.getRecent3();
+					String reversedRecent4 = reversedConfrontation.getRecent4();
+
+					reversedConfrontation.setRecent5(reversedRecent4);
+					reversedConfrontation.setRecent4(reversedRecent3);
+					reversedConfrontation.setRecent3(reversedRecent2);
+					reversedConfrontation.setRecent2(reversedRecent1);
+					reversedConfrontation.setRecent1(reversedScore);
+
+					if (reversedConfrontation.getRecent1().equals("null") || Ligue1Utils.isEmpty(reversedConfrontation.getRecent1()))
+						reversedConfrontation.setRecent1(null);
+					if (reversedConfrontation.getRecent2().equals("null") || Ligue1Utils.isEmpty(reversedConfrontation.getRecent2()))
+						reversedConfrontation.setRecent2(null);
+					if (reversedConfrontation.getRecent3().equals("null") || Ligue1Utils.isEmpty(reversedConfrontation.getRecent3()))
+						reversedConfrontation.setRecent3(null);
+					if (reversedConfrontation.getRecent4().equals("null") || Ligue1Utils.isEmpty(reversedConfrontation.getRecent4()))
+						reversedConfrontation.setRecent4(null);
+
+					DatabaseConnection.createOrUpdateConfrontation(reversedConfrontation);
+
+				} else {
+					InitializeWindow.alertError("Attention ! L'une des deux confrontations aller-retour n'existe pas, merci de la créer.");
+					return false;
+				}
 			} else {
 				InitializeWindow.alertError("Attention ! L'une des deux équipe n'est pas renseignée ! ");
 				return false;

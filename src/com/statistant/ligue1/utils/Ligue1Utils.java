@@ -1,12 +1,15 @@
 package com.statistant.ligue1.utils;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.statistant.ligue1.controller.InvalidNumberToConvertFromBooleanException;
+import com.statistant.ligue1.controller.NullConfrontationException;
 import com.statistant.ligue1.controller.TeamController;
 import com.statistant.ligue1.dao.DatabaseConnection;
+import com.statistant.ligue1.pojo.Confrontation;
 import com.statistant.ligue1.pojo.Team;
 import com.statistant.ligue1.view.InitializeWindow;
 
@@ -1423,7 +1426,64 @@ public class Ligue1Utils {
 		else
 			return true;
 	}
-	
+
+	public static void createSecondLeg() throws NullConfrontationException {
+		Collection<Confrontation> allConfrontations = DatabaseConnection.getAllConfrontations();
+		if (allConfrontations != null && !allConfrontations.isEmpty()) {
+			Iterator<Confrontation> it = allConfrontations.iterator();
+			while (it.hasNext()) {
+				Confrontation confrontation = it.next();
+				Confrontation reversedConfrontation = getReversedConfrontation(confrontation);
+				if (reversedConfrontation == null) {
+					throw new NullConfrontationException("Erreur à la création de la confrontation inversée.");
+				}
+				DatabaseConnection.createOrUpdateConfrontation(reversedConfrontation);
+			}
+		} else {
+			throw new NullConfrontationException(
+					"Aucune confrontation n'existe actuellement. Impossible de créer la phse retour.");
+		}
+	}
+
+	private static Confrontation getReversedConfrontation(Confrontation confrontation) {
+		String originalMatch = confrontation.getMatch();
+		String reversedMatch = switchValues(originalMatch);
+		String originalRecent1 = confrontation.getRecent1();
+		String reversedRecent1 = null;
+		if (!Ligue1Utils.isEmpty(originalRecent1)) {
+			reversedRecent1 = switchValues(originalRecent1);
+		}
+		String originalRecent2 = confrontation.getRecent2();
+		String reversedRecent2 = null;
+		if (!Ligue1Utils.isEmpty(originalRecent2)) {
+			reversedRecent2 = switchValues(originalRecent2);
+		}
+		String originalRecent3 = confrontation.getRecent3();
+		String reversedRecent3 = null;
+		if (!Ligue1Utils.isEmpty(originalRecent3)) {
+			reversedRecent3 = switchValues(originalRecent3);
+		}
+		String originalRecent4 = confrontation.getRecent4();
+		String reversedRecent4 = null;
+		if (!Ligue1Utils.isEmpty(originalRecent4)) {
+			reversedRecent4 = switchValues(originalRecent4);
+		}
+		String originalRecent5 = confrontation.getRecent5();
+		String reversedRecent5 = null;
+		if (!Ligue1Utils.isEmpty(originalRecent5)) {
+			reversedRecent5 = switchValues(originalRecent5);
+		}
+		Confrontation reversedConfrontation = new Confrontation(reversedMatch, reversedRecent1, reversedRecent2,
+				reversedRecent3, reversedRecent4, reversedRecent5);
+		return reversedConfrontation;
+	}
+
+	private static String switchValues(String originalMatch) {
+		String[] split = originalMatch.split("-");
+		String reversed = split[1] + "-" + split[0];
+		return reversed;
+	}
+
 	public static void reportInfo(String log) {
 		System.out.println("[INFO] : " + log);
 	}

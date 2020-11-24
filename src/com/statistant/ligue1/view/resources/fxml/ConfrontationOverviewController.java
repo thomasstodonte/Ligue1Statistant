@@ -1,5 +1,6 @@
 package com.statistant.ligue1.view.resources.fxml;
 
+import com.statistant.ligue1.controller.NullConfrontationException;
 import com.statistant.ligue1.controller.StatisticController;
 import com.statistant.ligue1.pojo.Confrontation;
 import com.statistant.ligue1.utils.Ligue1Utils;
@@ -41,6 +42,18 @@ public class ConfrontationOverviewController {
     	StatisticController.execute();
     	Ligue1Utils.reportInfo("Mise à jour des statistiques des confrontations OK après clic sur le bouton !");
     	InitializeWindow.alertInfo("Mise à jour des statistiques des confrontations OK après clic sur le bouton !");
+    }
+    
+    @FXML
+    private void handleSecondLeg() {
+    	try {
+			Ligue1Utils.createSecondLeg();
+		} catch (NullConfrontationException e) {
+			Ligue1Utils.reportError(e.getMessage());
+			e.printStackTrace();
+		}
+    	InitializeWindow.alertInfo("Création des confrontations retour OK après clic sur le bouton !");
+    	InitializeWindow.showConfrontationOverview();
     }
 
 }
