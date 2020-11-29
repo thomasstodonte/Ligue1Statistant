@@ -35,7 +35,7 @@ public class StatisticController {
 		}
 	}
 
-	private static void setStatistiques(Confrontation confrontation) throws NullConfrontationException {
+	public static void setStatistiques(Confrontation confrontation) throws NullConfrontationException {
 
 		if (confrontation == null) {
 			throw new NullConfrontationException("Confrontation nulle");

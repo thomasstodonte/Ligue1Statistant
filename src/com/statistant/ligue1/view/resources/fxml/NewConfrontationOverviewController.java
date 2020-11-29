@@ -4,7 +4,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.statistant.ligue1.controller.ConfrontationMatchFormatException;
+import com.statistant.ligue1.controller.NullConfrontationException;
 import com.statistant.ligue1.controller.ScoreFormatException;
+import com.statistant.ligue1.controller.StatisticController;
 import com.statistant.ligue1.dao.DatabaseConnection;
 import com.statistant.ligue1.dao.NullTeamException;
 import com.statistant.ligue1.pojo.Confrontation;
@@ -101,8 +103,21 @@ public class NewConfrontationOverviewController {
 		}
 		Confrontation confrontation = new Confrontation(match, recent1, recent2, recent3, recent4, recent5);
 		DatabaseConnection.createOrUpdateConfrontation(confrontation);
-		Ligue1Utils.reportInfo("Confrontation " + confrontation.getMatch() + " créé avec succès.");
-		InitializeWindow.alertInfo("Confrontation " + confrontation.getMatch() + " créé avec succès.");
+		try {
+			StatisticController.setStatistiques(confrontation);
+		} catch (NullConfrontationException e) {
+			Ligue1Utils.reportError("Erreur à la mise à jour des statistiques du match : "+confrontation.getMatch());
+			e.printStackTrace();
+		}
+		Confrontation reversedConfrontation = Ligue1Utils.getReversedConfrontation(confrontation);
+		DatabaseConnection.createOrUpdateConfrontation(reversedConfrontation);
+		try {
+			StatisticController.setStatistiques(reversedConfrontation);
+		} catch (NullConfrontationException e) {
+			Ligue1Utils.reportError("Erreur à la mise à jour des statistiques du match : "+reversedConfrontation.getMatch());
+			e.printStackTrace();
+		}
+		InitializeWindow.alertInfo("Confrontations " + confrontation.getMatch() + " et "+ reversedConfrontation.getMatch() +" créées avec succès.");
 		InitializeWindow.showConfrontationOverview();
 	}
 

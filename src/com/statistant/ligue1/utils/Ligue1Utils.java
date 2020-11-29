@@ -1445,7 +1445,7 @@ public class Ligue1Utils {
 		}
 	}
 
-	private static Confrontation getReversedConfrontation(Confrontation confrontation) {
+	public static Confrontation getReversedConfrontation(Confrontation confrontation) {
 		String originalMatch = confrontation.getMatch();
 		String reversedMatch = switchValues(originalMatch);
 		String originalRecent1 = confrontation.getRecent1();

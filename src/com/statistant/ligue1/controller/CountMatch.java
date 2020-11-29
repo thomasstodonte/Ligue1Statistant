@@ -9,6 +9,7 @@ import com.statistant.ligue1.dao.DatabaseConnection;
 import com.statistant.ligue1.dao.NullTeamException;
 import com.statistant.ligue1.pojo.Confrontation;
 import com.statistant.ligue1.pojo.Match;
+import com.statistant.ligue1.pojo.Statistic;
 import com.statistant.ligue1.pojo.Team;
 import com.statistant.ligue1.pojo.comparator.StandingComparator;
 import com.statistant.ligue1.utils.Ligue1Utils;
@@ -262,6 +263,7 @@ public class CountMatch {
 						confrontation.setRecent5(null);
 					
 					DatabaseConnection.createOrUpdateConfrontation(confrontation);
+					StatisticController.setStatistiques(confrontation);
 					
 					String reversedScore = split[1] + "-" + split[0];
 					String reversedRecent1 = reversedConfrontation.getRecent1();
@@ -285,7 +287,8 @@ public class CountMatch {
 						reversedConfrontation.setRecent4(null);
 
 					DatabaseConnection.createOrUpdateConfrontation(reversedConfrontation);
-
+					StatisticController.setStatistiques(reversedConfrontation);
+					
 				} else {
 					InitializeWindow.alertError("Attention ! L'une des deux confrontations aller-retour n'existe pas, merci de la créer.");
 					return false;

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.Cursor?>
 
 <AnchorPane prefHeight="600.0" prefWidth="1200.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.statistant.ligue1.view.resources.fxml.ConfrontationOverviewController">
    <padding>
@@ -14,6 +14,14 @@
    <children>
       <ButtonBar layoutX="331.0" layoutY="490.0" prefHeight="600.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="500.0">
          <buttons>
+         	<Button fx:id="createSecondLeg" mnemonicParsing="false" onAction="#handleSecondLeg" text="Créer les confrontations retour" visible="false">
+            <cursor>
+                  <Cursor fx:constant="HAND" />
+            </cursor></Button>
+            <Button fx:id="update" mnemonicParsing="false" onAction="#handleUpdate" text="Mettre à jour" visible="false">
+            <cursor>
+                  <Cursor fx:constant="HAND" />
+            </cursor></Button>
             <Button fx:id="nouveau" mnemonicParsing="false" onAction="#handleNew" text="Nouveau">
             <cursor>
                   <Cursor fx:constant="HAND" />
@@ -23,14 +31,6 @@
                   <Cursor fx:constant="HAND" />
             </cursor></Button>
             <Button fx:id="menuPrincipal" mnemonicParsing="false" onAction="#handleMainMenu" text="Menu principal">
-            <cursor>
-                  <Cursor fx:constant="HAND" />
-            </cursor></Button>
-            <Button fx:id="update" mnemonicParsing="false" onAction="#handleUpdate" text="Mettre à jour">
-            <cursor>
-                  <Cursor fx:constant="HAND" />
-            </cursor></Button>
-            <Button fx:id="createSecondLeg" mnemonicParsing="false" onAction="#handleSecondLeg" text="Créer les confrontations retour">
             <cursor>
                   <Cursor fx:constant="HAND" />
             </cursor></Button>
