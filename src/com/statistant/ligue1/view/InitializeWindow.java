@@ -2,7 +2,6 @@ package com.statistant.ligue1.view;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Map.Entry;
 import java.util.Optional;
 
 import com.statistant.ligue1.dao.DatabaseConnection;
@@ -16,13 +15,10 @@ import com.statistant.ligue1.view.resources.fxml.ModifyMatchOverviewController;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -102,6 +98,12 @@ public class InitializeWindow extends Application {
 		initRootLayout();
 		showMenuOverview();
 
+	}
+	
+	@Override
+	public void stop() throws Exception {
+		DatabaseConnection.closeConnection();
+		super.stop();
 	}
 
 	public void initRootLayout() {
@@ -492,8 +494,8 @@ public class InitializeWindow extends Application {
 		if (option.get() != null) {
 			if (option.get() == ButtonType.OK) {
 				Ligue1Utils.resetAllSeason();
-				Ligue1Utils.reportInfo("La saison a été réinitialisée avec succès.");
-				InitializeWindow.alertInfo("La saison a été réinitialisée avec succès.");
+				Ligue1Utils.reportInfo("La saison a été réinitialisée avec succès. Les informations des équipes ont été remises à zéro.");
+				InitializeWindow.alertInfo("La saison a été réinitialisée avec succès. Les informations des équipes ont été remises à zéro.");
 			}
 			else if (option.get() == save) {
 				DatabaseConnection.saveAllSeason();

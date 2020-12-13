@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -19,6 +20,7 @@ import com.statistant.ligue1.pojo.Confrontation;
 import com.statistant.ligue1.pojo.Match;
 import com.statistant.ligue1.pojo.Statistic;
 import com.statistant.ligue1.pojo.Team;
+import com.statistant.ligue1.pojo.User;
 import com.statistant.ligue1.utils.Ligue1Utils;
 
 public class DatabaseConnection {
@@ -514,6 +516,33 @@ public class DatabaseConnection {
 			throw new NullConfrontationException("La confrontation "+confrontation+" n'existe pas. Merci de réitérer la saisie.");
 		}
 		return confrontation;
+	}
+	
+	public static String getRivals(String team) throws NullRivalException {
+		if (Ligue1Utils.isEmpty(team)) {
+			throw new NullRivalException("Erreur à la récupération de la liste des rivaux de l'équipe " + team
+					+ " dans la table rivals : le nom n'existe pas dans la table.");
+		}
+		Connection cn = initializeOrGetConnection();
+		String query = "";
+		String rivals = "";
+		try {
+			Statement st = cn.createStatement();
+			query = "SELECT * FROM rivals WHERE rivals.team = \"" + team.trim() + "\"";
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				rivals = rs.getString(2);
+			}
+		} catch (SQLException e) {
+			Ligue1Utils.reportError("Erreur à la récupération de la liste des rivaux de l'équipe " + team
+					+ " dans la table avec la requête : " + query);
+			e.printStackTrace();
+			return null;
+		}
+		if (Ligue1Utils.isEmpty(rivals)) {
+			throw new NullRivalException("L'équipe "+team+" ne comporte aucun rival. C'est impossible.");
+		}
+		return rivals;
 	}
 
 	public static Collection<Confrontation> getAllConfrontations() {
@@ -1056,6 +1085,53 @@ public class DatabaseConnection {
 		}
 		return allMatches;
 	}
+	
+	public static User getUser(String login, String password) throws NullUserException {
+		Connection cn = initializeOrGetConnection();
+		String query = "";
+		User user = null;
+		try {
+			Statement st = cn.createStatement();
+			query = "SELECT * FROM users WHERE login = \"" +login+ "\" AND password = \""+ password + "\"";
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				Date licenceEndedDate = rs.getDate("licenceEndedDate");
+				user = new User(login, password, licenceEndedDate);
+			}
+		} catch (SQLException e) {
+			Ligue1Utils.reportError("Erreur à la récupération de l'utilisateur : " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		if (user == null) {
+			throw new NullUserException("L'utilisateur "+login+" n'existe pas. Merci de réitérer la saisie.");
+		}
+		return user;
+	}
+	
+	public static User getUser(String login) throws NullUserException {
+		Connection cn = initializeOrGetConnection();
+		String query = "";
+		User user = null;
+		try {
+			Statement st = cn.createStatement();
+			query = "SELECT * FROM users WHERE login = \"" +login+ "\"";
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				String password = rs.getString("password");
+				Date licenceEndedDate = rs.getDate("licenceEndedDate");
+				user = new User(login, password, licenceEndedDate);
+			}
+		} catch (SQLException e) {
+			Ligue1Utils.reportError("Erreur à la récupération de l'utilisateur : " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		if (user == null) {
+			throw new NullUserException("L'utilisateur "+login+" n'existe pas. Merci de réitérer la saisie.");
+		}
+		return user;
+	}
 
 	public static Collection<Match> getMatchesToCount() {
 		Connection cn = initializeOrGetConnection();
@@ -1077,6 +1153,48 @@ public class DatabaseConnection {
 			return null;
 		}
 		return matchesToCount;
+	}
+	
+	public static int getMatchesCounted() {
+		Connection cn = initializeOrGetConnection();
+		String query = "";
+		int matchesCounted = 0;
+		try {
+			Statement st = cn.createStatement();
+			query = "SELECT * FROM matches WHERE Comptabilise = 1";
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				matchesCounted++;
+			}
+		} catch (SQLException e) {
+			Ligue1Utils
+					.reportError("Erreur à la récupération des matchs de Ligue 1 comptabilisés : " + e.getMessage());
+			e.printStackTrace();
+		}
+		return matchesCounted;
+	}
+	
+	/**
+	 * @param result : VictoireEquipeDomicile, nul, VictoireEquipeExterieur
+	 * @return le pourcentage global en ligue 1 cette saison pour ce résultat
+	 */
+	public static float getGlobalPercentage(String result) {
+		Connection cn = initializeOrGetConnection();
+		String query = "";
+		int nb = 0;
+		try {
+			Statement st = cn.createStatement();
+			query = "SELECT COUNT(*) FROM matches WHERE Comptabilise = 1 AND "+result+" = 1";
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				nb = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			Ligue1Utils
+					.reportError("Erreur à la récupération du nombre de "+result+" en Ligue 1 : " + e.getMessage());
+			e.printStackTrace();
+		}
+		return Ligue1Utils.percentage(nb);
 	}
 
 	public static void createOrUpdateMatch(Match match) {
@@ -1291,7 +1409,7 @@ public class DatabaseConnection {
 	}
 
 	public static void main(String[] args) {
-		
+
 	}
 
 	public static File saveAllSeason() {

@@ -1769,6 +1769,8 @@ public class GenerateStatisticsReport {
 			pointsResultatsClassementDomExt = (pourcentageDefaitesE1ContreClassementSuperieurDomicile
 					+ pourcentageVictoiresE2ContreClassementInferieurExterieur) / 2;
 		}
+		
+		Float pourcentageGlobalVExt = DatabaseConnection.getGlobalPercentage("VictoireEquipeExterieur");
 
 		totalPoints = (coefficientF * pourcentageVEXTConfrontations) + (coefficientC * nbPointsRapportesParClassement)
 				+ (coefficientC * nbPointsRapportesParClassementsDomEtExt) + (coefficientC * nbPointsForme)
@@ -1776,7 +1778,7 @@ public class GenerateStatisticsReport {
 				+ (coefficientD * pointsResultats) + (coefficientD * pointsResultatsDomExt)
 				+ (coefficientC * nbPointsFormeDomExt) + (coefficientD * pointsResultatsImportance)
 				+ (coefficientD * pointsResultatsImportanceDomExt) + (coefficientD * pointsResultatsClassement)
-				+ (coefficientD * pointsResultatsClassementDomExt);
+				+ (coefficientD * pointsResultatsClassementDomExt) + (coefficientC * pourcentageGlobalVExt);
 
 		return totalPoints;
 	}
@@ -2279,13 +2281,15 @@ public class GenerateStatisticsReport {
 
 		}
 
+		Float pourcentageGlobalDraw = DatabaseConnection.getGlobalPercentage("nul");
+		
 		totalPoints = (coefficientF * pourcentageNulsConfrontations) + (coefficientC * nbPointsRapportesParClassement)
 				+ (coefficientC * nbPointsRapportesParClassementsDomEtExt) + (coefficientC * nbPointsForme)
 				+ (coefficientC * forme5DerniersMatchsDraw) + (coefficientC * forme5DerniersMatchsDrawDomExt)
 				+ (coefficientD * pointsResultats) + (coefficientD * pointsResultatsDomExt)
 				+ (coefficientC * nbPointsFormeDomExt) + (coefficientD * pointsResultatsImportance)
-				+ (coefficientD * pointsResultatsImportanceDomExt) + +(coefficientD * pointsResultatsClassement)
-				+ (coefficientD * pointsResultatsClassementDomExt);
+				+ (coefficientD * pointsResultatsImportanceDomExt) + (coefficientD * pointsResultatsClassement)
+				+ (coefficientD * pointsResultatsClassementDomExt) + (coefficientC * pourcentageGlobalDraw);
 
 		return totalPoints;
 	}
@@ -2642,13 +2646,15 @@ public class GenerateStatisticsReport {
 
 		}
 
+		Float pourcentageGlobalVDom = DatabaseConnection.getGlobalPercentage("VictoireEquipeDomicile");
+		
 		totalPoints = (coefficientF * pourcentageVDOMConfrontations) + (coefficientC * nbPointsRapportesParClassement)
 				+ (coefficientC * nbPointsRapportesParClassementsDomEtExt) + (coefficientC * nbPointsForme)
 				+ (coefficientC * forme5DerniersMatchs) + (coefficientC * forme5DerniersMatchsDomExt)
 				+ (coefficientD * pointsResultats) + (coefficientD * pointsResultatsDomExt)
 				+ (coefficientC * nbPointsFormeDomExt) + (coefficientD * pointsResultatsImportance)
-				+ (coefficientD * pointsResultatsImportanceDomExt) + +(coefficientD * pointsResultatsClassement)
-				+ (coefficientD * pointsResultatsClassementDomExt);
+				+ (coefficientD * pointsResultatsImportanceDomExt) + (coefficientD * pointsResultatsClassement)
+				+ (coefficientD * pointsResultatsClassementDomExt) + (coefficientC * pourcentageGlobalVDom);
 
 		return totalPoints;
 	}

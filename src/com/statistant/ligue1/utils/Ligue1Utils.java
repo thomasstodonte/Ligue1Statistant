@@ -9,6 +9,7 @@ import com.statistant.ligue1.controller.InvalidNumberToConvertFromBooleanExcepti
 import com.statistant.ligue1.controller.NullConfrontationException;
 import com.statistant.ligue1.controller.TeamController;
 import com.statistant.ligue1.dao.DatabaseConnection;
+import com.statistant.ligue1.dao.NullRivalException;
 import com.statistant.ligue1.pojo.Confrontation;
 import com.statistant.ligue1.pojo.Team;
 import com.statistant.ligue1.view.InitializeWindow;
@@ -244,86 +245,6 @@ public class Ligue1Utils {
 	public final static String GROUP_PROCESS_NAME = "GroupeDeProcessusLigue1";
 	public final static String PROCESS_NAME = "match";
 	public final static String VERSION_PROCESS_NAME = "match_1.0";
-
-	public enum RivalsRCL {
-		PSG, LOSC, ASM, OM, OL, ASSE;
-	}
-
-	public enum RivalsNO {
-		MHSC, OGCN, PSG, ASM, OM, OL, ASSE;
-	}
-
-	public enum RivalsDFCO {
-		PSG, LOSC, ASM, OM, OL, ASSE;
-	}
-
-	public enum RivalsFCM {
-		PSG, LOSC, ASM, OM, OL, ASSE, RCS;
-	}
-
-	public enum RivalsSDR {
-		PSG, LOSC, ASM, OM, OL, ASSE;
-	}
-
-	public enum RivalsFCL {
-		PSG, LOSC, ASM, OM, SRFC, SB29, OL, ASSE;
-	}
-
-	public enum RivalsRCS {
-		PSG, LOSC, ASM, OM, OL, ASSE, FCM;
-	}
-
-	public enum RivalsSCO {
-		PSG, LOSC, ASM, OM, OL, ASSE;
-	}
-
-	public enum RivalsASSE {
-		PSG, LOSC, ASM, OM, FCGB, OL;
-	}
-
-	public enum RivalsOL {
-		PSG, LOSC, ASM, OM, FCGB, ASSE;
-	}
-
-	public enum RivalsFCGB {
-		OGCN, PSG, ASM, OM, OL, ASSE;
-	}
-
-	public enum RivalsSB29 {
-		PSG, ASM, OM, SRFC, OL, ASSE, FCL;
-	}
-
-	public enum RivalsSRFC {
-		PSG, LOSC, FCN, ASM, OM, SB29, OL, ASSE, FCL;
-	}
-
-	public enum RivalsOM {
-		OGCN, PSG, LOSC, ASM, FCGB, OL, ASSE;
-	}
-
-	public enum RivalsASM {
-		OGCN, PSG, OM, FCGB, OL, ASSE;
-	}
-
-	public enum RivalsFCN {
-		PSG, LOSC, ASM, OM, SRFC, OL, ASSE;
-	}
-
-	public enum RivalsLOSC {
-		PSG, ASM, OM, OL, ASSE, RCL;
-	}
-
-	public enum RivalsPSG {
-		LOSC, ASM, OM, OL, ASSE;
-	}
-
-	public enum RivalsOGCN {
-		PSG, ASM, OM, FCGB, OL, ASSE;
-	}
-
-	public enum RivalsMHSC {
-		PSG, ASM, OM, OL, ASSE, NO;
-	}
 
 	public static boolean isScoreWellFormed(String score) {
 		String regex = "^[0-9]-[0-9]$";
@@ -1231,189 +1152,21 @@ public class Ligue1Utils {
 		return (string == null || string.isEmpty());
 	}
 
+	/**
+	 * @param e1
+	 * @param e2
+	 * @return true si c'est un match important pour e1, false sinon.
+	 */
 	public static boolean getMatchImportant(String e1, String e2) {
-
-		if (e1.equalsIgnoreCase("MHSC")) {
-			RivalsMHSC[] RivalsMHSCs = RivalsMHSC.values();
-			for (RivalsMHSC RivalsMHSC : RivalsMHSCs) {
-				if (RivalsMHSC.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
+		String rivalsE1;
+		try {
+			rivalsE1 = DatabaseConnection.getRivals(e1);
+		} catch (NullRivalException e) {
+			reportError(e.getMessage());
+			e.printStackTrace();
+			return false;
 		}
-
-		if (e1.equalsIgnoreCase("PSG")) {
-			RivalsPSG[] RivalsPSGs = RivalsPSG.values();
-			for (RivalsPSG RivalsPSG : RivalsPSGs) {
-				if (RivalsPSG.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("OGCN")) {
-			RivalsOGCN[] RivalsOGCNs = RivalsOGCN.values();
-			for (RivalsOGCN RivalsOGCN : RivalsOGCNs) {
-				if (RivalsOGCN.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("LOSC")) {
-			RivalsLOSC[] RivalsLOSCs = RivalsLOSC.values();
-			for (RivalsLOSC RivalsLOSC : RivalsLOSCs) {
-				if (RivalsLOSC.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("FCN")) {
-			RivalsFCN[] RivalsFCNs = RivalsFCN.values();
-			for (RivalsFCN RivalsFCN : RivalsFCNs) {
-				if (RivalsFCN.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("ASM")) {
-			RivalsASM[] RivalsASMs = RivalsASM.values();
-			for (RivalsASM RivalsASM : RivalsASMs) {
-				if (RivalsASM.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("OM")) {
-			RivalsOM[] RivalsOMs = RivalsOM.values();
-			for (RivalsOM RivalsOM : RivalsOMs) {
-				if (RivalsOM.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("SRFC")) {
-			RivalsSRFC[] RivalsSRFCs = RivalsSRFC.values();
-			for (RivalsSRFC RivalsSRFC : RivalsSRFCs) {
-				if (RivalsSRFC.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("SB29")) {
-			RivalsSB29[] RivalsSB29s = RivalsSB29.values();
-			for (RivalsSB29 RivalsSB29 : RivalsSB29s) {
-				if (RivalsSB29.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("FCGB")) {
-			RivalsFCGB[] RivalsFCGBs = RivalsFCGB.values();
-			for (RivalsFCGB RivalsFCGB : RivalsFCGBs) {
-				if (RivalsFCGB.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("OL")) {
-			RivalsOL[] RivalsOLs = RivalsOL.values();
-			for (RivalsOL RivalsOL : RivalsOLs) {
-				if (RivalsOL.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("ASSE")) {
-			RivalsASSE[] RivalsASSEs = RivalsASSE.values();
-			for (RivalsASSE RivalsASSE : RivalsASSEs) {
-				if (RivalsASSE.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("SCO")) {
-			RivalsSCO[] RivalsSCOs = RivalsSCO.values();
-			for (RivalsSCO RivalsSCO : RivalsSCOs) {
-				if (RivalsSCO.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("RCS")) {
-			RivalsRCS[] RivalsRCSs = RivalsRCS.values();
-			for (RivalsRCS RivalsRCS : RivalsRCSs) {
-				if (RivalsRCS.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("FCL")) {
-			RivalsFCL[] RivalsFCLs = RivalsFCL.values();
-			for (RivalsFCL RivalsFCL : RivalsFCLs) {
-				if (RivalsFCL.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("SDR")) {
-			RivalsSDR[] RivalsSDRs = RivalsSDR.values();
-			for (RivalsSDR RivalsSDR : RivalsSDRs) {
-				if (RivalsSDR.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("FCM")) {
-			RivalsFCM[] RivalsFCMs = RivalsFCM.values();
-			for (RivalsFCM RivalsFCM : RivalsFCMs) {
-				if (RivalsFCM.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("DFCO")) {
-			RivalsDFCO[] RivalsDFCOs = RivalsDFCO.values();
-			for (RivalsDFCO RivalsDFCO : RivalsDFCOs) {
-				if (RivalsDFCO.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("NO")) {
-			RivalsNO[] RivalsNOs = RivalsNO.values();
-			for (RivalsNO RivalsNO : RivalsNOs) {
-				if (RivalsNO.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		if (e1.equalsIgnoreCase("RCL")) {
-			RivalsRCL[] RivalsRCLs = RivalsRCL.values();
-			for (RivalsRCL RivalsRCL : RivalsRCLs) {
-				if (RivalsRCL.toString().equalsIgnoreCase(e2)) {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return rivalsE1.contains(e2);
 	}
 
 	public static boolean convertToBoolean(int number) throws InvalidNumberToConvertFromBooleanException {
@@ -1482,6 +1235,22 @@ public class Ligue1Utils {
 		String[] split = originalMatch.split("-");
 		String reversed = split[1] + "-" + split[0];
 		return reversed;
+	}
+	
+	/**
+	 * @param nb, the value to evaluate
+	 * @return a percentage representing nb/nbConfrontations * 100
+	 */
+	public static Float percentage(int nb) {
+		int matchesCounted = DatabaseConnection.getMatchesCounted();
+		if (matchesCounted != 0) {
+		return ((float) nb / matchesCounted) * 100;
+		}
+		return null;
+	}
+	
+	public static void main(String[] args) {
+		
 	}
 
 	public static void reportInfo(String log) {

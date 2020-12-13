@@ -8,6 +8,7 @@ import com.statistant.ligue1.controller.SameTeamsException;
 import com.statistant.ligue1.controller.ScoreFormatException;
 import com.statistant.ligue1.controller.UnhandledResultatException;
 import com.statistant.ligue1.dao.DatabaseConnection;
+import com.statistant.ligue1.dao.NullMatchException;
 import com.statistant.ligue1.dao.NullTeamException;
 import com.statistant.ligue1.pojo.Match;
 import com.statistant.ligue1.pojo.Team;
@@ -142,8 +143,7 @@ public class NewMatchOverviewController {
 				InitializeWindow.alertInfo("Match " + match.getId() + " créé avec succès.");
 				InitializeWindow.showMatchOverview();
 			}
-		}
-		else {
+		} else {
 			boolean allFieldsOkBeforeMatch = checkAllFormFieldsBeforeMatch();
 			if (allFieldsOkBeforeMatch) {
 				String team1 = getHomeTeam().getText();
@@ -152,12 +152,17 @@ public class NewMatchOverviewController {
 				Integer isImportantGameForAwayTeam = Integer.parseInt(getIsAnImportantGameForAwayTeam().getText());
 				Integer homeTeamHasBetterStanding = Integer.parseInt(getHomeTeamHasABetterStanding().getText());
 				Integer journee = Integer.parseInt(getJourney().getText());
-				Match match = new Match(team1, team2,
-						isImportantGameForHomeTeam, isImportantGameForAwayTeam, homeTeamHasBetterStanding, journee);
-				DatabaseConnection.createOrUpdateMatch(match);
-				Ligue1Utils.reportInfo("Match " + match.getId() + " créé avec succès.");
-				InitializeWindow.alertInfo("Match " + match.getId() + " créé avec succès.");
-				InitializeWindow.showMatchOverview();
+				Match match = new Match(team1, team2, isImportantGameForHomeTeam, isImportantGameForAwayTeam,
+						homeTeamHasBetterStanding, journee);
+				try {
+					DatabaseConnection.getMatch(match.getId());
+					Ligue1Utils.reportError("Le match que vous tentez de créer existe déjà. Merci de modifier le match existant.");
+				} catch (NullMatchException e) {
+					DatabaseConnection.createOrUpdateMatch(match);
+					Ligue1Utils.reportInfo("Match " + match.getId() + " créé avec succès.");
+					InitializeWindow.alertInfo("Match " + match.getId() + " créé avec succès.");
+					InitializeWindow.showMatchOverview();
+				}
 			}
 		}
 	}
@@ -193,7 +198,8 @@ public class NewMatchOverviewController {
 
 	private boolean matchTermine() {
 		try {
-			MatchController.checkOnlyOneResult(Integer.parseInt(getHomeTeamWin().getText()), Integer.parseInt(getAwayTeamWin().getText()), Integer.parseInt(getDraw().getText()));
+			MatchController.checkOnlyOneResult(Integer.parseInt(getHomeTeamWin().getText()),
+					Integer.parseInt(getAwayTeamWin().getText()), Integer.parseInt(getDraw().getText()));
 		} catch (NullResultatException | NumberFormatException | UnhandledResultatException e) {
 			return false;
 		}
@@ -227,7 +233,8 @@ public class NewMatchOverviewController {
 		String victoireEquipe2 = awayTeamWin.getText();
 		String nul = draw.getText();
 		try {
-			MatchController.checkOnlyOneResult(Integer.parseInt(victoireEquipe1), Integer.parseInt(victoireEquipe2), Integer.parseInt(nul));
+			MatchController.checkOnlyOneResult(Integer.parseInt(victoireEquipe1), Integer.parseInt(victoireEquipe2),
+					Integer.parseInt(nul));
 		} catch (NullResultatException | NumberFormatException | UnhandledResultatException e) {
 			Ligue1Utils.reportError(e.getMessage());
 			return false;

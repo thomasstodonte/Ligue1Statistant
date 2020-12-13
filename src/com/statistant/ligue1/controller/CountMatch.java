@@ -4,18 +4,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import com.statistant.ligue1.dao.DatabaseConnection;
 import com.statistant.ligue1.dao.NullTeamException;
 import com.statistant.ligue1.pojo.Confrontation;
 import com.statistant.ligue1.pojo.Match;
-import com.statistant.ligue1.pojo.Statistic;
 import com.statistant.ligue1.pojo.Team;
 import com.statistant.ligue1.pojo.comparator.StandingComparator;
 import com.statistant.ligue1.utils.Ligue1Utils;
 import com.statistant.ligue1.view.InitializeWindow;
-
-import java.util.TreeMap;
 
 /**
  * Count the last recorded matches in tables "teams" and "confrontations" from
