@@ -121,8 +121,15 @@ public class CountMatch {
 		for (Team team : teams) {
 
 			String surnom = team.getNickName();
-			int nbPoints = team.getNbPoints();
-
+			
+			int nbPoints = 0;
+			if (standingType.equals("classementDomicile"))
+				nbPoints = team.getNbHomePoints();
+			if (standingType.equals("classementExterieur"))
+				nbPoints = team.getNbAwayPoints();
+			if (standingType.equals("classement"))
+				nbPoints = team.getNbPoints();
+			
 			int differenceButs = 0;
 			if (standingType.equals("classementDomicile"))
 				differenceButs = team.getHomeGoalAverage();
@@ -146,7 +153,7 @@ public class CountMatch {
 
 			Team team;
 			try {
-				team = DatabaseConnection.getTeam(classement.getValue());
+				team = DatabaseConnection.getTeamByNickname(classement.getValue());
 				if (standingType.equals("classementDomicile"))
 					team.setHomeStanding(classement.getKey());
 				if (standingType.equals("classementExterieur"))
@@ -186,8 +193,8 @@ public class CountMatch {
 
 			if (!Ligue1Utils.isEmpty(team1NickName) && !Ligue1Utils.isEmpty(team2NickName)) {
 
-				team1 = DatabaseConnection.getTeam(team1NickName);
-				team2 = DatabaseConnection.getTeam(team2NickName);
+				team1 = DatabaseConnection.getTeamByNickname(team1NickName);
+				team2 = DatabaseConnection.getTeamByNickname(team2NickName);
 
 				if (team1 == null || team2 == null) {
 					InitializeWindow.alertError("Attention ! Au moins une des équipes n'évolue pas en Ligue 1 ! ");
@@ -287,12 +294,9 @@ public class CountMatch {
 					DatabaseConnection.createOrUpdateConfrontation(reversedConfrontation);
 					StatisticController.setStatistiques(reversedConfrontation);
 					
-				} else {
-					InitializeWindow.alertError("Attention ! L'une des deux confrontations aller-retour n'existe pas, merci de la créer.");
-					return false;
 				}
 			} else {
-				InitializeWindow.alertError("Attention ! L'une des deux équipe n'est pas renseignée ! ");
+				InitializeWindow.alertError("Attention ! L'une des deux équipes n'est pas renseignée ! ");
 				return false;
 			}
 			return true;

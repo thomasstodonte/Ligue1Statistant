@@ -3,7 +3,10 @@ package com.statistant.ligue1.controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -15,6 +18,7 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import com.statistant.ligue1.dao.DatabaseConnection;
 import com.statistant.ligue1.dao.NullMatchException;
 import com.statistant.ligue1.dao.NullTeamException;
+import com.statistant.ligue1.pojo.Configuration;
 import com.statistant.ligue1.pojo.Confrontation;
 import com.statistant.ligue1.pojo.Match;
 import com.statistant.ligue1.pojo.Statistic;
@@ -31,16 +35,37 @@ import com.statistant.ligue1.view.InitializeWindow;
  * @author Thomas CHARMES
  */
 public class GenerateStatisticsReport {
+//
+//	@SuppressWarnings("unused")
+//	private static final Float coefficientA = 0.5F;
+//	@SuppressWarnings("unused")
+//	private static final Float coefficientB = 1F;
+//	private static final Float coefficientC = 1.5F;
+//	private static final Float coefficientD = 2F;
+//	@SuppressWarnings("unused")
+//	private static final Float coefficientE = 2.5F;
+//	private static final Float coefficientF = 3F;
 
-	@SuppressWarnings("unused")
-	private static final Float coefficientA = 0.5F;
-	@SuppressWarnings("unused")
-	private static final Float coefficientB = 1F;
-	private static final Float coefficientC = 1.5F;
-	private static final Float coefficientD = 2F;
-	@SuppressWarnings("unused")
-	private static final Float coefficientE = 2.5F;
-	private static final Float coefficientF = 3F;
+	public static void generateReportsWithConfigurations(Statistic statistics)
+			throws IOException, NullTeamException, NullConfrontationException, NullMatchException,
+			InvalidNumberToConvertFromBooleanException, NullStatisticException {
+		List<Configuration> allConfigs = new ArrayList<Configuration>();
+		Configuration config1 = new Configuration(1, 0.1F, 0.1F, 0.1F, 3F, 3F, 3F, 3F, 6F, 6F);
+		Configuration config2 = new Configuration(2, 6F, 0.1F, 0.1F, 3F, 3F, 3F, 3F, 6F, 6F);
+		Configuration config3 = new Configuration(3, 1F, 1F, 3F, 6F, 3F, 6F, 6F, 6F, 1F);
+		Configuration config4 = new Configuration(4, 1.5F, 1F, 2F, 1F, 2F, 1F, 2F, 2F, 1.5F);
+		Configuration config5 = new Configuration(5, 6F, 6F,0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 6F);
+		allConfigs.add(config1);
+		allConfigs.add(config2);
+		allConfigs.add(config3);
+		allConfigs.add(config4);
+		allConfigs.add(config5);
+		Iterator<Configuration> it = allConfigs.iterator();
+		while (it.hasNext()) {
+			Configuration config = it.next();
+			generateReport(statistics, config);
+		}
+	}
 
 	/**
 	 * generate the match report, in Word format.
@@ -54,7 +79,7 @@ public class GenerateStatisticsReport {
 	 * @throws InvalidNumberToConvertFromBooleanException
 	 * @throws NullStatisticException
 	 */
-	public static void generateReport(Statistic statistics)
+	public static void generateReport(Statistic statistics, Configuration config)
 			throws IOException, NullTeamException, NullConfrontationException, NullMatchException,
 			InvalidNumberToConvertFromBooleanException, NullStatisticException {
 
@@ -67,9 +92,12 @@ public class GenerateStatisticsReport {
 		int journey = matchEntity.getJourney();
 
 		XWPFDocument document = new XWPFDocument();
-		File dossier = new File("C:\\perso\\Ligue1\\Journee_" + journey);
+		// TODO Géréer la perosnnalisation du chemin de stockage
+//		String reportPath = DatabaseConnection.getReportPath(connectedUser);
+		File dossier = new File("C:\\perso\\Ligue1\\Journee_" + journey + "\\config" + config.getId());
 		dossier.mkdir();
-		File rapport_match = new File("C:\\perso\\Ligue1\\Journee_" + journey + "\\rapport_" + match + ".docx");
+		File rapport_match = new File(
+				"C:\\perso\\Ligue1\\Journee_" + journey + "\\config" + config.getId() + "\\rapport " + match + ".docx");
 		FileOutputStream out = new FileOutputStream(rapport_match);
 		TreeMap<String, String> mapTreeStatsGenerales = new TreeMap<>();
 		mapTreeStatsGenerales = getTreeMapStatsVictoires(statistics, match, homeTeam, awayTeam);
@@ -154,7 +182,7 @@ public class GenerateStatisticsReport {
 		writeAwayTeamStatsFromTableEquipes(document, formE2, e1MieuxClassee, e2MatchImportant);
 
 		TreeMap<String, String> mapTreeStatsPronostics = new TreeMap<>();
-		mapTreeStatsPronostics = getTreeMapStatsPronostics(statistics, match, homeTeam, awayTeam);
+		mapTreeStatsPronostics = getTreeMapStatsPronostics(statistics, match, homeTeam, awayTeam, config);
 		writeMapInWordDocument("Probabilités du résultat : ", mapTreeStatsPronostics, document);
 
 		document.write(out);
@@ -173,7 +201,7 @@ public class GenerateStatisticsReport {
 		String resultat = "";
 		Integer classement = -1;
 		Integer nbPoints = -1;
-		Team team = DatabaseConnection.getTeam(teamNickname);
+		Team team = DatabaseConnection.getTeamByNickname(teamNickname);
 		classement = team.getStanding();
 		nbPoints = team.getNbPoints();
 
@@ -194,7 +222,7 @@ public class GenerateStatisticsReport {
 	private static void writeHomeTeamStatsFromTableEquipes(XWPFDocument document, String team1,
 			Boolean homeTeamHasBestStanding, Boolean isImportantForTeam1) throws NullTeamException {
 
-		Team team = DatabaseConnection.getTeam(team1);
+		Team team = DatabaseConnection.getTeamByNickname(team1);
 		if (team == null) {
 			InitializeWindow.alertError(
 					"Erreur à la récupération de la resource équipe de la méthode writeHomeTeamStatsFromTableEquipes()");
@@ -622,7 +650,7 @@ public class GenerateStatisticsReport {
 	private static void writeAwayTeamStatsFromTableEquipes(XWPFDocument document, String team2,
 			Boolean homeTeamHasBestStanding, Boolean isImportantForTeam2) throws NullTeamException {
 
-		Team team = DatabaseConnection.getTeam(team2);
+		Team team = DatabaseConnection.getTeamByNickname(team2);
 		if (team == null) {
 			InitializeWindow.alertError(
 					"Erreur à la récupération de la resource équipe de la méthode writeAwayTeamStatsFromTableEquipes()");
@@ -1338,8 +1366,8 @@ public class GenerateStatisticsReport {
 		int classementDomicile = 0;
 		int classementExterieur = 0;
 		try {
-			classementDomicile = DatabaseConnection.getTeam(homeTeam).getHomeStanding();
-			classementExterieur = DatabaseConnection.getTeam(awayTeam).getAwayStanding();
+			classementDomicile = DatabaseConnection.getTeamByNickname(homeTeam).getHomeStanding();
+			classementExterieur = DatabaseConnection.getTeamByNickname(awayTeam).getAwayStanding();
 		} catch (NullTeamException e) {
 			Ligue1Utils.reportError("Erreur à la récupération du classement d'une équipe : " + e.getMessage());
 			e.printStackTrace();
@@ -1382,7 +1410,8 @@ public class GenerateStatisticsReport {
 	}
 
 	private static TreeMap<String, String> getTreeMapStatsPronostics(Statistic statistiques, String match, String e1,
-			String e2) throws NullTeamException, NullMatchException, InvalidNumberToConvertFromBooleanException {
+			String e2, Configuration config)
+			throws NullTeamException, NullMatchException, InvalidNumberToConvertFromBooleanException {
 
 //		String[] score = match.split("-");
 //		String e1 = score[0];
@@ -1390,9 +1419,9 @@ public class GenerateStatisticsReport {
 
 		Map<String, String> stats = new HashMap<String, String>();
 
-		Float totalPointsE1 = getProbabilityPointsForHomeTeam(statistiques, match, e1, e2);
-		Float totalPointsNul = getDrawProbabilityPoints(statistiques, match, e1, e2);
-		Float totalPointsE2 = getProbabilityPointsForAwayTeam(statistiques, match, e1, e2);
+		Float totalPointsE1 = getProbabilityPointsForHomeTeam(statistiques, match, e1, e2, config);
+		Float totalPointsNul = getDrawProbabilityPoints(statistiques, match, e1, e2, config);
+		Float totalPointsE2 = getProbabilityPointsForAwayTeam(statistiques, match, e1, e2, config);
 
 		Float total = totalPointsE1 + totalPointsE2 + totalPointsNul;
 
@@ -1417,7 +1446,8 @@ public class GenerateStatisticsReport {
 		return mapTree;
 	}
 
-	private static Float getProbabilityPointsForAwayTeam(Statistic statistiques, String match, String e1, String e2)
+	private static Float getProbabilityPointsForAwayTeam(Statistic statistiques, String match, String e1, String e2,
+			Configuration config)
 			throws NullTeamException, NullMatchException, InvalidNumberToConvertFromBooleanException {
 
 		Float totalPoints = 0F;
@@ -1425,8 +1455,8 @@ public class GenerateStatisticsReport {
 //		String[] score = match.split("-");
 //		String e1 = score[0];
 //		String e2 = score[1];
-		Team homeTeam = DatabaseConnection.getTeam(e1);
-		Team awayTeam = DatabaseConnection.getTeam(e2);
+		Team homeTeam = DatabaseConnection.getTeamByNickname(e1);
+		Team awayTeam = DatabaseConnection.getTeamByNickname(e2);
 
 		Float pourcentageVEXTConfrontations = statistiques.getAwayTeamWinPercentage();
 
@@ -1769,16 +1799,22 @@ public class GenerateStatisticsReport {
 			pointsResultatsClassementDomExt = (pourcentageDefaitesE1ContreClassementSuperieurDomicile
 					+ pourcentageVictoiresE2ContreClassementInferieurExterieur) / 2;
 		}
-		
+
 		Float pourcentageGlobalVExt = DatabaseConnection.getGlobalPercentage("VictoireEquipeExterieur");
 
-		totalPoints = (coefficientF * pourcentageVEXTConfrontations) + (coefficientC * nbPointsRapportesParClassement)
-				+ (coefficientC * nbPointsRapportesParClassementsDomEtExt) + (coefficientC * nbPointsForme)
-				+ (coefficientC * forme5DerniersMatchs) + (coefficientC * forme5DerniersMatchsDomExt)
-				+ (coefficientD * pointsResultats) + (coefficientD * pointsResultatsDomExt)
-				+ (coefficientC * nbPointsFormeDomExt) + (coefficientD * pointsResultatsImportance)
-				+ (coefficientD * pointsResultatsImportanceDomExt) + (coefficientD * pointsResultatsClassement)
-				+ (coefficientD * pointsResultatsClassementDomExt) + (coefficientC * pourcentageGlobalVExt);
+		totalPoints = (config.getCoefficientConfrontationsDirectes() * pourcentageVEXTConfrontations)
+				+ (config.getCoefficientClassement() * nbPointsRapportesParClassement)
+				+ (config.getCoefficientClassementDomExt() * nbPointsRapportesParClassementsDomEtExt)
+				+ (config.getCoefficientForme() * nbPointsForme) + (config.getCoefficientForme() * forme5DerniersMatchs)
+				+ (config.getCoefficientFormeDomExt() * forme5DerniersMatchsDomExt)
+				+ (config.getCoefficientResultats() * pointsResultats)
+				+ (config.getCoefficientResultatsDomExt() * pointsResultatsDomExt)
+				+ (config.getCoefficientFormeDomExt() * nbPointsFormeDomExt)
+				+ (config.getCoefficientResultatsImp() * pointsResultatsImportance)
+				+ (config.getCoefficientResultatsImp() * pointsResultatsImportanceDomExt)
+				+ (config.getCoefficientClassement() * pointsResultatsClassement)
+				+ (config.getCoefficientClassementDomExt() * pointsResultatsClassementDomExt)
+				+ (config.getCoefficientGlobal() * pourcentageGlobalVExt);
 
 		return totalPoints;
 	}
@@ -1786,7 +1822,7 @@ public class GenerateStatisticsReport {
 	private static Float getFormePointsDomicile(String e) throws NullTeamException {
 
 		Float forme = 0F;
-		Team team = DatabaseConnection.getTeam(e);
+		Team team = DatabaseConnection.getTeamByNickname(e);
 		String precedent1 = team.getHomeRecent1();
 		String precedent2 = team.getHomeRecent2();
 		String precedent3 = team.getHomeRecent3();
@@ -1802,7 +1838,7 @@ public class GenerateStatisticsReport {
 	private static Float getFormePointsExterieur(String e) throws NullTeamException {
 
 		Float forme = 0F;
-		Team team = DatabaseConnection.getTeam(e);
+		Team team = DatabaseConnection.getTeamByNickname(e);
 		String precedent1 = team.getAwayRecent1();
 		String precedent2 = team.getAwayRecent2();
 		String precedent3 = team.getAwayRecent3();
@@ -1818,7 +1854,7 @@ public class GenerateStatisticsReport {
 	private static Float getFormePointsForTeam(String e) throws NullTeamException {
 
 		Float forme = 0F;
-		Team team = DatabaseConnection.getTeam(e);
+		Team team = DatabaseConnection.getTeamByNickname(e);
 		String precedent1 = team.getRecent1();
 		String precedent2 = team.getRecent2();
 		String precedent3 = team.getRecent3();
@@ -1834,8 +1870,8 @@ public class GenerateStatisticsReport {
 	private static Float getFormePointsForDraw(String e1, String e2) throws NullTeamException {
 
 		Float forme = 0F;
-		Team homeTeam = DatabaseConnection.getTeam(e1);
-		Team awayTeam = DatabaseConnection.getTeam(e2);
+		Team homeTeam = DatabaseConnection.getTeamByNickname(e1);
+		Team awayTeam = DatabaseConnection.getTeamByNickname(e2);
 		String e1precedent1 = homeTeam.getRecent1();
 		String e1precedent2 = homeTeam.getRecent2();
 		String e1precedent3 = homeTeam.getRecent3();
@@ -1858,8 +1894,8 @@ public class GenerateStatisticsReport {
 	private static float getFormePointsForDrawDomExt(String e1, String e2) throws NullTeamException {
 
 		Float forme = 0F;
-		Team homeTeam = DatabaseConnection.getTeam(e1);
-		Team awayTeam = DatabaseConnection.getTeam(e2);
+		Team homeTeam = DatabaseConnection.getTeamByNickname(e1);
+		Team awayTeam = DatabaseConnection.getTeamByNickname(e2);
 		String e1precedent1 = homeTeam.getHomeRecent1();
 		String e1precedent2 = homeTeam.getHomeRecent2();
 		String e1precedent3 = homeTeam.getHomeRecent3();
@@ -1897,7 +1933,7 @@ public class GenerateStatisticsReport {
 	}
 
 	private static String getFormeActuelleExterieur(String e) throws NullTeamException {
-		Team team = DatabaseConnection.getTeam(e);
+		Team team = DatabaseConnection.getTeamByNickname(e);
 		Integer serieV = team.getAwayWinningSerie();
 		if (serieV > 0)
 			return "V";
@@ -1912,7 +1948,7 @@ public class GenerateStatisticsReport {
 	}
 
 	private static String getFormeActuelleDomicile(String e) throws NullTeamException {
-		Team team = DatabaseConnection.getTeam(e);
+		Team team = DatabaseConnection.getTeamByNickname(e);
 		Integer serieV = team.getHomeWinningSerie();
 		if (serieV > 0)
 			return "V";
@@ -1927,7 +1963,7 @@ public class GenerateStatisticsReport {
 	}
 
 	private static String getFormeActuelle(String e) throws NullTeamException {
-		Team team = DatabaseConnection.getTeam(e);
+		Team team = DatabaseConnection.getTeamByNickname(e);
 		Integer serieV = team.getWinningSerie();
 		if (serieV > 0)
 			return "V";
@@ -1941,7 +1977,8 @@ public class GenerateStatisticsReport {
 		return null;
 	}
 
-	private static Float getDrawProbabilityPoints(Statistic statistiques, String match, String e1, String e2)
+	private static Float getDrawProbabilityPoints(Statistic statistiques, String match, String e1, String e2,
+			Configuration config)
 			throws InvalidNumberToConvertFromBooleanException, NullTeamException, NullMatchException {
 
 		Float totalPoints = 0F;
@@ -1952,8 +1989,8 @@ public class GenerateStatisticsReport {
 
 		Match matchEntity = DatabaseConnection.getMatch(match);
 
-		Team homeTeam = DatabaseConnection.getTeam(e1);
-		Team awayTeam = DatabaseConnection.getTeam(e2);
+		Team homeTeam = DatabaseConnection.getTeamByNickname(e1);
+		Team awayTeam = DatabaseConnection.getTeamByNickname(e2);
 
 		Float pourcentageNulsConfrontations = statistiques.getDrawPercentage();
 
@@ -2282,19 +2319,27 @@ public class GenerateStatisticsReport {
 		}
 
 		Float pourcentageGlobalDraw = DatabaseConnection.getGlobalPercentage("nul");
-		
-		totalPoints = (coefficientF * pourcentageNulsConfrontations) + (coefficientC * nbPointsRapportesParClassement)
-				+ (coefficientC * nbPointsRapportesParClassementsDomEtExt) + (coefficientC * nbPointsForme)
-				+ (coefficientC * forme5DerniersMatchsDraw) + (coefficientC * forme5DerniersMatchsDrawDomExt)
-				+ (coefficientD * pointsResultats) + (coefficientD * pointsResultatsDomExt)
-				+ (coefficientC * nbPointsFormeDomExt) + (coefficientD * pointsResultatsImportance)
-				+ (coefficientD * pointsResultatsImportanceDomExt) + (coefficientD * pointsResultatsClassement)
-				+ (coefficientD * pointsResultatsClassementDomExt) + (coefficientC * pourcentageGlobalDraw);
+
+		totalPoints = (config.getCoefficientConfrontationsDirectes() * pourcentageNulsConfrontations)
+				+ (config.getCoefficientClassement() * nbPointsRapportesParClassement)
+				+ (config.getCoefficientClassementDomExt() * nbPointsRapportesParClassementsDomEtExt)
+				+ (config.getCoefficientForme() * nbPointsForme)
+				+ (config.getCoefficientForme() * forme5DerniersMatchsDraw)
+				+ (config.getCoefficientFormeDomExt() * forme5DerniersMatchsDrawDomExt)
+				+ (config.getCoefficientResultats() * pointsResultats)
+				+ (config.getCoefficientResultatsDomExt() * pointsResultatsDomExt)
+				+ (config.getCoefficientFormeDomExt() * nbPointsFormeDomExt)
+				+ (config.getCoefficientResultatsImp() * pointsResultatsImportance)
+				+ (config.getCoefficientResultatsImp() * pointsResultatsImportanceDomExt)
+				+ (config.getCoefficientClassement() * pointsResultatsClassement)
+				+ (config.getCoefficientClassementDomExt() * pointsResultatsClassementDomExt)
+				+ (config.getCoefficientGlobal() * pourcentageGlobalDraw);
 
 		return totalPoints;
 	}
 
-	private static Float getProbabilityPointsForHomeTeam(Statistic statistiques, String match, String e1, String e2)
+	private static Float getProbabilityPointsForHomeTeam(Statistic statistiques, String match, String e1, String e2,
+			Configuration config)
 			throws InvalidNumberToConvertFromBooleanException, NullTeamException, NullMatchException {
 
 		Float totalPoints = 0F;
@@ -2302,8 +2347,8 @@ public class GenerateStatisticsReport {
 //		String[] score = match.split("-");
 //		String e1 = score[0];
 //		String e2 = score[1];
-		Team homeTeam = DatabaseConnection.getTeam(e1);
-		Team awayTeam = DatabaseConnection.getTeam(e2);
+		Team homeTeam = DatabaseConnection.getTeamByNickname(e1);
+		Team awayTeam = DatabaseConnection.getTeamByNickname(e2);
 		Match matchEntity = DatabaseConnection.getMatch(match);
 		Float pourcentageVDOMConfrontations = statistiques.getHomeTeamWinPercentage();
 
@@ -2647,14 +2692,20 @@ public class GenerateStatisticsReport {
 		}
 
 		Float pourcentageGlobalVDom = DatabaseConnection.getGlobalPercentage("VictoireEquipeDomicile");
-		
-		totalPoints = (coefficientF * pourcentageVDOMConfrontations) + (coefficientC * nbPointsRapportesParClassement)
-				+ (coefficientC * nbPointsRapportesParClassementsDomEtExt) + (coefficientC * nbPointsForme)
-				+ (coefficientC * forme5DerniersMatchs) + (coefficientC * forme5DerniersMatchsDomExt)
-				+ (coefficientD * pointsResultats) + (coefficientD * pointsResultatsDomExt)
-				+ (coefficientC * nbPointsFormeDomExt) + (coefficientD * pointsResultatsImportance)
-				+ (coefficientD * pointsResultatsImportanceDomExt) + (coefficientD * pointsResultatsClassement)
-				+ (coefficientD * pointsResultatsClassementDomExt) + (coefficientC * pourcentageGlobalVDom);
+
+		totalPoints = (config.getCoefficientConfrontationsDirectes() * pourcentageVDOMConfrontations)
+				+ (config.getCoefficientClassement() * nbPointsRapportesParClassement)
+				+ (config.getCoefficientClassementDomExt() * nbPointsRapportesParClassementsDomEtExt)
+				+ (config.getCoefficientForme() * nbPointsForme) + (config.getCoefficientForme() * forme5DerniersMatchs)
+				+ (config.getCoefficientFormeDomExt() * forme5DerniersMatchsDomExt)
+				+ (config.getCoefficientResultats() * pointsResultats)
+				+ (config.getCoefficientResultatsDomExt() * pointsResultatsDomExt)
+				+ (config.getCoefficientFormeDomExt() * nbPointsFormeDomExt)
+				+ (config.getCoefficientResultatsImp() * pointsResultatsImportance)
+				+ (config.getCoefficientResultatsImp() * pointsResultatsImportanceDomExt)
+				+ (config.getCoefficientClassement() * pointsResultatsClassement)
+				+ (config.getCoefficientClassementDomExt() * pointsResultatsClassementDomExt)
+				+ (config.getCoefficientGlobal() * pourcentageGlobalVDom);
 
 		return totalPoints;
 	}
@@ -2695,5 +2746,130 @@ public class GenerateStatisticsReport {
 					.setText(serveurConfig.getKey() + " : " + serveurConfig.getValue() + "\n");
 		}
 		document.createParagraph().createRun().setText("");
+	}
+
+	public static void main(String[] args) {
+		try {
+			List<Configuration> allConfigs = new ArrayList<Configuration>();
+			Configuration config1 = new Configuration(1, 0.1F, 0.1F, 0.1F, 3F, 3F, 3F, 3F, 6F, 6F);
+			Configuration config2 = new Configuration(2, 6F, 0.1F, 0.1F, 3F, 3F, 3F, 3F, 6F, 6F);
+			Configuration config3 = new Configuration(3, 1F, 1F, 3F, 6F, 3F, 6F, 6F, 6F, 1F);
+			Configuration config4 = new Configuration(4, 1.5F, 1F, 2F, 1F, 2F, 1F, 2F, 2F, 1.5F);
+			Configuration config5 = new Configuration(5, 6F, 6F,0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 6F);
+			allConfigs.add(config1);
+			allConfigs.add(config2);
+			allConfigs.add(config3);
+			allConfigs.add(config4);
+			allConfigs.add(config5);
+			Iterator<Configuration> iteratorConfigs = allConfigs.iterator();
+			while (iteratorConfigs.hasNext()) {
+				Configuration config = iteratorConfigs.next();
+				List<Statistic> allStats = new ArrayList<Statistic>();
+				Statistic statASSESCO = DatabaseConnection.getStatistic("ASSE-SCO");
+				Statistic statFCLNO = DatabaseConnection.getStatistic("FCL-NO");
+				Statistic statFCNDFCO = DatabaseConnection.getStatistic("FCN-DFCO");
+				Statistic statLOSCFCGB = DatabaseConnection.getStatistic("LOSC-FCGB");
+				Statistic statOGCNSRFC = DatabaseConnection.getStatistic("OGCN-SRFC");
+				Statistic statOMASM = DatabaseConnection.getStatistic("OM-ASM");
+				Statistic statPSGOL = DatabaseConnection.getStatistic("PSG-OL");
+				Statistic statRCLMHSC = DatabaseConnection.getStatistic("RCL-MHSC");
+				Statistic statRCSFCM = DatabaseConnection.getStatistic("RCS-FCM");
+				Statistic statSB29SDR = DatabaseConnection.getStatistic("SB29-SDR");
+				allStats.add(statASSESCO);
+				allStats.add(statSB29SDR);
+				allStats.add(statFCLNO);
+				allStats.add(statFCNDFCO);
+				allStats.add(statLOSCFCGB);
+				allStats.add(statOGCNSRFC);
+				allStats.add(statOMASM);
+				allStats.add(statPSGOL);
+				allStats.add(statRCLMHSC);
+				allStats.add(statRCSFCM);
+				Iterator<Statistic> iteratorMatchs = allStats.iterator();
+				int nbReussite = 0;
+				Float pourcentageReussite = 0F;
+
+				while (iteratorMatchs.hasNext()) {
+					Statistic stat = iteratorMatchs.next();
+					String match = stat.getMatch();
+					String[] teams = match.split("-");
+					String homeTeam = teams[0];
+					String awayTeam = teams[1];
+					Float homeTeamProbability = getProbabilityPointsForHomeTeam(stat, match, homeTeam, awayTeam,
+							config);
+					Float drawProbability = getDrawProbabilityPoints(stat, match, homeTeam, awayTeam, config);
+					Float awayTeamProbability = getProbabilityPointsForAwayTeam(stat, match, homeTeam, awayTeam,
+							config);
+					float total = homeTeamProbability + drawProbability + awayTeamProbability;
+					System.out.println("CONFIG " + config.getId() + " : \n");
+					System.out.println(homeTeam + " : "
+							+ (getProbabilityPointsForHomeTeam(stat, match, homeTeam, awayTeam, config) / total) * 100);
+					System.out.println("NUL : "
+							+ (getDrawProbabilityPoints(stat, match, homeTeam, awayTeam, config) / total) * 100);
+					System.out.println(awayTeam + " : "
+							+ (getProbabilityPointsForAwayTeam(stat, match, homeTeam, awayTeam, config) / total) * 100
+							+ "\n");
+					switch (stat.getMatch()) {
+					case "ASSE-SCO":
+						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "FCN-DFCO":
+						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "RCS-FCM":
+						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "FCL-NO":
+						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "SB29-SDR":
+						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "OM-ASM":
+						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "LOSC-FCGB":
+						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "OGCN-SRFC":
+						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "PSG-OL":
+						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "RCL-MHSC":
+						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					}
+				}
+				pourcentageReussite = (nbReussite / 10F * 100);
+				System.out.println("-------------------------------------------------");
+				System.out.println("TAUX DE REUSSITE CONFIGURATION NUMERO " + config.getId() + " : " +pourcentageReussite + "%");
+				System.out.println("-------------------------------------------------");
+			}
+		} catch (NullStatisticException | InvalidNumberToConvertFromBooleanException | NullTeamException
+				| NullMatchException e) {
+			System.out.println("Erreur à la récupération des statistiques du match " + e.getMessage());
+		}
 	}
 }

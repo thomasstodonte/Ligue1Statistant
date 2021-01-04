@@ -13,11 +13,13 @@ public class User {
 	private String login;
 	private String password;
 	private Date licenceEndedDate;
+	private String reportPath;
 	
-	public User(String login, String password, Date licenceEndedDate) {
+	public User(String login, String password, Date licenceEndedDate, String reportPath) {
 		this.login = login;
 		this.password = password;
 		this.licenceEndedDate = licenceEndedDate;
+		this.reportPath = reportPath;
 	}
 	
 	public User(String login, String password) {
@@ -43,6 +45,12 @@ public class User {
 	}
 	public void setLicenceEndedDate(Date licenceEndedDate) {
 		this.licenceEndedDate = licenceEndedDate;
+	}
+	public String getReportPath() {
+		return reportPath;
+	}
+	public void setReportPath(String reportPath) {
+		this.reportPath = reportPath;
 	}
 	
 	public static void main(String[] args) {

@@ -56,12 +56,12 @@ public class MatchController {
 					"Attention ! Une équipe ne peut pas s'auto-affronter ! Merci de réitérer la saisie");
 		}
 		try {
-			DatabaseConnection.getTeam(team1);
+			DatabaseConnection.getTeamByNickname(team1);
 		} catch (NullTeamException e) {
 			throw new NullTeamException("L'équipe "+team1+" n'évolue pas en Ligue 1. Merci de réitérer la saisie");
 		}
 		try {
-			DatabaseConnection.getTeam(team2);
+			DatabaseConnection.getTeamByNickname(team2);
 		} catch (NullTeamException e) {
 			throw new NullTeamException("L'équipe "+team2+" n'évolue pas en Ligue 1. Merci de réitérer la saisie");
 		}

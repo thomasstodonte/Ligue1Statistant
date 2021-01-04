@@ -55,7 +55,7 @@ public class DatabaseConnection {
 		}
 	}
 
-	public static Team getTeam(String nickname) throws NullTeamException {
+	public static Team getTeamByNickname(String nickname) throws NullTeamException {
 		if (Ligue1Utils.isEmpty(nickname)) {
 			throw new NullTeamException("Merci de renseigner le nom de l'équipe");
 		}
@@ -205,6 +205,157 @@ public class DatabaseConnection {
 		}
 		return team;
 	}
+	
+	public static Team getTeamByFullName(String fullName) throws NullTeamException {
+		if (Ligue1Utils.isEmpty(fullName)) {
+			throw new NullTeamException("Merci de renseigner le nom de l'équipe");
+		}
+		Connection cn = initializeOrGetConnection();
+		String query = "";
+		Team team = null;
+		try {
+			Statement st = cn.createStatement();
+			query = "SELECT * FROM teams WHERE nom = \"" + fullName + "\"";
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				String nickName = rs.getString("surnom");
+				int standing = rs.getInt("classement");
+				int homeStanding = rs.getInt("classementDomicile");
+				int awayStanding = rs.getInt("classementExterieur");
+				int nbMatchesPlayed = rs.getInt("nombreMatchsJoues");
+				int nbWins = rs.getInt("nombreMatchsGagnes");
+				int nbDraws = rs.getInt("nombreMatchsNuls");
+				int nbLosses = rs.getInt("nombreMatchsPerdus");
+				int nbHomeMatchesPlayed = rs.getInt("nombreMatchsJouesDomicile");
+				int nbHomeWins = rs.getInt("nombreMatchsGagnesDomicile");
+				int nbHomeDraws = rs.getInt("nombreMatchsNulsDomicile");
+				int nbHomeLosses = rs.getInt("nombreMatchsPerdusDomicile");
+				int nbAwayMatchesPlayed = rs.getInt("nombreMatchsJouesExterieur");
+				int nbAwayWins = rs.getInt("nombreMatchsGagnesExterieur");
+				int nbAwayDraws = rs.getInt("nombreMatchsNulsExterieur");
+				int nbAwayLosses = rs.getInt("nombreMatchsPerdusExterieur");
+				String recent1 = rs.getString("matchPrecedentUn");
+				String recent2 = rs.getString("matchPrecedentDeux");
+				String recent3 = rs.getString("matchPrecedentTrois");
+				String recent4 = rs.getString("matchPrecedentQuatre");
+				String recent5 = rs.getString("matchPrecedentCinq");
+				int winningSerie = rs.getInt("SerieVEnCours");
+				int drawSerie = rs.getInt("SerieNEnCours");
+				int loosingSerie = rs.getInt("SerieDEnCours");
+				String homeRecent1 = rs.getString("matchPrecedentUnDomicile");
+				String homeRecent2 = rs.getString("matchPrecedentDeuxDomicile");
+				String homeRecent3 = rs.getString("matchPrecedentTroisDomicile");
+				String homeRecent4 = rs.getString("matchPrecedentQuatreDomicile");
+				String homeRecent5 = rs.getString("matchPrecedentCinqDomicile");
+				int homeWinningSerie = rs.getInt("SerieVEnCoursDomicile");
+				int homeDrawSerie = rs.getInt("SerieNEnCoursDomicile");
+				int homeLoosingSerie = rs.getInt("SerieDEnCoursDomicile");
+				String awayRecent1 = rs.getString("matchPrecedentUnExterieur");
+				String awayRecent2 = rs.getString("matchPrecedentDeuxExterieur");
+				String awayRecent3 = rs.getString("matchPrecedentTroisExterieur");
+				String awayRecent4 = rs.getString("matchPrecedentQuatreExterieur");
+				String awayRecent5 = rs.getString("matchPrecedentCinqExterieur");
+				int awayWinningSerie = rs.getInt("SerieVEnCoursExterieur");
+				int awayDrawSerie = rs.getInt("SerieNEnCoursExterieur");
+				int awayLoosingSerie = rs.getInt("SerieDEnCoursExterieur");
+				int nbMatchesPlayedAgainstStandingSuperior = rs.getInt("NombreMatchsJouesClassementSup");
+				int nbWinsAgainstStandingSuperior = rs.getInt("NombreVClassementSup");
+				int nbDrawsAgainstStandingSuperior = rs.getInt("NombreNClassementSup");
+				int nbLossesAgainstStandingSuperior = rs.getInt("NombreDClassementSup");
+				int nbMatchesPlayedAgainstStandingSuperiorAtHome = rs.getInt("NombreMatchsJouesClassementSupDomicile");
+				int nbWinsAgainstStandingSuperiorAtHome = rs.getInt("NombreVClassementSupDomicile");
+				int nbDrawsAgainstStandingSuperiorAtHome = rs.getInt("NombreNClassementSupDomicile");
+				int nbLossesAgainstStandingSuperiorAtHome = rs.getInt("NombreDClassementSupDomicile");
+				int nbMatchesPlayedAgainstStandingSuperiorAway = rs.getInt("NombreMatchsJouesClassementSupExterieur");
+				int nbWinsAgainstStandingSuperiorAway = rs.getInt("NombreVClassementSupExterieur");
+				int nbDrawsAgainstStandingSuperiorAway = rs.getInt("NombreNClassementSupExterieur");
+				int nbLossesAgainstStandingSuperiorAway = rs.getInt("NombreDClassementSupExterieur");
+				int nbMatchesPlayedAgainstStandingInferior = rs.getInt("NombreMatchsJouesClassementInf");
+				int nbWinsAgainstStandingInferior = rs.getInt("NombreVClassementInf");
+				int nbDrawsAgainstStandingInferior = rs.getInt("NombreNClassementInf");
+				int nbLossesAgainstStandingInferior = rs.getInt("NombreDClassementInf");
+				int nbMatchesPlayedAgainstStandingInferiorAtHome = rs.getInt("NombreMatchsJouesClassementInfDomicile");
+				int nbWinsAgainstStandingInferiorAtHome = rs.getInt("NombreVClassementInfDomicile");
+				int nbDrawsAgainstStandingInferiorAtHome = rs.getInt("NombreNClassementInfDomicile");
+				int nbLossesAgainstStandingInferiorAtHome = rs.getInt("NombreDClassementInfDomicile");
+				int nbMatchesPlayedAgainstStandingInferiorAway = rs.getInt("NombreMatchsJouesClassementInfExterieur");
+				int nbWinsAgainstStandingInferiorAway = rs.getInt("NombreVClassementInfExterieur");
+				int nbDrawsAgainstStandingInferiorAway = rs.getInt("NombreNClassementInfExterieur");
+				int nbLossesAgainstStandingInferiorAway = rs.getInt("NombreDClassementInfExterieur");
+				int nbMatchesPlayedAgainstImportantOpponent = rs.getInt("NombreMatchsJouesImportants");
+				int nbWinsAgainstImportantOpponent = rs.getInt("NombreVMatchsImportants");
+				int nbDrawsAgainstImportantOpponent = rs.getInt("NombreNMatchsImportants");
+				int nbLossesAgainstImportantOpponent = rs.getInt("NombreDMatchsImportants");
+				int nbMatchesPlayedAgainstImportantOpponentAtHome = rs.getInt("NombreMatchsJouesImportantsDomicile");
+				int nbWinsAgainstImportantOpponentAtHome = rs.getInt("NombreVImportantsDomicile");
+				int nbDrawsAgainstImportantOpponentAtHome = rs.getInt("NombreNImportantsDomicile");
+				int nbLossesAgainstImportantOpponentAtHome = rs.getInt("NombreDImportantsDomicile");
+				int nbMatchesPlayedAgainstImportantOpponentAway = rs.getInt("NombreMatchsJouesImportantsExterieur");
+				int nbWinsAgainstImportantOpponentAway = rs.getInt("NombreVImportantsExterieur");
+				int nbDrawsAgainstImportantOpponentAway = rs.getInt("NombreNImportantsExterieur");
+				int nbLossesAgainstImportantOpponentAway = rs.getInt("NombreDImportantsExterieur");
+				int nbMatchesPlayedAgainstNormalOpponent = rs.getInt("NombreMatchsJouesBanal");
+				int nbWinsAgainstNormalOpponent = rs.getInt("NombreVMatchBanal");
+				int nbDrawsAgainstNormalOpponent = rs.getInt("NombreNMatchBanal");
+				int nbLossesAgainstNormalOpponent = rs.getInt("NombreDMatchBanal");
+				int nbMatchesPlayedAgainstNormalOpponentAtHome = rs.getInt("NombreMatchsJouesBanalDomicile");
+				int nbWinsAgainstNormalOpponentAtHome = rs.getInt("NombreVMatchBanalDomicile");
+				int nbDrawsAgainstNormalOpponentAtHome = rs.getInt("NombreNMatchBanalDomicile");
+				int nbLossesAgainstNormalOpponentAtHome = rs.getInt("NombreDMatchBanalDomicile");
+				int nbMatchesPlayedAgainstNormalOpponentAway = rs.getInt("NombreMatchsJouesBanalExterieur");
+				int nbWinsAgainstNormalOpponentAway = rs.getInt("NombreVMatchBanalExterieur");
+				int nbDrawsAgainstNormalOpponentAway = rs.getInt("NombreNMatchBanalExterieur");
+				int nbLossesAgainstNormalOpponentAway = rs.getInt("NombreDMatchBanalExterieur");
+				int nbPoints = rs.getInt("NombrePoints");
+				int nbHomePoints = rs.getInt("NombrePointsDomicile");
+				int nbAwayPoints = rs.getInt("NombrePointsExterieur");
+				int goalAverage = rs.getInt("GoalAverage");
+				int homeGoalAverage = rs.getInt("HomeGoalAverage");
+				int awayGoalAverage = rs.getInt("AwayGoalAverage");
+
+				team = new Team(fullName, nickName, standing, homeStanding, awayStanding, nbMatchesPlayed, nbWins, nbDraws,
+						nbLosses, nbHomeMatchesPlayed, nbHomeWins, nbHomeDraws, nbHomeLosses, nbAwayMatchesPlayed,
+						nbAwayWins, nbAwayDraws, nbAwayLosses, recent1, recent2, recent3, recent4, recent5,
+						winningSerie, drawSerie, loosingSerie, homeRecent1, homeRecent2, homeRecent3, homeRecent4,
+						homeRecent5, homeWinningSerie, homeDrawSerie, homeLoosingSerie, awayRecent1, awayRecent2,
+						awayRecent3, awayRecent4, awayRecent5, awayWinningSerie, awayDrawSerie, awayLoosingSerie,
+						nbMatchesPlayedAgainstStandingSuperior, nbWinsAgainstStandingSuperior,
+						nbDrawsAgainstStandingSuperior, nbLossesAgainstStandingSuperior,
+						nbMatchesPlayedAgainstStandingSuperiorAtHome, nbWinsAgainstStandingSuperiorAtHome,
+						nbDrawsAgainstStandingSuperiorAtHome, nbLossesAgainstStandingSuperiorAtHome,
+						nbMatchesPlayedAgainstStandingSuperiorAway, nbWinsAgainstStandingSuperiorAway,
+						nbDrawsAgainstStandingSuperiorAway, nbLossesAgainstStandingSuperiorAway,
+						nbMatchesPlayedAgainstStandingInferior, nbWinsAgainstStandingInferior,
+						nbDrawsAgainstStandingInferior, nbLossesAgainstStandingInferior,
+						nbMatchesPlayedAgainstStandingInferiorAtHome, nbWinsAgainstStandingInferiorAtHome,
+						nbDrawsAgainstStandingInferiorAtHome, nbLossesAgainstStandingInferiorAtHome,
+						nbMatchesPlayedAgainstStandingInferiorAway, nbWinsAgainstStandingInferiorAway,
+						nbDrawsAgainstStandingInferiorAway, nbLossesAgainstStandingInferiorAway,
+						nbMatchesPlayedAgainstImportantOpponent, nbWinsAgainstImportantOpponent,
+						nbDrawsAgainstImportantOpponent, nbLossesAgainstImportantOpponent,
+						nbMatchesPlayedAgainstImportantOpponentAtHome, nbWinsAgainstImportantOpponentAtHome,
+						nbDrawsAgainstImportantOpponentAtHome, nbLossesAgainstImportantOpponentAtHome,
+						nbMatchesPlayedAgainstImportantOpponentAway, nbWinsAgainstImportantOpponentAway,
+						nbDrawsAgainstImportantOpponentAway, nbLossesAgainstImportantOpponentAway,
+						nbMatchesPlayedAgainstNormalOpponent, nbWinsAgainstNormalOpponent, nbDrawsAgainstNormalOpponent,
+						nbLossesAgainstNormalOpponent, nbMatchesPlayedAgainstNormalOpponentAtHome,
+						nbWinsAgainstNormalOpponentAtHome, nbDrawsAgainstNormalOpponentAtHome,
+						nbLossesAgainstNormalOpponentAtHome, nbMatchesPlayedAgainstNormalOpponentAway,
+						nbWinsAgainstNormalOpponentAway, nbDrawsAgainstNormalOpponentAway,
+						nbLossesAgainstNormalOpponentAway, nbPoints, nbHomePoints, nbAwayPoints, goalAverage,
+						homeGoalAverage, awayGoalAverage);
+			}
+		} catch (SQLException e) {
+			Ligue1Utils.reportError(
+					"Erreur à la récupération de l'équipe " + fullName + " dans la table avec la requête : " + query);
+			e.printStackTrace();
+			return null;
+		}
+		if (team == null) {
+			throw new NullTeamException("L'équipe " + fullName + " n'évolue pas en Ligue 1. Merci de réitérer la saisie.");
+		}
+		return team;
+	}
 
 	public static Collection<Team> getAllTeams() {
 		Connection cn = initializeOrGetConnection();
@@ -216,7 +367,7 @@ public class DatabaseConnection {
 			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
 				String nickname = rs.getString("surnom");
-				Team team = getTeam(nickname);
+				Team team = getTeamByNickname(nickname);
 				allTeams.add(team);
 			}
 		} catch (SQLException | NullTeamException e) {
@@ -600,6 +751,45 @@ public class DatabaseConnection {
 			e.printStackTrace();
 			return;
 		}
+	}
+	
+	public static void createOrUpdateUser(User user) {
+		Connection cn = initializeOrGetConnection();
+		try {
+			Statement st = cn.createStatement();
+			String select = "SELECT * FROM users WHERE users.login = \"" + user.getLogin()
+					+ "\"";
+			String update1 = getQueryToUpdateInTableUsers("password", user,
+					user.getPassword());
+			String update2 = getQueryToUpdateInTableUsers("licenceEndedDate", user,
+					user.getLicenceEndedDate());
+			String update3 = getQueryToUpdateInTableUsers("reportPath", user,
+					user.getReportPath());
+			String create = getQueryToInsertIntoTableUsers(user);
+			ResultSet rs = st.executeQuery(select);
+			if (rs.next()) {
+				st.executeUpdate(update1);
+				st.executeUpdate(update2);
+				st.executeUpdate(update3);
+			} else {
+				st.executeUpdate(create);
+			}
+		} catch (SQLException e) {
+			Ligue1Utils.reportError(
+					"Erreur à la récupération de l'utilisateur : " + e.getMessage());
+			e.printStackTrace();
+			return;
+		}
+	}
+
+	private static String getQueryToInsertIntoTableUsers(User user) {
+		return "INSERT INTO users VALUES ('" + user.getLogin() + "','" + user.getPassword()
+		+ "','" + user.getLicenceEndedDate() + "','" + user.getReportPath() + "')";
+	}
+
+	private static String getQueryToUpdateInTableUsers(String field, User user, Object attribute) {
+		return "UPDATE users SET " + field + " = '" + attribute + "'  WHERE users.login = \""
+				+ user.getLogin() + "\"";
 	}
 
 	public static Statistic getStatistic(String match) throws NullStatisticException {
@@ -1096,7 +1286,8 @@ public class DatabaseConnection {
 			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
 				Date licenceEndedDate = rs.getDate("licenceEndedDate");
-				user = new User(login, password, licenceEndedDate);
+				String reportPath = rs.getString("reportPath");
+				user = new User(login, password, licenceEndedDate, reportPath);
 			}
 		} catch (SQLException e) {
 			Ligue1Utils.reportError("Erreur à la récupération de l'utilisateur : " + e.getMessage());
@@ -1120,7 +1311,8 @@ public class DatabaseConnection {
 			while (rs.next()) {
 				String password = rs.getString("password");
 				Date licenceEndedDate = rs.getDate("licenceEndedDate");
-				user = new User(login, password, licenceEndedDate);
+				String reportPath = rs.getString("reportPath");
+				user = new User(login, password, licenceEndedDate, reportPath);
 			}
 		} catch (SQLException e) {
 			Ligue1Utils.reportError("Erreur à la récupération de l'utilisateur : " + e.getMessage());
@@ -1270,7 +1462,6 @@ public class DatabaseConnection {
 			Object attribute) {
 		return "UPDATE confrontations SET " + field + " = '" + attribute + "'  WHERE confrontations.match = \""
 				+ confrontation.getHomeTeamNickName() + "-" + confrontation.getAwayTeamNickname() + "\"";
-
 	}
 
 	public static String getQueryToInsertIntoTableConfrontations(Confrontation confrontation) {
@@ -1282,7 +1473,6 @@ public class DatabaseConnection {
 	public static String getQueryToUpdateInTableStatistics(String field, Statistic stat, Object attribute) {
 		return "UPDATE statistics SET " + field + " = '" + attribute + "'  WHERE statistics.match = \""
 				+ stat.getMatch() + "\"";
-
 	}
 
 	public static String getQueryToInsertIntoTableStatistics(Statistic stat) {

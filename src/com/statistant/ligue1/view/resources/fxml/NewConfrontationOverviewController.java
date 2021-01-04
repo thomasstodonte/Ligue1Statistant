@@ -152,8 +152,8 @@ public class NewConfrontationOverviewController {
 		Team t1 = null;
 		Team t2 = null;
 		try {
-			t1 = DatabaseConnection.getTeam(homeTeam);
-			t2 = DatabaseConnection.getTeam(awayTeam);
+			t1 = DatabaseConnection.getTeamByNickname(homeTeam);
+			t2 = DatabaseConnection.getTeamByNickname(awayTeam);
 		} catch (NullTeamException e) {
 			throw new ConfrontationMatchFormatException("L'une des équipes est nulle");
 		}
