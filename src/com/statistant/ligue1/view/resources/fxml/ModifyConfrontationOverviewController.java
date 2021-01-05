@@ -4,6 +4,7 @@ import com.statistant.ligue1.controller.NullConfrontationException;
 import com.statistant.ligue1.controller.ScoreFormatException;
 import com.statistant.ligue1.controller.StatisticController;
 import com.statistant.ligue1.dao.DatabaseConnection;
+import com.statistant.ligue1.dao.NullTeamException;
 import com.statistant.ligue1.pojo.Confrontation;
 import com.statistant.ligue1.utils.Ligue1Utils;
 import com.statistant.ligue1.view.InitializeWindow;
@@ -11,13 +12,12 @@ import com.statistant.ligue1.view.InitializeWindow;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextField;
 
 public class ModifyConfrontationOverviewController {
 
 	private final StringProperty rencontre = new SimpleStringProperty();
-	@FXML
-	private TextField fxMatch;
 
 	private final StringProperty rencontre1 = new SimpleStringProperty();
 	@FXML
@@ -38,10 +38,59 @@ public class ModifyConfrontationOverviewController {
 	private final StringProperty rencontre5 = new SimpleStringProperty();
 	@FXML
 	private TextField fxRecent5;
+	@FXML
+	private MenuButton homeTeamPossibilities;
+	@FXML
+	private MenuButton awayTeamPossibilities;
+
+	public String getHomeTeamNickName(Confrontation confrontation) {
+		return confrontation.getHomeTeamNickName();
+	}
+
+	public String getAwayTeamNickName(Confrontation confrontation) {
+		return confrontation.getAwayTeamNickname();
+	}
+	
+	public String getHomeTeamFullName(Confrontation confrontation) {
+		String homeTeamFullName = "";
+		try {
+			homeTeamFullName = DatabaseConnection.getTeamByNickname(getHomeTeamNickName(confrontation)).getName();
+		} catch (NullTeamException e) {
+			Ligue1Utils.reportError(e.getMessage());
+		}
+		return homeTeamFullName;
+	}
+	
+	public String getAwayTeamFullName(Confrontation confrontation) {
+		String awayTeamFullName = "";
+		try {
+			awayTeamFullName = DatabaseConnection.getTeamByNickname(getAwayTeamNickName(confrontation)).getName();
+		} catch (NullTeamException e) {
+			Ligue1Utils.reportError(e.getMessage());
+		}
+		return awayTeamFullName;
+	}
+
+	public MenuButton getHomeTeamPossibilities() {
+		return homeTeamPossibilities;
+	}
+
+	public void setHomeTeamPossibilities(MenuButton homeTeamPossibilities) {
+		this.homeTeamPossibilities = homeTeamPossibilities;
+	}
+
+	public MenuButton getAwayTeamPossibilities() {
+		return awayTeamPossibilities;
+	}
+
+	public void setAwayTeamPossibilities(MenuButton awayTeamPossibilities) {
+		this.awayTeamPossibilities = awayTeamPossibilities;
+	}
 
 	public void setConfrontation(Confrontation confrontation) {
-		setFxMatch(confrontation.getMatch());
-		fxMatch.setText(getFxMatch());
+		homeTeamPossibilities.setText(getHomeTeamFullName(confrontation));
+		awayTeamPossibilities.setText(getAwayTeamFullName(confrontation));
+		rencontre.set(getFormMatch());
 		setFxRecent1(confrontation.getRecent1());
 		fxRecent1.setText(getFxRecent1());
 		setFxRecent2(confrontation.getRecent2());
@@ -55,16 +104,20 @@ public class ModifyConfrontationOverviewController {
 	}
 
 	public String getFormMatch() {
-		return this.fxMatch.getText();
+		String homeTeamNickName = getTeamNickName(getHomeTeamPossibilities().getText());
+		String awayTeamNickName = getTeamNickName(getAwayTeamPossibilities().getText());
+		return homeTeamNickName + "-" + awayTeamNickName;
 	}
 
-	public String getFxMatch() {
-		return this.rencontre.get();
-	}
-
-	public void setFxMatch(String match) {
-		this.rencontre.set(match);
-		fxMatch.setText(match);
+	private String getTeamNickName(String fullName) {
+		String teamNickName = "";
+		try {
+			teamNickName = DatabaseConnection.getTeamByFullName(fullName).getNickName();
+		}
+		catch (NullTeamException e) {
+			Ligue1Utils.reportError(e.getMessage());
+		}
+		return teamNickName;
 	}
 
 	public String getFormRecent1() {

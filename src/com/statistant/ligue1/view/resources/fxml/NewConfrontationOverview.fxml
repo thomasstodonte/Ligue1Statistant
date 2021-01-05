@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.Cursor?>
 
 <AnchorPane prefHeight="600.0" prefWidth="1200.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.statistant.ligue1.view.resources.fxml.NewConfrontationOverviewController">
    <padding>
@@ -34,19 +36,65 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label alignment="CENTER" text="Match" textAlignment="CENTER" GridPane.columnIndex="1"/>
-            <Label text="Match le plus récent" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-            <Button mnemonicParsing="false" onAction="#handleValidate" text="Valider" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="9">
+            <Label text="Match le plus récent" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <Button mnemonicParsing="false" onAction="#handleValidate" text="Valider" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="9">
             <cursor>
                   <Cursor fx:constant="HAND" />
             </cursor></Button>
-            <TextField fx:id="fxMatch" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="fxRecent1" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <TextField fx:id="fxRecent2" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <TextField fx:id="fxRecent3" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <TextField fx:id="fxRecent4" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <TextField fx:id="fxRecent5" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <Label text="Match le plus ancien" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <Label text="Match le plus ancien" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="8" />
+            <MenuButton fx:id="fxHomeTeam" mnemonicParsing="false" text="Equipe à domicile" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+              <items>
+                <MenuItem mnemonicParsing="false" fx:id="asm1" onAction="#handleHomeTeamChoiceASM" text="AS Monaco" />
+                <MenuItem mnemonicParsing="false" fx:id="asse1" onAction="#handleHomeTeamChoiceASSE" text="AS Saint-Etienne" />
+                  <MenuItem mnemonicParsing="false" fx:id="dfco1" onAction="#handleHomeTeamChoiceDFCO" text="Dijon FCO" />
+                  <MenuItem mnemonicParsing="false" fx:id="fcgb1" onAction="#handleHomeTeamChoiceFCGB" text="FC Girondins de Bordeaux" />
+                  <MenuItem mnemonicParsing="false" fx:id="fcl1" onAction="#handleHomeTeamChoiceFCL" text="FC Lorient" />
+                  <MenuItem mnemonicParsing="false" fx:id="fcm1" onAction="#handleHomeTeamChoiceFCM" text="FC Metz" />
+                  <MenuItem mnemonicParsing="false" fx:id="fcn1" onAction="#handleHomeTeamChoiceFCN" text="FC Nantes" />
+                  <MenuItem mnemonicParsing="false" fx:id="losc1" onAction="#handleHomeTeamChoiceLOSC" text="Lille OSC" />
+                  <MenuItem mnemonicParsing="false" fx:id="mhsc1" onAction="#handleHomeTeamChoiceMHSC" text="Montpellier Hérault Sport Club" />
+                  <MenuItem mnemonicParsing="false" fx:id="no1" onAction="#handleHomeTeamChoiceNO" text="Nîmes Olympique" />
+                  <MenuItem mnemonicParsing="false" fx:id="ogcn1" onAction="#handleHomeTeamChoiceOGCN" text="OGC Nice" />
+                  <MenuItem mnemonicParsing="false" fx:id="ol1" onAction="#handleHomeTeamChoiceOL" text="Olympique Lyonnais" />
+                  <MenuItem mnemonicParsing="false" fx:id="om1" onAction="#handleHomeTeamChoiceOM" text="Olympique de Marseille" />
+                  <MenuItem mnemonicParsing="false" fx:id="psg1" onAction="#handleHomeTeamChoicePSG" text="Paris-Saint-Germain" />
+                  <MenuItem mnemonicParsing="false" fx:id="rcl1" onAction="#handleHomeTeamChoiceRCL" text="Racing Club de Lens" />
+                  <MenuItem mnemonicParsing="false" fx:id="rcs1" onAction="#handleHomeTeamChoiceRCS" text="Racing Club de Strasbourg" />
+                  <MenuItem mnemonicParsing="false" fx:id="sb291" onAction="#handleHomeTeamChoiceSB29" text="Stade Brestois 29" />
+                  <MenuItem mnemonicParsing="false" fx:id="sco1" onAction="#handleHomeTeamChoiceSCO" text="SCO Angers" />
+                  <MenuItem mnemonicParsing="false" fx:id="sdr1" onAction="#handleHomeTeamChoiceSDR" text="Stade de Reims" />
+                  <MenuItem mnemonicParsing="false" fx:id="srfc1" onAction="#handleHomeTeamChoiceSRFC" text="Stade Rennais" />
+              </items>
+            </MenuButton>
+            <MenuButton fx:id="fxAwayTeam" mnemonicParsing="false" text="Equipe à l'extérieur" GridPane.columnIndex="2" GridPane.rowIndex="3">
+              <items>
+                <MenuItem mnemonicParsing="false" fx:id="asm2" onAction="#handleAwayTeamChoiceASM" text="AS Monaco" />
+                <MenuItem mnemonicParsing="false" fx:id="asse2" onAction="#handleAwayTeamChoiceASSE" text="AS Saint-Etienne" />
+                  <MenuItem mnemonicParsing="false" fx:id="dfco2" onAction="#handleAwayTeamChoiceDFCO" text="Dijon FCO" />
+                  <MenuItem mnemonicParsing="false" fx:id="fcgb2" onAction="#handleAwayTeamChoiceFCGB" text="FC Girondins de Bordeaux" />
+                  <MenuItem mnemonicParsing="false" fx:id="fcl2" onAction="#handleAwayTeamChoiceFCL" text="FC Lorient" />
+                  <MenuItem mnemonicParsing="false" fx:id="fcm2" onAction="#handleAwayTeamChoiceFCM" text="FC Metz" />
+                  <MenuItem mnemonicParsing="false" fx:id="fcn2" onAction="#handleAwayTeamChoiceFCN" text="FC Nantes" />
+                  <MenuItem mnemonicParsing="false" fx:id="losc2" onAction="#handleAwayTeamChoiceLOSC" text="Lille OSC" />
+                  <MenuItem mnemonicParsing="false" fx:id="mhsc2" onAction="#handleAwayTeamChoiceMHSC" text="Montpellier Hérault Sport Club" />
+                  <MenuItem mnemonicParsing="false" fx:id="no2" onAction="#handleAwayTeamChoiceNO" text="Nîmes Olympique" />
+                  <MenuItem mnemonicParsing="false" fx:id="ogcn2" onAction="#handleAwayTeamChoiceOGCN" text="OGC Nice" />
+                  <MenuItem mnemonicParsing="false" fx:id="ol2" onAction="#handleAwayTeamChoiceOL" text="Olympique Lyonnais" />
+                  <MenuItem mnemonicParsing="false" fx:id="om2" onAction="#handleAwayTeamChoiceOM" text="Olympique de Marseille" />
+                  <MenuItem mnemonicParsing="false" fx:id="psg2" onAction="#handleAwayTeamChoicePSG" text="Paris-Saint-Germain" />
+                  <MenuItem mnemonicParsing="false" fx:id="rcl2" onAction="#handleAwayTeamChoiceRCL" text="Racing Club de Lens" />
+                  <MenuItem mnemonicParsing="false" fx:id="rcs2" onAction="#handleAwayTeamChoiceRCS" text="Racing Club de Strasbourg" />
+                  <MenuItem mnemonicParsing="false" fx:id="sb292" onAction="#handleAwayTeamChoiceSB29" text="Stade Brestois 29" />
+                  <MenuItem mnemonicParsing="false" fx:id="sco2" onAction="#handleAwayTeamChoiceSCO" text="SCO Angers" />
+                  <MenuItem mnemonicParsing="false" fx:id="sdr2" onAction="#handleAwayTeamChoiceSDR" text="Stade de Reims" />
+                  <MenuItem mnemonicParsing="false" fx:id="srfc2" onAction="#handleAwayTeamChoiceSRFC" text="Stade Rennais" />
+              </items>
+            </MenuButton>
          </children>
       </GridPane>
    </children>
