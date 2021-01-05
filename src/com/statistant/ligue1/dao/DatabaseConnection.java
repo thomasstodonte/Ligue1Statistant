@@ -1205,10 +1205,10 @@ public class DatabaseConnection {
 				st.executeUpdate(create);
 			}
 		} catch (SQLException e) {
-			Ligue1Utils
-					.reportError("Erreur à la récupération de toutes les statistiques de Ligue 1 : " + e.getMessage());
-			e.printStackTrace();
-			return;
+//			Ligue1Utils
+//					.reportError("Erreur à la récupération de toutes les statistiques de Ligue 1 : " + e.getMessage());
+//			e.printStackTrace();
+//			return;
 		}
 	}
 

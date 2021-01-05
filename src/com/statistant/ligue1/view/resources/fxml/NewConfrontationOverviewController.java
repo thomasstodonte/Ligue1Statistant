@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 import com.statistant.ligue1.controller.AlreadyExistingConfrontationException;
 import com.statistant.ligue1.controller.ConfrontationMatchFormatException;
-import com.statistant.ligue1.controller.EmptyConfrontationScoresException;
 import com.statistant.ligue1.controller.NullConfrontationException;
 import com.statistant.ligue1.controller.ScoreFormatException;
 import com.statistant.ligue1.controller.StatisticController;
@@ -766,10 +765,10 @@ public class NewConfrontationOverviewController {
 		String recent5 = getFxRecent5().getText();
 		try {
 			checkAllFieldsAreOK(recent1, recent2, recent3, recent4, recent5);
-		} catch (ScoreFormatException | EmptyConfrontationScoresException e) {
+		} catch (ScoreFormatException e) {
 			Ligue1Utils.reportError(e.getMessage());
 			return;
-		}
+		} 
 		Confrontation confrontation = new Confrontation(matchName, recent1, recent2, recent3, recent4, recent5);
 		DatabaseConnection.createOrUpdateConfrontation(confrontation);
 		try {
@@ -802,12 +801,12 @@ public class NewConfrontationOverviewController {
 	}
 
 	private void checkAllFieldsAreOK(String recent1, String recent2, String recent3, String recent4, String recent5)
-			throws ScoreFormatException, EmptyConfrontationScoresException {
-		if (Ligue1Utils.isEmpty(recent1) && Ligue1Utils.isEmpty(recent2) && Ligue1Utils.isEmpty(recent3)
-				&& Ligue1Utils.isEmpty(recent4) && Ligue1Utils.isEmpty(recent5)) {
-			throw new EmptyConfrontationScoresException(
-					"Merci de saisir au moins un score (au format \"x-x\") pour créer une confrontation.");
-		}
+			throws ScoreFormatException {
+//		if (Ligue1Utils.isEmpty(recent1) && Ligue1Utils.isEmpty(recent2) && Ligue1Utils.isEmpty(recent3)
+//				&& Ligue1Utils.isEmpty(recent4) && Ligue1Utils.isEmpty(recent5)) {
+//			throw new EmptyConfrontationScoresException(
+//					"Merci de saisir au moins un score (au format \"x-x\") pour créer une confrontation.");
+//		}
 		if (!Ligue1Utils.isEmpty(recent1) && !Ligue1Utils.isScoreWellFormed(recent1)) {
 			throw new ScoreFormatException(
 					"Le format du score du match le plus récent n'est pas autorisé. Merci de saisir un score au format x-x.");
