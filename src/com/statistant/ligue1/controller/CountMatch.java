@@ -257,15 +257,15 @@ public class CountMatch {
 					confrontation.setRecent1(score);
 
 					if (confrontation.getRecent1().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent1()))
-						confrontation.setRecent1(null);
+						confrontation.setRecent1("");
 					if (confrontation.getRecent2().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent2()))
-						confrontation.setRecent2(null);
+						confrontation.setRecent2("");
 					if (confrontation.getRecent3().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent3()))
-						confrontation.setRecent3(null);
+						confrontation.setRecent3("");
 					if (confrontation.getRecent4().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent4()))
-						confrontation.setRecent4(null);
+						confrontation.setRecent4("");
 					if (confrontation.getRecent5().equals("null") || Ligue1Utils.isEmpty(confrontation.getRecent5()))
-						confrontation.setRecent5(null);
+						confrontation.setRecent5("");
 					
 					DatabaseConnection.createOrUpdateConfrontation(confrontation);
 					StatisticController.setStatistiques(confrontation);
@@ -283,13 +283,13 @@ public class CountMatch {
 					reversedConfrontation.setRecent1(reversedScore);
 
 					if (reversedConfrontation.getRecent1().equals("null") || Ligue1Utils.isEmpty(reversedConfrontation.getRecent1()))
-						reversedConfrontation.setRecent1(null);
+						reversedConfrontation.setRecent1("");
 					if (reversedConfrontation.getRecent2().equals("null") || Ligue1Utils.isEmpty(reversedConfrontation.getRecent2()))
-						reversedConfrontation.setRecent2(null);
+						reversedConfrontation.setRecent2("");
 					if (reversedConfrontation.getRecent3().equals("null") || Ligue1Utils.isEmpty(reversedConfrontation.getRecent3()))
-						reversedConfrontation.setRecent3(null);
+						reversedConfrontation.setRecent3("");
 					if (reversedConfrontation.getRecent4().equals("null") || Ligue1Utils.isEmpty(reversedConfrontation.getRecent4()))
-						reversedConfrontation.setRecent4(null);
+						reversedConfrontation.setRecent4("");
 
 					DatabaseConnection.createOrUpdateConfrontation(reversedConfrontation);
 					StatisticController.setStatistiques(reversedConfrontation);

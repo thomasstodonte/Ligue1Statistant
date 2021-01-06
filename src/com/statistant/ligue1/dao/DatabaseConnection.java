@@ -1631,26 +1631,16 @@ public class DatabaseConnection {
 		return null;
 	}
 
-//	public static void restoreSeason(File file) {
-//		String sql = "";
-//		try {
-//			sql = new String(Files
-//					.readAllBytes(Paths.get(file.getAbsolutePath())));
-//		} catch (IOException e) {
-//			Ligue1Utils.reportError("Erreur à la lecture du fichier sql de sauvegarde : " + e.getMessage());
-//			e.printStackTrace();
-//		}
-//
-//		if (!Ligue1Utils.isEmpty(sql)) {
-//			try {
-//				MysqlImportService.builder().setDatabase("ligue1").setSqlString(sql).setUsername("root")
-//						.setPassword("root").setDeleteExisting(true).setDropExisting(true).importDatabase();
-//			} catch (ClassNotFoundException | SQLException e) {
-//				Ligue1Utils.reportError("Erreur à l'import du fichier sql de sauvegarde : " + e.getMessage());
-//				e.printStackTrace();
-//			}
-//		}
-//		Ligue1Utils.reportInfo("La saison a bien été restaurée");
-//	}
-
+	public static void deleteAllMatches() {
+		Connection cn = initializeOrGetConnection();
+		try {
+			Statement st = cn.createStatement();
+			String delete = "DELETE FROM matches";
+			st.executeUpdate(delete);
+		} catch (SQLException e) {
+			Ligue1Utils.reportError("Erreur à la suppression de tous les matchs de Ligue 1 : " + e.getMessage());
+			e.printStackTrace();
+			return;
+		}
+	}
 }

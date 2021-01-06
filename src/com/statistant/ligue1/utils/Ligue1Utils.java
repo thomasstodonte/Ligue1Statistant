@@ -353,7 +353,11 @@ public class Ligue1Utils {
 			Ligue1Utils.reportInfo(
 					"Les informations de l'équipe " + team.getName() + " ont été réinitialisées dans la table Teams.");
 		}
+		DatabaseConnection.deleteAllMatches();
+		Ligue1Utils.reportInfo("Tous les matchs ont été supprimés avec succès.");
 		Ligue1Utils.reportInfo("Les informations de toutes les équipes ont été réinitialisées dans la table Teams.");
+		InitializeWindow.alertInfo(
+				"La saison a été réinitialisée avec succès. Les matchs ont été supprimés et les données des équipes ont été remises à zéro.");
 	}
 
 	public static boolean setResult(Team team1, Team team2, boolean e1mieuxClassee, boolean importantE1,
@@ -1203,27 +1207,27 @@ public class Ligue1Utils {
 		String reversedMatch = switchValues(originalMatch);
 		String originalRecent1 = confrontation.getRecent1();
 		String reversedRecent1 = "";
-		if (!Ligue1Utils.isEmpty(originalRecent1) && ! originalRecent1.equals("null")) {
+		if (!Ligue1Utils.isEmpty(originalRecent1) && !originalRecent1.equals("null")) {
 			reversedRecent1 = switchValues(originalRecent1);
 		}
 		String originalRecent2 = confrontation.getRecent2();
 		String reversedRecent2 = "";
-		if (!Ligue1Utils.isEmpty(originalRecent2) && ! originalRecent2.equals("null")) {
+		if (!Ligue1Utils.isEmpty(originalRecent2) && !originalRecent2.equals("null")) {
 			reversedRecent2 = switchValues(originalRecent2);
 		}
 		String originalRecent3 = confrontation.getRecent3();
 		String reversedRecent3 = "";
-		if (!Ligue1Utils.isEmpty(originalRecent3) && ! originalRecent3.equals("null")) {
+		if (!Ligue1Utils.isEmpty(originalRecent3) && !originalRecent3.equals("null")) {
 			reversedRecent3 = switchValues(originalRecent3);
 		}
 		String originalRecent4 = confrontation.getRecent4();
 		String reversedRecent4 = "";
-		if (!Ligue1Utils.isEmpty(originalRecent4) && ! originalRecent4.equals("null")) {
+		if (!Ligue1Utils.isEmpty(originalRecent4) && !originalRecent4.equals("null")) {
 			reversedRecent4 = switchValues(originalRecent4);
 		}
 		String originalRecent5 = confrontation.getRecent5();
 		String reversedRecent5 = "";
-		if (!Ligue1Utils.isEmpty(originalRecent5) && ! originalRecent5.equals("null")) {
+		if (!Ligue1Utils.isEmpty(originalRecent5) && !originalRecent5.equals("null")) {
 			reversedRecent5 = switchValues(originalRecent5);
 		}
 		Confrontation reversedConfrontation = new Confrontation(reversedMatch, reversedRecent1, reversedRecent2,
@@ -1236,7 +1240,7 @@ public class Ligue1Utils {
 		String reversed = split[1] + "-" + split[0];
 		return reversed;
 	}
-	
+
 	/**
 	 * @param nb, the value to evaluate
 	 * @return a percentage representing nb/nbConfrontations * 100
@@ -1244,13 +1248,13 @@ public class Ligue1Utils {
 	public static Float percentage(int nb) {
 		int matchesCounted = DatabaseConnection.getMatchesCounted();
 		if (matchesCounted != 0) {
-		return ((float) nb / matchesCounted) * 100;
+			return ((float) nb / matchesCounted) * 100;
 		}
 		return null;
 	}
-	
+
 	public static void main(String[] args) {
-		
+
 	}
 
 	public static void reportInfo(String log) {

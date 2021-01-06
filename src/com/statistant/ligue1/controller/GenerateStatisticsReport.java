@@ -2765,16 +2765,16 @@ public class GenerateStatisticsReport {
 			while (iteratorConfigs.hasNext()) {
 				Configuration config = iteratorConfigs.next();
 				List<Statistic> allStats = new ArrayList<Statistic>();
-				Statistic statASSESCO = DatabaseConnection.getStatistic("ASSE-SCO");
-				Statistic statFCLNO = DatabaseConnection.getStatistic("FCL-NO");
-				Statistic statFCNDFCO = DatabaseConnection.getStatistic("FCN-DFCO");
-				Statistic statLOSCFCGB = DatabaseConnection.getStatistic("LOSC-FCGB");
-				Statistic statOGCNSRFC = DatabaseConnection.getStatistic("OGCN-SRFC");
-				Statistic statOMASM = DatabaseConnection.getStatistic("OM-ASM");
-				Statistic statPSGOL = DatabaseConnection.getStatistic("PSG-OL");
-				Statistic statRCLMHSC = DatabaseConnection.getStatistic("RCL-MHSC");
-				Statistic statRCSFCM = DatabaseConnection.getStatistic("RCS-FCM");
-				Statistic statSB29SDR = DatabaseConnection.getStatistic("SB29-SDR");
+				Statistic statASSESCO = DatabaseConnection.getStatistic("FCN-SRFC");
+				Statistic statFCLNO = DatabaseConnection.getStatistic("FCL-ASM");
+				Statistic statFCNDFCO = DatabaseConnection.getStatistic("FCM-FCGB");
+				Statistic statLOSCFCGB = DatabaseConnection.getStatistic("SB29-OGCN");
+				Statistic statOGCNSRFC = DatabaseConnection.getStatistic("RCS-NO");
+				Statistic statOMASM = DatabaseConnection.getStatistic("OL-RCL");
+				Statistic statPSGOL = DatabaseConnection.getStatistic("LOSC-SCO");
+				Statistic statRCLMHSC = DatabaseConnection.getStatistic("ASSE-PSG");
+				Statistic statRCSFCM = DatabaseConnection.getStatistic("OM-MHSC");
+				Statistic statSB29SDR = DatabaseConnection.getStatistic("SDR-DFCO");
 				allStats.add(statASSESCO);
 				allStats.add(statSB29SDR);
 				allStats.add(statFCLNO);
@@ -2809,58 +2809,58 @@ public class GenerateStatisticsReport {
 					System.out.println(awayTeam + " : "
 							+ (getProbabilityPointsForAwayTeam(stat, match, homeTeam, awayTeam, config) / total) * 100
 							+ "\n");
-					switch (stat.getMatch()) {
-					case "ASSE-SCO":
-						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "FCN-DFCO":
-						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "RCS-FCM":
-						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "FCL-NO":
-						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "SB29-SDR":
-						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "OM-ASM":
-						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "LOSC-FCGB":
-						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "OGCN-SRFC":
-						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "PSG-OL":
-						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "RCL-MHSC":
-						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					}
+//					switch (stat.getMatch()) {
+//					case "FCN-SRFC":
+//						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "FCL-ASM":
+//						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "FCM-FCGB":
+//						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "SB29-OGCN":
+//						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "RCS-NO":
+//						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "OL-RCL":
+//						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "LOSC-SCO":
+//						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "ASSE-PSG":
+//						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "OM-MHSC":
+//						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "SDR-DFCO":
+//						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					}
 				}
 				pourcentageReussite = (nbReussite / 10F * 100);
 				System.out.println("-------------------------------------------------");
