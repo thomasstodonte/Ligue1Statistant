@@ -8,9 +8,11 @@ import com.statistant.ligue1.dao.DatabaseConnection;
 import com.statistant.ligue1.pojo.Confrontation;
 import com.statistant.ligue1.pojo.Match;
 import com.statistant.ligue1.pojo.Team;
+import com.statistant.ligue1.pojo.User;
 import com.statistant.ligue1.utils.Ligue1Utils;
 import com.statistant.ligue1.view.resources.fxml.ModifyConfrontationOverviewController;
 import com.statistant.ligue1.view.resources.fxml.ModifyMatchOverviewController;
+import com.statistant.ligue1.view.resources.fxml.PasswordModificationOverviewController;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -22,6 +24,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -96,7 +99,8 @@ public class InitializeWindow extends Application {
 		Image image = new Image(InitializeWindow.class.getResourceAsStream("resources/images/Ligue1.png"));
 		InitializeWindow.primaryStage.getIcons().add(image);
 		initRootLayout();
-		showMenuOverview();
+		showAuthentificationOverview();
+		//showMenuOverview();
 
 	}
 	
@@ -118,7 +122,9 @@ public class InitializeWindow extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
+			return;
 		}
 	}
 
@@ -133,7 +139,23 @@ public class InitializeWindow extends Application {
 			rootLayout.setCenter(menuOverview);
 
 		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
+			return;
+		}
+	}
+	
+	public static void showAuthentificationOverview() {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/AuthentificationOverview.fxml"));
+			AnchorPane authentificationOverview = (AnchorPane) loader.load();
+			rootLayout.setCenter(authentificationOverview);
+
+		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
+			e.printStackTrace();
+			return;
 		}
 	}
 
@@ -217,7 +239,9 @@ public class InitializeWindow extends Application {
 			rootLayout.setCenter(matchOverview);
 
 		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
+			return;
 		}
 	}
 
@@ -258,7 +282,9 @@ public class InitializeWindow extends Application {
 			rootLayout.setCenter(confrontationOverview);
 
 		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
+			return;
 		}
 	}
 
@@ -323,7 +349,9 @@ public class InitializeWindow extends Application {
 			rootLayout.setCenter(standingOverview);
 
 		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
+			return;
 		}
 	}
 
@@ -388,7 +416,9 @@ public class InitializeWindow extends Application {
 			rootLayout.setCenter(homeStandingOverview);
 
 		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
+			return;
 		}
 	}
 
@@ -452,7 +482,9 @@ public class InitializeWindow extends Application {
 			rootLayout.setCenter(awayStandingOverview);
 
 		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
+			return;
 		}
 	}
 
@@ -524,7 +556,9 @@ public class InitializeWindow extends Application {
 			newWindow.initOwner(primaryStage);
 			newWindow.show();
 		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
+			return;
 		}		
 	}
 
@@ -545,7 +579,9 @@ public class InitializeWindow extends Application {
 			controller.setMatch(match);
 			modifyWindow.showAndWait();
 		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
+			return;
 		}		
 	}
 
@@ -564,7 +600,9 @@ public class InitializeWindow extends Application {
 			newWindow.initOwner(primaryStage);
 			newWindow.show();
 		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
+			return;
 		}	
 		
 	}
@@ -586,8 +624,27 @@ public class InitializeWindow extends Application {
 			controller.setConfrontation(confrontation);
 			modifyWindow.showAndWait();
 		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
+			return;
 		}		
+		
+	}
+
+	public static void showPasswordModificationOverview(User user) {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/PasswordModificationOverview.fxml"));
+			AnchorPane passwordModificationOverview = (AnchorPane) loader.load();
+			PasswordModificationOverviewController controller = loader.getController();
+			controller.setUser(user); 
+			rootLayout.setCenter(passwordModificationOverview);
+
+		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
+			e.printStackTrace();
+			return;
+		}
 		
 	}
 }

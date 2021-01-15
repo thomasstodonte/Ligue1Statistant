@@ -4,10 +4,10 @@ import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.statistant.ligue1.controller.ExpiredMembershipException;
+import com.statistant.ligue1.controller.IncoherentArgumentException;
 import com.statistant.ligue1.controller.NullPasswordException;
 import com.statistant.ligue1.controller.UnhandledPasswordException;
-import com.statistant.ligue1.dao.DatabaseConnection;
-import com.statistant.ligue1.dao.NullUserException;
 import com.statistant.ligue1.pojo.User;
 
 /**
@@ -25,32 +25,13 @@ public class AuthentificationUtils {
 		A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
 	};
 
-	public static boolean doesUserExist(User user) {
-		try {
-			DatabaseConnection.getUser(user.getLogin());
-		} catch (NullUserException e) {
-			return false;
-		}
-		return true;
-	}
-
-	public static boolean isLicenceDateAvailable(User user) {
+	public static void checkLicenceDateAvailable(User user) throws ExpiredMembershipException {
 		Date licenceEndedDate = user.getLicenceEndedDate();
 		Date today = new Date();
-		return licenceEndedDate.after(today);
-	}
-
-	public static boolean doesInputMatchesWithPassword(String input, String password)
-			throws NullPasswordException, UnhandledPasswordException {
-		if (Ligue1Utils.isEmpty(input)) {
-			throw new NullPasswordException("Merci de saisir un mot de passe.");
+		if (!licenceEndedDate.after(today)) {
+			throw new ExpiredMembershipException("L'abonnement de l'utilisateur " + user.getLogin()
+					+ " est périmé. Merci de contacter l'administrateur à l'adresse mail support@statistant.fr.");
 		}
-		if (containSpecialChar(input)) {
-			throw new UnhandledPasswordException(
-					"Le mot de passe ne peut contenir de caractères spéciaux. Merci de réitérer la saisie.");
-		}
-		String convertedPassword = crypt(input);
-		return convertedPassword.equals(password);
 	}
 
 	private static boolean containSpecialChar(String input) {
@@ -82,7 +63,7 @@ public class AuthentificationUtils {
 		return true;
 	}
 
-	private static String crypt(String password) {
+	public static String crypt(String password) {
 		String cryptedPassword = "";
 		if (!Ligue1Utils.isEmpty(password)) {
 			String[] tabPassword = password.split("");
@@ -99,7 +80,7 @@ public class AuthentificationUtils {
 		return StringUtils.reverse(cryptedPassword);
 	}
 
-	private static String uncrypt(String cryptedPassword) {
+	public static String uncrypt(String cryptedPassword) {
 		String password = "";
 		if (!Ligue1Utils.isEmpty(cryptedPassword)) {
 			String[] tabPassword = cryptedPassword.split("");
@@ -380,6 +361,38 @@ public class AuthentificationUtils {
 		return null;
 	}
 
+	public static boolean passwordIsModified(User user) {
+		if (user != null) {
+			return user.getPasswordModified() == 1;
+		}
+		return false;
+	}
+	
+	public static void checkAreNotEmpty(String inputLogin, String inputPassword) throws IncoherentArgumentException {
+		if (Ligue1Utils.isEmpty(inputLogin) || Ligue1Utils.isEmpty(inputPassword)) {
+			throw new IncoherentArgumentException("Merci de renseigner les deux champs obligatoires ci-dessus.");
+		}
+	}
+
+	public static void checkPasswordEqualsConfirmation(String newPassword, String confirmationPassword) throws IncoherentArgumentException {
+		if (! newPassword.equals(confirmationPassword)) {
+			throw new IncoherentArgumentException("La confirmation du mot de passe n'est aps égale au mot de passe saisi. Merci de réitérer la saisie.");
+		}
+		
+	}
+
+	public static void checkPasswordMatchRequiredOptions(String newPassword) throws UnhandledPasswordException {
+		if (newPassword.length() < 7) {
+			throw new UnhandledPasswordException("Votre mot de passe doit comporter au moins 7 caractères. Merci de réitérer la saisie.");
+		}
+		if (containSpecialChar(newPassword)) {
+			throw new UnhandledPasswordException("Votre mot de passe ne doit pas comporter de caractères spéciaux. Merci de réitérer la saisie.");
+		}
+		
+	}
+	
 	public static void main(String[] args) {
+		String uncryptedPassword = uncrypt("sss");
+		System.out.println("uncrypted sss : "+uncryptedPassword);
 	}
 }

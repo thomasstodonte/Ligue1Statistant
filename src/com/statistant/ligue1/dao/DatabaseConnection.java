@@ -7,11 +7,15 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.smattme.MysqlExportService;
 import com.statistant.ligue1.controller.NullConfrontationException;
@@ -201,11 +205,12 @@ public class DatabaseConnection {
 			return null;
 		}
 		if (team == null) {
-			throw new NullTeamException("L'équipe " + nickname + " n'évolue pas en Ligue 1. Merci de réitérer la saisie.");
+			throw new NullTeamException(
+					"L'équipe " + nickname + " n'évolue pas en Ligue 1. Merci de réitérer la saisie.");
 		}
 		return team;
 	}
-	
+
 	public static Team getTeamByFullName(String fullName) throws NullTeamException {
 		if (Ligue1Utils.isEmpty(fullName)) {
 			throw new NullTeamException("Merci de renseigner le nom de l'équipe");
@@ -313,13 +318,13 @@ public class DatabaseConnection {
 				int homeGoalAverage = rs.getInt("HomeGoalAverage");
 				int awayGoalAverage = rs.getInt("AwayGoalAverage");
 
-				team = new Team(fullName, nickName, standing, homeStanding, awayStanding, nbMatchesPlayed, nbWins, nbDraws,
-						nbLosses, nbHomeMatchesPlayed, nbHomeWins, nbHomeDraws, nbHomeLosses, nbAwayMatchesPlayed,
-						nbAwayWins, nbAwayDraws, nbAwayLosses, recent1, recent2, recent3, recent4, recent5,
-						winningSerie, drawSerie, loosingSerie, homeRecent1, homeRecent2, homeRecent3, homeRecent4,
-						homeRecent5, homeWinningSerie, homeDrawSerie, homeLoosingSerie, awayRecent1, awayRecent2,
-						awayRecent3, awayRecent4, awayRecent5, awayWinningSerie, awayDrawSerie, awayLoosingSerie,
-						nbMatchesPlayedAgainstStandingSuperior, nbWinsAgainstStandingSuperior,
+				team = new Team(fullName, nickName, standing, homeStanding, awayStanding, nbMatchesPlayed, nbWins,
+						nbDraws, nbLosses, nbHomeMatchesPlayed, nbHomeWins, nbHomeDraws, nbHomeLosses,
+						nbAwayMatchesPlayed, nbAwayWins, nbAwayDraws, nbAwayLosses, recent1, recent2, recent3, recent4,
+						recent5, winningSerie, drawSerie, loosingSerie, homeRecent1, homeRecent2, homeRecent3,
+						homeRecent4, homeRecent5, homeWinningSerie, homeDrawSerie, homeLoosingSerie, awayRecent1,
+						awayRecent2, awayRecent3, awayRecent4, awayRecent5, awayWinningSerie, awayDrawSerie,
+						awayLoosingSerie, nbMatchesPlayedAgainstStandingSuperior, nbWinsAgainstStandingSuperior,
 						nbDrawsAgainstStandingSuperior, nbLossesAgainstStandingSuperior,
 						nbMatchesPlayedAgainstStandingSuperiorAtHome, nbWinsAgainstStandingSuperiorAtHome,
 						nbDrawsAgainstStandingSuperiorAtHome, nbLossesAgainstStandingSuperiorAtHome,
@@ -352,7 +357,8 @@ public class DatabaseConnection {
 			return null;
 		}
 		if (team == null) {
-			throw new NullTeamException("L'équipe " + fullName + " n'évolue pas en Ligue 1. Merci de réitérer la saisie.");
+			throw new NullTeamException(
+					"L'équipe " + fullName + " n'évolue pas en Ligue 1. Merci de réitérer la saisie.");
 		}
 		return team;
 	}
@@ -664,11 +670,12 @@ public class DatabaseConnection {
 			return null;
 		}
 		if (confrontation == null) {
-			throw new NullConfrontationException("La confrontation "+confrontation+" n'existe pas. Merci de réitérer la saisie.");
+			throw new NullConfrontationException(
+					"La confrontation " + confrontation + " n'existe pas. Merci de réitérer la saisie.");
 		}
 		return confrontation;
 	}
-	
+
 	public static String getRivals(String team) throws NullRivalException {
 		if (Ligue1Utils.isEmpty(team)) {
 			throw new NullRivalException("Erreur à la récupération de la liste des rivaux de l'équipe " + team
@@ -691,7 +698,7 @@ public class DatabaseConnection {
 			return null;
 		}
 		if (Ligue1Utils.isEmpty(rivals)) {
-			throw new NullRivalException("L'équipe "+team+" ne comporte aucun rival. C'est impossible.");
+			throw new NullRivalException("L'équipe " + team + " ne comporte aucun rival. C'est impossible.");
 		}
 		return rivals;
 	}
@@ -752,44 +759,40 @@ public class DatabaseConnection {
 			return;
 		}
 	}
-	
+
 	public static void createOrUpdateUser(User user) {
 		Connection cn = initializeOrGetConnection();
 		try {
 			Statement st = cn.createStatement();
-			String select = "SELECT * FROM users WHERE users.login = \"" + user.getLogin()
-					+ "\"";
-			String update1 = getQueryToUpdateInTableUsers("password", user,
-					user.getPassword());
-			String update2 = getQueryToUpdateInTableUsers("licenceEndedDate", user,
-					user.getLicenceEndedDate());
-			String update3 = getQueryToUpdateInTableUsers("reportPath", user,
-					user.getReportPath());
+			String select = "SELECT * FROM users WHERE users.login = \"" + user.getLogin() + "\"";
+			String update1 = getQueryToUpdateInTableUsers("password", user, user.getPassword());
+			String update2 = getQueryToUpdateInTableUsers("licenceEndedDate", user, user.getLicenceEndedDate());
+			String update3 = getQueryToUpdateInTableUsers("reportPath", user, StringUtils.replace(user.getReportPath(),"\\","\\\\"));
+			String update4 = getQueryToUpdateInTableUsers("passwordModified", user, user.getPasswordModified());
 			String create = getQueryToInsertIntoTableUsers(user);
 			ResultSet rs = st.executeQuery(select);
 			if (rs.next()) {
 				st.executeUpdate(update1);
 				st.executeUpdate(update2);
 				st.executeUpdate(update3);
+				st.executeUpdate(update4);
 			} else {
 				st.executeUpdate(create);
 			}
 		} catch (SQLException e) {
-			Ligue1Utils.reportError(
-					"Erreur à la récupération de l'utilisateur : " + e.getMessage());
+			Ligue1Utils.reportError("Erreur à la récupération de l'utilisateur : " + e.getMessage());
 			e.printStackTrace();
 			return;
 		}
 	}
 
 	private static String getQueryToInsertIntoTableUsers(User user) {
-		return "INSERT INTO users VALUES ('" + user.getLogin() + "','" + user.getPassword()
-		+ "','" + user.getLicenceEndedDate() + "','" + user.getReportPath() + "')";
+		return "INSERT INTO users VALUES ('" + user.getLogin() + "','" + user.getPassword() + "','"
+				+ user.getLicenceEndedDate() + "','" + user.getReportPath() + "','" + user.getPasswordModified() + "')";
 	}
 
 	private static String getQueryToUpdateInTableUsers(String field, User user, Object attribute) {
-		return "UPDATE users SET " + field + " = '" + attribute + "'  WHERE users.login = \""
-				+ user.getLogin() + "\"";
+		return "UPDATE users SET " + field + " = '" + attribute + "'  WHERE users.login = \"" + user.getLogin() + "\"";
 	}
 
 	public static Statistic getStatistic(String match) throws NullStatisticException {
@@ -930,7 +933,8 @@ public class DatabaseConnection {
 			return null;
 		}
 		if (statistic == null) {
-			throw new NullStatisticException("La statistique "+statistic+" n'existe pas. Merci de réitérer la saisie.");
+			throw new NullStatisticException(
+					"La statistique " + statistic + " n'existe pas. Merci de réitérer la saisie.");
 		}
 		return statistic;
 	}
@@ -1250,7 +1254,7 @@ public class DatabaseConnection {
 			return null;
 		}
 		if (match == null) {
-			throw new NullMatchException("Le match "+match+" n'existe pas. Merci de réitérer la saisie.");
+			throw new NullMatchException("Le match " + match + " n'existe pas. Merci de réitérer la saisie.");
 		}
 		return match;
 	}
@@ -1275,54 +1279,170 @@ public class DatabaseConnection {
 		}
 		return allMatches;
 	}
-	
-	public static User getUser(String login, String password) throws NullUserException {
+
+	public static User getUserByLoginAndPassword(String login, String password) throws NullUserException {
 		Connection cn = initializeOrGetConnection();
 		String query = "";
 		User user = null;
 		try {
 			Statement st = cn.createStatement();
-			query = "SELECT * FROM users WHERE login = \"" +login+ "\" AND password = \""+ password + "\"";
+			query = "SELECT * FROM users WHERE login = \"" + login + "\" AND password = \"" + password + "\"";
 			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
 				Date licenceEndedDate = rs.getDate("licenceEndedDate");
 				String reportPath = rs.getString("reportPath");
-				user = new User(login, password, licenceEndedDate, reportPath);
+				int passwordModified = rs.getInt("passwordModified");
+				user = new User(login, password, licenceEndedDate, reportPath, passwordModified);
 			}
 		} catch (SQLException e) {
-			Ligue1Utils.reportError("Erreur à la récupération de l'utilisateur : " + e.getMessage());
+			Ligue1Utils.reportError("Mot de passe incorect. Veuillez réitérer votre saisie ou contacter l'administrateur à support@statistant.fr");
 			e.printStackTrace();
 			return null;
 		}
 		if (user == null) {
-			throw new NullUserException("L'utilisateur "+login+" n'existe pas. Merci de réitérer la saisie.");
+			throw new NullUserException("Mot de passe incorect. Veuillez réitérer votre saisie ou contacter l'administrateur à support@statistant.fr");
 		}
 		return user;
 	}
-	
-	public static User getUser(String login) throws NullUserException {
+
+	public static User getUserByLogin(String login) throws NullUserException {
 		Connection cn = initializeOrGetConnection();
 		String query = "";
 		User user = null;
 		try {
 			Statement st = cn.createStatement();
-			query = "SELECT * FROM users WHERE login = \"" +login+ "\"";
+			query = "SELECT * FROM users WHERE login = \"" + login + "\"";
 			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
 				String password = rs.getString("password");
 				Date licenceEndedDate = rs.getDate("licenceEndedDate");
 				String reportPath = rs.getString("reportPath");
-				user = new User(login, password, licenceEndedDate, reportPath);
+				int passwordModified = rs.getInt("passwordModified");
+				user = new User(login, password, licenceEndedDate, reportPath, passwordModified);
 			}
 		} catch (SQLException e) {
-			Ligue1Utils.reportError("Erreur à la récupération de l'utilisateur : " + e.getMessage());
+			Ligue1Utils.reportError("L'utilisateur "+login+" n'existe pas. Merci de contacter l'administrateur à \"support@statistant.fr\".");
 			e.printStackTrace();
 			return null;
 		}
 		if (user == null) {
-			throw new NullUserException("L'utilisateur "+login+" n'existe pas. Merci de réitérer la saisie.");
+			throw new NullUserException("L'utilisateur " + login + " n'existe pas. Merci de réitérer la saisie ou de contacter l'administrateur à \"support@statistant.fr\".");
 		}
 		return user;
+	}
+
+	public static Collection<User> getAllActiveUsers() {
+		Connection cn = initializeOrGetConnection();
+		String query = "";
+		List<User> users = new ArrayList<User>();
+		try {
+			Statement st = cn.createStatement();
+			Date today = new Date();
+			String sqlToday = toSQLDateFormat(today);
+			query = "SELECT * FROM users WHERE licenceEndedDate >= '" + sqlToday + "'";
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				String login = rs.getString("login");
+				String password = rs.getString("password");
+				Date licenceEndedDate = rs.getDate("licenceEndedDate");
+				String reportPath = rs.getString("reportPath");
+				int passwordModified = rs.getInt("passwordModified");
+				users.add(new User(login, password, licenceEndedDate, reportPath, passwordModified));
+			}
+		} catch (SQLException e) {
+			Ligue1Utils.reportError("Erreur à la récupération des utilisateurs actifs : " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		return users;
+	}
+
+	public static Collection<User> getAllUsers() {
+		Connection cn = initializeOrGetConnection();
+		String query = "";
+		List<User> users = new ArrayList<User>();
+		try {
+			Statement st = cn.createStatement();
+			query = "SELECT * FROM users";
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				String login = rs.getString("login");
+				String password = rs.getString("password");
+				Date licenceEndedDate = rs.getDate("licenceEndedDate");
+				String reportPath = rs.getString("reportPath");
+				int passwordModified = rs.getInt("passwordModified");
+				users.add(new User(login, password, licenceEndedDate, reportPath, passwordModified));
+			}
+		} catch (SQLException e) {
+			Ligue1Utils.reportError("Erreur à la récupération des utilisateurs : " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		return users;
+	}
+
+	public static Collection<User> getAllActiveUsersWithoutPasswordModified() {
+		Connection cn = initializeOrGetConnection();
+		String query = "";
+		List<User> users = new ArrayList<User>();
+		try {
+			Statement st = cn.createStatement();
+			Date today = new Date();
+			String sqlToday = toSQLDateFormat(today);
+			query = "SELECT * FROM users WHERE licenceEndedDate >= '" + sqlToday + "' AND passwordModified = 0";
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				String login = rs.getString("login");
+				String password = rs.getString("password");
+				Date licenceEndedDate = rs.getDate("licenceEndedDate");
+				String reportPath = rs.getString("reportPath");
+				int passwordModified = rs.getInt("passwordModified");
+				users.add(new User(login, password, licenceEndedDate, reportPath, passwordModified));
+			}
+		} catch (SQLException e) {
+			Ligue1Utils.reportError(
+					"Erreur à la récupération des utilisateurs actifs et qui n'ont pas modifié leur mot de passe : "
+							+ e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		return users;
+	}
+
+	public static Collection<User> getAllActiveUsersWithPasswordModified() {
+		Connection cn = initializeOrGetConnection();
+		String query = "";
+		List<User> users = new ArrayList<User>();
+		try {
+			Statement st = cn.createStatement();
+			Date today = new Date();
+			String sqlToday = toSQLDateFormat(today);
+			query = "SELECT * FROM users WHERE licenceEndedDate >= '" + sqlToday + "' AND passwordModified = 1";
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				String login = rs.getString("login");
+				String password = rs.getString("password");
+				Date licenceEndedDate = rs.getDate("licenceEndedDate");
+				String reportPath = rs.getString("reportPath");
+				int passwordModified = rs.getInt("passwordModified");
+				users.add(new User(login, password, licenceEndedDate, reportPath, passwordModified));
+			}
+		} catch (SQLException e) {
+			Ligue1Utils.reportError(
+					"Erreur à la récupération des utilisateurs actifs et qui ont modifié leur mot de passe : "
+							+ e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		return users;
+	}
+
+	private static String toSQLDateFormat(Date date) {
+		if (date != null) {
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			return df.format(date);
+		}
+		return null;
 	}
 
 	public static Collection<Match> getMatchesToCount() {
@@ -1346,7 +1466,7 @@ public class DatabaseConnection {
 		}
 		return matchesToCount;
 	}
-	
+
 	public static int getMatchesCounted() {
 		Connection cn = initializeOrGetConnection();
 		String query = "";
@@ -1359,13 +1479,12 @@ public class DatabaseConnection {
 				matchesCounted++;
 			}
 		} catch (SQLException e) {
-			Ligue1Utils
-					.reportError("Erreur à la récupération des matchs de Ligue 1 comptabilisés : " + e.getMessage());
+			Ligue1Utils.reportError("Erreur à la récupération des matchs de Ligue 1 comptabilisés : " + e.getMessage());
 			e.printStackTrace();
 		}
 		return matchesCounted;
 	}
-	
+
 	/**
 	 * @param result : VictoireEquipeDomicile, nul, VictoireEquipeExterieur
 	 * @return le pourcentage global en ligue 1 cette saison pour ce résultat
@@ -1376,14 +1495,14 @@ public class DatabaseConnection {
 		int nb = 0;
 		try {
 			Statement st = cn.createStatement();
-			query = "SELECT COUNT(*) FROM matches WHERE Comptabilise = 1 AND "+result+" = 1";
+			query = "SELECT COUNT(*) FROM matches WHERE Comptabilise = 1 AND " + result + " = 1";
 			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
 				nb = rs.getInt(1);
 			}
 		} catch (SQLException e) {
 			Ligue1Utils
-					.reportError("Erreur à la récupération du nombre de "+result+" en Ligue 1 : " + e.getMessage());
+					.reportError("Erreur à la récupération du nombre de " + result + " en Ligue 1 : " + e.getMessage());
 			e.printStackTrace();
 		}
 		return Ligue1Utils.percentage(nb);
@@ -1439,7 +1558,8 @@ public class DatabaseConnection {
 	}
 
 	public static String getQueryToUpdateInTableMatches(String field, Match match, Object attribute) {
-		return "UPDATE matches SET " + field + " = '" + attribute + "'  WHERE matches.id = \"" + match.getHomeTeamNickname() + "-" + match.getAwayTeamNickname() + "\"";
+		return "UPDATE matches SET " + field + " = '" + attribute + "'  WHERE matches.id = \""
+				+ match.getHomeTeamNickname() + "-" + match.getAwayTeamNickname() + "\"";
 
 	}
 
@@ -1598,10 +1718,6 @@ public class DatabaseConnection {
 				+ team.getHomeGoalAverage() + "','" + team.getAwayGoalAverage() + "')";
 	}
 
-	public static void main(String[] args) {
-
-	}
-
 	public static File saveAllSeason() {
 		Properties properties = new Properties();
 		properties.setProperty(MysqlExportService.JDBC_CONNECTION_STRING,
@@ -1618,7 +1734,7 @@ public class DatabaseConnection {
 		File sqlFile = null;
 		try {
 			mysqlExportService.export();
-			sqlFile = new File (mysqlExportService.getGeneratedZipFile().getAbsolutePath());
+			sqlFile = new File(mysqlExportService.getGeneratedZipFile().getAbsolutePath());
 		} catch (ClassNotFoundException | IOException | SQLException e) {
 			Ligue1Utils.reportError("Erreur à la sauvegarde de la base de données." + e.getMessage());
 			e.printStackTrace();
@@ -1642,5 +1758,8 @@ public class DatabaseConnection {
 			e.printStackTrace();
 			return;
 		}
+	}
+
+	public static void main(String[] args) {
 	}
 }

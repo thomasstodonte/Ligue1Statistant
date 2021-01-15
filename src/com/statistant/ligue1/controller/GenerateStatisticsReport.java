@@ -35,37 +35,6 @@ import com.statistant.ligue1.view.InitializeWindow;
  * @author Thomas CHARMES
  */
 public class GenerateStatisticsReport {
-//
-//	@SuppressWarnings("unused")
-//	private static final Float coefficientA = 0.5F;
-//	@SuppressWarnings("unused")
-//	private static final Float coefficientB = 1F;
-//	private static final Float coefficientC = 1.5F;
-//	private static final Float coefficientD = 2F;
-//	@SuppressWarnings("unused")
-//	private static final Float coefficientE = 2.5F;
-//	private static final Float coefficientF = 3F;
-
-	public static void generateReportsWithConfigurations(Statistic statistics)
-			throws IOException, NullTeamException, NullConfrontationException, NullMatchException,
-			InvalidNumberToConvertFromBooleanException, NullStatisticException {
-		List<Configuration> allConfigs = new ArrayList<Configuration>();
-		Configuration config1 = new Configuration(1, 0.1F, 0.1F, 0.1F, 3F, 3F, 3F, 3F, 6F, 6F);
-		Configuration config2 = new Configuration(2, 6F, 0.1F, 0.1F, 3F, 3F, 3F, 3F, 6F, 6F);
-		Configuration config3 = new Configuration(3, 1F, 1F, 3F, 6F, 3F, 6F, 6F, 6F, 1F);
-		Configuration config4 = new Configuration(4, 1.5F, 1F, 2F, 1F, 2F, 1F, 2F, 2F, 1.5F);
-		Configuration config5 = new Configuration(5, 6F, 6F,0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 6F);
-		allConfigs.add(config1);
-		allConfigs.add(config2);
-		allConfigs.add(config3);
-		allConfigs.add(config4);
-		allConfigs.add(config5);
-		Iterator<Configuration> it = allConfigs.iterator();
-		while (it.hasNext()) {
-			Configuration config = it.next();
-			generateReport(statistics, config);
-		}
-	}
 
 	/**
 	 * generate the match report, in Word format.
@@ -79,10 +48,11 @@ public class GenerateStatisticsReport {
 	 * @throws InvalidNumberToConvertFromBooleanException
 	 * @throws NullStatisticException
 	 */
-	public static void generateReport(Statistic statistics, Configuration config)
+	public static void generateReport(Statistic statistics)
 			throws IOException, NullTeamException, NullConfrontationException, NullMatchException,
 			InvalidNumberToConvertFromBooleanException, NullStatisticException {
 
+		Configuration config = new Configuration(5, 6F, 6F,0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 6F);
 		String match = statistics.getMatch();
 		String[] teams = match.split("-");
 		String homeTeam = teams[0];
@@ -94,10 +64,10 @@ public class GenerateStatisticsReport {
 		XWPFDocument document = new XWPFDocument();
 		// TODO Géréer la perosnnalisation du chemin de stockage
 //		String reportPath = DatabaseConnection.getReportPath(connectedUser);
-		File dossier = new File("C:\\perso\\Ligue1\\Journee_" + journey + "\\config" + config.getId());
+		File dossier = new File("C:\\perso\\Ligue1\\Journee_" + journey);
 		dossier.mkdir();
 		File rapport_match = new File(
-				"C:\\perso\\Ligue1\\Journee_" + journey + "\\config" + config.getId() + "\\rapport " + match + ".docx");
+				"C:\\perso\\Ligue1\\Journee_" + journey + "\\rapport " + match + ".docx");
 		FileOutputStream out = new FileOutputStream(rapport_match);
 		TreeMap<String, String> mapTreeStatsGenerales = new TreeMap<>();
 		mapTreeStatsGenerales = getTreeMapStatsVictoires(statistics, match, homeTeam, awayTeam);
@@ -2751,11 +2721,16 @@ public class GenerateStatisticsReport {
 	public static void main(String[] args) {
 		try {
 			List<Configuration> allConfigs = new ArrayList<Configuration>();
-			Configuration config1 = new Configuration(1, 0.1F, 0.1F, 0.1F, 3F, 3F, 3F, 3F, 6F, 6F);
-			Configuration config2 = new Configuration(2, 6F, 0.1F, 0.1F, 3F, 3F, 3F, 3F, 6F, 6F);
-			Configuration config3 = new Configuration(3, 1F, 1F, 3F, 6F, 3F, 6F, 6F, 6F, 1F);
-			Configuration config4 = new Configuration(4, 1.5F, 1F, 2F, 1F, 2F, 1F, 2F, 2F, 1.5F);
-			Configuration config5 = new Configuration(5, 6F, 6F,0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 6F);
+//			Configuration config1 = new Configuration(1, 0.1F, 0.1F, 0.1F, 3F, 3F, 3F, 3F, 6F, 6F);
+//			Configuration config2 = new Configuration(2, 6F, 0.1F, 0.1F, 3F, 3F, 3F, 3F, 6F, 6F);
+//			Configuration config3 = new Configuration(3, 1F, 1F, 3F, 6F, 3F, 6F, 6F, 6F, 1F);
+//			Configuration config4 = new Configuration(4, 1.5F, 1F, 2F, 1F, 2F, 1F, 2F, 2F, 1.5F);
+//			Configuration config5 = new Configuration(5, 6F, 6F,0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 6F);
+			Configuration config1 = new Configuration(1, 1F, 2F, 3F, 4F, 5F, 6F, 7F, 8F, 9F);
+			Configuration config2 = new Configuration(2, 9F, 8F, 7F, 6F, 5F, 4F, 3F, 2F, 1F);
+			Configuration config3 = new Configuration(3, 1F, 9F, 1F, 9F, 1F, 9F, 1F, 9F, 1F);
+			Configuration config4 = new Configuration(4, 9F, 1F, 9F, 1F, 9F, 1F, 9F, 1F, 9F);
+			Configuration config5 = new Configuration(5, 1F, 1F, 1F, 1F, 1F, 1F, 1F, 1F, 1F);
 			allConfigs.add(config1);
 			allConfigs.add(config2);
 			allConfigs.add(config3);
@@ -2809,58 +2784,58 @@ public class GenerateStatisticsReport {
 					System.out.println(awayTeam + " : "
 							+ (getProbabilityPointsForAwayTeam(stat, match, homeTeam, awayTeam, config) / total) * 100
 							+ "\n");
-//					switch (stat.getMatch()) {
-//					case "FCN-SRFC":
-//						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
-//							nbReussite++;
-//						}
-//						break;
-//					case "FCL-ASM":
-//						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
-//							nbReussite++;
-//						}
-//						break;
-//					case "FCM-FCGB":
-//						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
-//							nbReussite++;
-//						}
-//						break;
-//					case "SB29-OGCN":
-//						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
-//							nbReussite++;
-//						}
-//						break;
-//					case "RCS-NO":
-//						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
-//							nbReussite++;
-//						}
-//						break;
-//					case "OL-RCL":
-//						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
-//							nbReussite++;
-//						}
-//						break;
-//					case "LOSC-SCO":
-//						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
-//							nbReussite++;
-//						}
-//						break;
-//					case "ASSE-PSG":
-//						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
-//							nbReussite++;
-//						}
-//						break;
-//					case "OM-MHSC":
-//						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
-//							nbReussite++;
-//						}
-//						break;
-//					case "SDR-DFCO":
-//						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
-//							nbReussite++;
-//						}
-//						break;
-//					}
+					switch (stat.getMatch()) {
+					case "FCN-SRFC":
+						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "FCL-ASM":
+						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "FCM-FCGB":
+						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "SB29-OGCN":
+						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "RCS-NO":
+						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "OL-RCL":
+						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "LOSC-SCO":
+						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "ASSE-PSG":
+						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "OM-MHSC":
+						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					case "SDR-DFCO":
+						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
+							nbReussite++;
+						}
+						break;
+					}
 				}
 				pourcentageReussite = (nbReussite / 10F * 100);
 				System.out.println("-------------------------------------------------");

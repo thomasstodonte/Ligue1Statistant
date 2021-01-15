@@ -98,7 +98,7 @@ public class MatchOverviewController {
 			}
 			if (stat != null) {
 				Ligue1Utils.reportInfo("Les statistiques du match " + matchName + " ont récupérées avec succès.");
-				GenerateStatisticsReport.generateReportsWithConfigurations(stat);
+				GenerateStatisticsReport.generateReport(stat);
 				Ligue1Utils.reportInfo("Le rapport du match " + matchName + " a été généré avec succès.");
 			}
 		} catch (IOException | NullTeamException | NullConfrontationException | NullMatchException
