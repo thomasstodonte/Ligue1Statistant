@@ -48,7 +48,7 @@ public class GenerateStatisticsReport {
 	 * @throws InvalidNumberToConvertFromBooleanException
 	 * @throws NullStatisticException
 	 */
-	public static void generateReport(Statistic statistics)
+	public static void generateReport(Statistic statistics, String selectedDirectoryPath)
 			throws IOException, NullTeamException, NullConfrontationException, NullMatchException,
 			InvalidNumberToConvertFromBooleanException, NullStatisticException {
 
@@ -62,12 +62,10 @@ public class GenerateStatisticsReport {
 		int journey = matchEntity.getJourney();
 
 		XWPFDocument document = new XWPFDocument();
-		// TODO Géréer la perosnnalisation du chemin de stockage
-//		String reportPath = DatabaseConnection.getReportPath(connectedUser);
-		File dossier = new File("C:\\perso\\Ligue1\\Journee_" + journey);
+		File dossier = new File(selectedDirectoryPath + "\\Journée "+journey);
 		dossier.mkdir();
 		File rapport_match = new File(
-				"C:\\perso\\Ligue1\\Journee_" + journey + "\\rapport " + match + ".docx");
+				selectedDirectoryPath + "\\Journée "+journey + "\\Rapport " + matchEntity.getId() + ".docx");
 		FileOutputStream out = new FileOutputStream(rapport_match);
 		TreeMap<String, String> mapTreeStatsGenerales = new TreeMap<>();
 		mapTreeStatsGenerales = getTreeMapStatsVictoires(statistics, match, homeTeam, awayTeam);

@@ -7,11 +7,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -37,7 +34,6 @@ public class DatabaseConnection {
 				Class.forName("com.mysql.jdbc.Driver");
 				connection = DriverManager
 						.getConnection("jdbc:mysql://localhost/ligue1?user=root&password=root&useSSL=false");
-
 			} catch (SQLException | ClassNotFoundException e) {
 				Ligue1Utils.reportError("Erreur à la connexion à la base de données Ligue1 : " + e.getMessage());
 				e.printStackTrace();
@@ -766,9 +762,20 @@ public class DatabaseConnection {
 			Statement st = cn.createStatement();
 			String select = "SELECT * FROM users WHERE users.login = \"" + user.getLogin() + "\"";
 			String update1 = getQueryToUpdateInTableUsers("password", user, user.getPassword());
-			String update2 = getQueryToUpdateInTableUsers("licenceEndedDate", user, user.getLicenceEndedDate());
-			String update3 = getQueryToUpdateInTableUsers("reportPath", user, StringUtils.replace(user.getReportPath(),"\\","\\\\"));
+			String update3 = getQueryToUpdateInTableUsers("reportPath", user,
+					(Ligue1Utils.isEmpty(user.getReportPath()) ? ""
+							: StringUtils.replace(user.getReportPath(), "\\", "\\\\")));
+			String update2 = getQueryToUpdateInTableUsers("journeesSubscribed", user,
+					(Ligue1Utils.isEmpty(user.getJourneesSubscribed()) ? "" : user.getJourneesSubscribed()));
 			String update4 = getQueryToUpdateInTableUsers("passwordModified", user, user.getPasswordModified());
+			String update5 = getQueryToUpdateInTableUsers("myTeams", user,
+					(Ligue1Utils.isEmpty(user.getMyTeams()) ? "" : user.getMyTeams()));
+			String update6 = getQueryToUpdateInTableUsers("nbReportsLeft", user, user.getNbReportsLeft());
+			String update7 = getQueryToUpdateInTableUsers("subscribtionType", user,
+					(Ligue1Utils.isEmpty(user.getSubscribtionType()) ? "" : user.getSubscribtionType()));
+			String update8 = getQueryToUpdateInTableUsers("email", user,
+					(Ligue1Utils.isEmpty(user.getEmail()) ? "" : user.getEmail()));
+			String update9 = getQueryToUpdateInTableUsers("nbReportsPerTeam", user, user.getNbReportsPerTeam());
 			String create = getQueryToInsertIntoTableUsers(user);
 			ResultSet rs = st.executeQuery(select);
 			if (rs.next()) {
@@ -776,6 +783,11 @@ public class DatabaseConnection {
 				st.executeUpdate(update2);
 				st.executeUpdate(update3);
 				st.executeUpdate(update4);
+				st.executeUpdate(update5);
+				st.executeUpdate(update6);
+				st.executeUpdate(update7);
+				st.executeUpdate(update8);
+				st.executeUpdate(update9);
 			} else {
 				st.executeUpdate(create);
 			}
@@ -788,7 +800,9 @@ public class DatabaseConnection {
 
 	private static String getQueryToInsertIntoTableUsers(User user) {
 		return "INSERT INTO users VALUES ('" + user.getLogin() + "','" + user.getPassword() + "','"
-				+ user.getLicenceEndedDate() + "','" + user.getReportPath() + "','" + user.getPasswordModified() + "')";
+				+ user.getReportPath() + "','" + user.getJourneesSubscribed() + "','" + user.getPasswordModified()
+				+ "','" + user.getMyTeams() + "','" + user.getNbReportsLeft() + "','" + user.getSubscribtionType()
+				+ "','" + user.getEmail() + "','" + user.getNbReportsPerTeam() + "')";
 	}
 
 	private static String getQueryToUpdateInTableUsers(String field, User user, Object attribute) {
@@ -1280,6 +1294,51 @@ public class DatabaseConnection {
 		return allMatches;
 	}
 
+	public static Collection<Match> getAllMatchesForTeam(String teamNickname) {
+		Connection cn = initializeOrGetConnection();
+		String query = "";
+		List<Match> allMatches = new ArrayList<Match>();
+		try {
+			Statement st = cn.createStatement();
+			query = "SELECT DISTINCT * FROM matches WHERE matches.SurnomE1 = '" + teamNickname
+					+ "' OR matches.SurnomE2 = '" + teamNickname + "'";
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				String id = rs.getString("id");
+				Match match = getMatch(id);
+				allMatches.add(match);
+			}
+		} catch (SQLException | NullMatchException e) {
+			Ligue1Utils.reportError("Erreur à la récupération de toutes les matchs de Ligue 1 pour l'équipe "
+					+ teamNickname + " : " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		return allMatches;
+	}
+	
+	public static Collection<Match> getAllMatchesForJourney(String journey) {
+		Connection cn = initializeOrGetConnection();
+		String query = "";
+		List<Match> allMatches = new ArrayList<Match>();
+		try {
+			Statement st = cn.createStatement();
+			query = "SELECT DISTINCT * FROM matches WHERE matches.Journey = " + Integer.parseInt(journey);
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				String id = rs.getString("id");
+				Match match = getMatch(id);
+				allMatches.add(match);
+			}
+		} catch (SQLException | NullMatchException e) {
+			Ligue1Utils.reportError("Erreur à la récupération de toutes les matchs de Ligue 1 pour la journée "
+					+ journey + " : " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		return allMatches;
+	}
+
 	public static User getUserByLoginAndPassword(String login, String password) throws NullUserException {
 		Connection cn = initializeOrGetConnection();
 		String query = "";
@@ -1289,18 +1348,26 @@ public class DatabaseConnection {
 			query = "SELECT * FROM users WHERE login = \"" + login + "\" AND password = \"" + password + "\"";
 			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
-				Date licenceEndedDate = rs.getDate("licenceEndedDate");
 				String reportPath = rs.getString("reportPath");
+				String journeesSubscribed = rs.getString("journeesSubscribed");
 				int passwordModified = rs.getInt("passwordModified");
-				user = new User(login, password, licenceEndedDate, reportPath, passwordModified);
+				String myTeams = rs.getString("myTeams");
+				int nbReportsLeft = rs.getInt("nbReportsLeft");
+				String subscribtionType = rs.getString("subscribtionType");
+				String email = rs.getString("email");
+				int nbReportsPerTeam = rs.getInt("nbReportsPerTeam");
+				user = new User(login, password, reportPath, journeesSubscribed, passwordModified, myTeams,
+						nbReportsLeft, subscribtionType, email, nbReportsPerTeam);
 			}
 		} catch (SQLException e) {
-			Ligue1Utils.reportError("Mot de passe incorect. Veuillez réitérer votre saisie ou contacter l'administrateur à support@statistant.fr");
+			Ligue1Utils.reportError(
+					"Mot de passe incorect. Veuillez réitérer votre saisie ou contacter l'administrateur à support@statistant.fr");
 			e.printStackTrace();
 			return null;
 		}
 		if (user == null) {
-			throw new NullUserException("Mot de passe incorect. Veuillez réitérer votre saisie ou contacter l'administrateur à support@statistant.fr");
+			throw new NullUserException(
+					"Mot de passe incorect. Veuillez réitérer votre saisie ou contacter l'administrateur à support@statistant.fr");
 		}
 		return user;
 	}
@@ -1315,46 +1382,28 @@ public class DatabaseConnection {
 			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
 				String password = rs.getString("password");
-				Date licenceEndedDate = rs.getDate("licenceEndedDate");
 				String reportPath = rs.getString("reportPath");
+				String journeesSubscribed = rs.getString("journeesSubscribed");
 				int passwordModified = rs.getInt("passwordModified");
-				user = new User(login, password, licenceEndedDate, reportPath, passwordModified);
+				String myTeams = rs.getString("myTeams");
+				int nbReportsLeft = rs.getInt("nbReportsLeft");
+				String subscribtionType = rs.getString("subscribtionType");
+				String email = rs.getString("email");
+				int nbReportsPerTeam = rs.getInt("nbReportsPerTeam");
+				user = new User(login, password, reportPath, journeesSubscribed, passwordModified, myTeams,
+						nbReportsLeft, subscribtionType, email, nbReportsPerTeam);
 			}
 		} catch (SQLException e) {
-			Ligue1Utils.reportError("L'utilisateur "+login+" n'existe pas. Merci de contacter l'administrateur à \"support@statistant.fr\".");
+			Ligue1Utils.reportError("L'utilisateur " + login
+					+ " n'existe pas. Merci de contacter l'administrateur à \"support@statistant.fr\".");
 			e.printStackTrace();
 			return null;
 		}
 		if (user == null) {
-			throw new NullUserException("L'utilisateur " + login + " n'existe pas. Merci de réitérer la saisie ou de contacter l'administrateur à \"support@statistant.fr\".");
+			throw new NullUserException("L'utilisateur " + login
+					+ " n'existe pas. Merci de réitérer la saisie ou de contacter l'administrateur à \"support@statistant.fr\".");
 		}
 		return user;
-	}
-
-	public static Collection<User> getAllActiveUsers() {
-		Connection cn = initializeOrGetConnection();
-		String query = "";
-		List<User> users = new ArrayList<User>();
-		try {
-			Statement st = cn.createStatement();
-			Date today = new Date();
-			String sqlToday = toSQLDateFormat(today);
-			query = "SELECT * FROM users WHERE licenceEndedDate >= '" + sqlToday + "'";
-			ResultSet rs = st.executeQuery(query);
-			while (rs.next()) {
-				String login = rs.getString("login");
-				String password = rs.getString("password");
-				Date licenceEndedDate = rs.getDate("licenceEndedDate");
-				String reportPath = rs.getString("reportPath");
-				int passwordModified = rs.getInt("passwordModified");
-				users.add(new User(login, password, licenceEndedDate, reportPath, passwordModified));
-			}
-		} catch (SQLException e) {
-			Ligue1Utils.reportError("Erreur à la récupération des utilisateurs actifs : " + e.getMessage());
-			e.printStackTrace();
-			return null;
-		}
-		return users;
 	}
 
 	public static Collection<User> getAllUsers() {
@@ -1368,10 +1417,16 @@ public class DatabaseConnection {
 			while (rs.next()) {
 				String login = rs.getString("login");
 				String password = rs.getString("password");
-				Date licenceEndedDate = rs.getDate("licenceEndedDate");
 				String reportPath = rs.getString("reportPath");
+				String journeesSubscribed = rs.getString("journeesSubscribed");
 				int passwordModified = rs.getInt("passwordModified");
-				users.add(new User(login, password, licenceEndedDate, reportPath, passwordModified));
+				String myTeams = rs.getString("myTeams");
+				int nbReportsLeft = rs.getInt("nbReportsLeft");
+				String subscribtionType = rs.getString("subscribtionType");
+				String email = rs.getString("email");
+				int nbReportsPerTeam = rs.getInt("nbReportsPerTeam");
+				users.add(new User(login, password, reportPath, journeesSubscribed, passwordModified, myTeams,
+						nbReportsLeft, subscribtionType, email, nbReportsPerTeam));
 			}
 		} catch (SQLException e) {
 			Ligue1Utils.reportError("Erreur à la récupération des utilisateurs : " + e.getMessage());
@@ -1379,70 +1434,6 @@ public class DatabaseConnection {
 			return null;
 		}
 		return users;
-	}
-
-	public static Collection<User> getAllActiveUsersWithoutPasswordModified() {
-		Connection cn = initializeOrGetConnection();
-		String query = "";
-		List<User> users = new ArrayList<User>();
-		try {
-			Statement st = cn.createStatement();
-			Date today = new Date();
-			String sqlToday = toSQLDateFormat(today);
-			query = "SELECT * FROM users WHERE licenceEndedDate >= '" + sqlToday + "' AND passwordModified = 0";
-			ResultSet rs = st.executeQuery(query);
-			while (rs.next()) {
-				String login = rs.getString("login");
-				String password = rs.getString("password");
-				Date licenceEndedDate = rs.getDate("licenceEndedDate");
-				String reportPath = rs.getString("reportPath");
-				int passwordModified = rs.getInt("passwordModified");
-				users.add(new User(login, password, licenceEndedDate, reportPath, passwordModified));
-			}
-		} catch (SQLException e) {
-			Ligue1Utils.reportError(
-					"Erreur à la récupération des utilisateurs actifs et qui n'ont pas modifié leur mot de passe : "
-							+ e.getMessage());
-			e.printStackTrace();
-			return null;
-		}
-		return users;
-	}
-
-	public static Collection<User> getAllActiveUsersWithPasswordModified() {
-		Connection cn = initializeOrGetConnection();
-		String query = "";
-		List<User> users = new ArrayList<User>();
-		try {
-			Statement st = cn.createStatement();
-			Date today = new Date();
-			String sqlToday = toSQLDateFormat(today);
-			query = "SELECT * FROM users WHERE licenceEndedDate >= '" + sqlToday + "' AND passwordModified = 1";
-			ResultSet rs = st.executeQuery(query);
-			while (rs.next()) {
-				String login = rs.getString("login");
-				String password = rs.getString("password");
-				Date licenceEndedDate = rs.getDate("licenceEndedDate");
-				String reportPath = rs.getString("reportPath");
-				int passwordModified = rs.getInt("passwordModified");
-				users.add(new User(login, password, licenceEndedDate, reportPath, passwordModified));
-			}
-		} catch (SQLException e) {
-			Ligue1Utils.reportError(
-					"Erreur à la récupération des utilisateurs actifs et qui ont modifié leur mot de passe : "
-							+ e.getMessage());
-			e.printStackTrace();
-			return null;
-		}
-		return users;
-	}
-
-	private static String toSQLDateFormat(Date date) {
-		if (date != null) {
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-			return df.format(date);
-		}
-		return null;
 	}
 
 	public static Collection<Match> getMatchesToCount() {
@@ -1761,5 +1752,8 @@ public class DatabaseConnection {
 	}
 
 	public static void main(String[] args) {
+		Collection<Match> allMatchesForTeam = getAllMatchesForJourney("20");
+		System.out.println(allMatchesForTeam.size());
 	}
+
 }

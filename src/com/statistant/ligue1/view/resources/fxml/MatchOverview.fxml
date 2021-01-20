@@ -26,10 +26,6 @@
             <cursor>
                   <Cursor fx:constant="HAND" />
             </cursor></Button>
-            <Button fx:id="generateAllReports" mnemonicParsing="false" onAction="#handleGenerateAllReports" text="Générer tous les rapports">
-            <cursor>
-                  <Cursor fx:constant="HAND" />
-            </cursor></Button>
             <Button fx:id="menuPrincipal" mnemonicParsing="false" onAction="#handleMainMenu" text="Menu principal">
             <cursor>
                   <Cursor fx:constant="HAND" />

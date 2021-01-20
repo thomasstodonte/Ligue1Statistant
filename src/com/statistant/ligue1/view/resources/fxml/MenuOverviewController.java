@@ -12,6 +12,12 @@ public class MenuOverviewController {
     }
     
     @FXML
+    private void handleAccount() {
+    	String userLogin = AuthentificationOverviewController.USER_CONNECTED;
+    	InitializeWindow.showAccountOverview(userLogin);
+    }
+    
+    @FXML
     private void handleConfrontations() {
     	InitializeWindow.showConfrontationOverview();
     }

@@ -140,6 +140,10 @@
       </GridPane>
       <ButtonBar layoutX="10.0" layoutY="530.0" prefHeight="60.0" prefWidth="1180.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="520.0">
         <buttons>
+        <Button fx:id="account" alignment="CENTER" mnemonicParsing="false" onAction="#handleAccount" text="Mon compte" textAlignment="CENTER">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></Button>
           <Button fx:id="matchs" mnemonicParsing="false" onAction="#handleMatchs" text="Matchs">
                <cursor>
                   <Cursor fx:constant="HAND" />

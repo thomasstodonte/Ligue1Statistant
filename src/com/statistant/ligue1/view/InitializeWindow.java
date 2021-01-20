@@ -10,9 +10,12 @@ import com.statistant.ligue1.pojo.Match;
 import com.statistant.ligue1.pojo.Team;
 import com.statistant.ligue1.pojo.User;
 import com.statistant.ligue1.utils.Ligue1Utils;
+import com.statistant.ligue1.view.resources.fxml.AccountOverviewController;
+import com.statistant.ligue1.view.resources.fxml.AuthentificationOverviewController;
 import com.statistant.ligue1.view.resources.fxml.ModifyConfrontationOverviewController;
 import com.statistant.ligue1.view.resources.fxml.ModifyMatchOverviewController;
 import com.statistant.ligue1.view.resources.fxml.PasswordModificationOverviewController;
+import com.statistant.ligue1.view.resources.fxml.PasswordModificationWithBackButtonOverviewController;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -24,7 +27,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -34,7 +36,7 @@ import javafx.stage.Stage;
 
 public class InitializeWindow extends Application {
 
-	private static Stage primaryStage;
+	public static Stage primaryStage;
 	private Stage secondStage;
 	private static BorderPane rootLayout;
 	static TableView<Match> tableMatchs;
@@ -100,10 +102,10 @@ public class InitializeWindow extends Application {
 		InitializeWindow.primaryStage.getIcons().add(image);
 		initRootLayout();
 		showAuthentificationOverview();
-		//showMenuOverview();
+		// showMenuOverview();
 
 	}
-	
+
 	@Override
 	public void stop() throws Exception {
 		DatabaseConnection.closeConnection();
@@ -144,7 +146,7 @@ public class InitializeWindow extends Application {
 			return;
 		}
 	}
-	
+
 	public static void showAuthentificationOverview() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -162,6 +164,13 @@ public class InitializeWindow extends Application {
 	public static ObservableList<Match> getMatchs() {
 		ObservableList<Match> matchs = FXCollections.observableArrayList();
 		Collection<Match> allMatches = DatabaseConnection.getAllMatches();
+		matchs.addAll(allMatches);
+		return matchs;
+	}
+
+	public static ObservableList<Match> getMatchesForTeam(String teamNickname) {
+		ObservableList<Match> matchs = FXCollections.observableArrayList();
+		Collection<Match> allMatches = DatabaseConnection.getAllMatchesForTeam(teamNickname);
 		matchs.addAll(allMatches);
 		return matchs;
 	}
@@ -228,9 +237,27 @@ public class InitializeWindow extends Application {
 			journey.setCellValueFactory(new PropertyValueFactory<>("journey"));
 
 			tableMatchs = new TableView<>();
-			tableMatchs.setItems(getMatchs());
-			tableMatchs.getColumns().addAll(id, journey, countMatch, homeTeamNickname, awayTeamNickname, score, homeTeamWin, draw,
-					awayTeamWin, isAnImportantGameForHomeTeam, isAnImportantGameForAwayTeam, homeTeamHasABetterStanding, activeStatisticsReportGeneration);
+			if (AuthentificationOverviewController.SUBSCRIPTION_TYPE.equals("EQUIPES")) {
+				if (!AuthentificationOverviewController.MY_TEAMS.equals("ALL")) {
+					ObservableList<Match> matchesOfMyTeams = AuthentificationOverviewController.getMatchesOfMyTeams();
+					tableMatchs.setItems(matchesOfMyTeams);
+				}
+				else {
+					tableMatchs.setItems(getMatchs());
+				}
+			}
+			if (AuthentificationOverviewController.SUBSCRIPTION_TYPE.equals("JOURNEES")) {
+				if (!AuthentificationOverviewController.JOURNEES_SUBSCRIBED.equals("ALL")) {
+					ObservableList<Match> matchesOfMyJourneys = AuthentificationOverviewController.getMatchesOfMyJourneys();
+					tableMatchs.setItems(matchesOfMyJourneys);
+				}
+				else {
+					tableMatchs.setItems(getMatchs());
+				}
+			}
+			tableMatchs.getColumns().addAll(id, journey, countMatch, homeTeamNickname, awayTeamNickname, score,
+					homeTeamWin, draw, awayTeamWin, isAnImportantGameForHomeTeam, isAnImportantGameForAwayTeam,
+					homeTeamHasABetterStanding, activeStatisticsReportGeneration);
 			journey.setComparator(journey.getComparator().reversed());
 			tableMatchs.getSortOrder().add(journey);
 			child.getChildren().add(tableMatchs);
@@ -497,14 +524,14 @@ public class InitializeWindow extends Application {
 	}
 
 	// crée une fenêtre d'alerte
-	
+
 	public static void alertError(String message) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Attention !");
 		alert.setContentText(message);
 		alert.showAndWait();
 	}
-	
+
 	public static void alertInfo(String message) {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Information");
@@ -519,21 +546,23 @@ public class InitializeWindow extends Application {
 
 		// Header Text: null
 		alert.setHeaderText(null);
-		alert.setContentText("Vous êtes sur le point de réinitialiser totalement la saison ! Attention : Cette opération est irréversible. Etes-vous sûrs ?");
+		alert.setContentText(
+				"Vous êtes sur le point de réinitialiser totalement la saison ! Attention : Cette opération est irréversible. Etes-vous sûrs ?");
 		alert.getButtonTypes().add(save);
-		
+
 		Optional<ButtonType> option = alert.showAndWait();
 		if (option.get() != null) {
 			if (option.get() == ButtonType.OK) {
 				Ligue1Utils.resetAllSeason();
-				Ligue1Utils.reportInfo("La saison a été réinitialisée avec succès. Les informations des équipes ont été remises à zéro.");
-				InitializeWindow.alertInfo("La saison a été réinitialisée avec succès. Les informations des équipes ont été remises à zéro.");
-			}
-			else if (option.get() == save) {
+				Ligue1Utils.reportInfo(
+						"La saison a été réinitialisée avec succès. Les informations des équipes ont été remises à zéro.");
+				InitializeWindow.alertInfo(
+						"La saison a été réinitialisée avec succès. Les informations des équipes ont été remises à zéro.");
+			} else if (option.get() == save) {
 				DatabaseConnection.saveAllSeason();
-				InitializeWindow.alertInfo("La saison a été enregistrée dans le dossier \"C:\\perso\\Ligue1\\sauvegardes\" avec succès.");
-			}
-			else if (option.get() == ButtonType.CANCEL) {
+				InitializeWindow.alertInfo(
+						"La saison a été enregistrée dans le dossier \"C:\\perso\\Ligue1\\sauvegardes\" avec succès.");
+			} else if (option.get() == ButtonType.CANCEL) {
 				Ligue1Utils.reportInfo("La saison de ligue 1 n'a finalement pas été réinitialisée.");
 			}
 		}
@@ -549,8 +578,8 @@ public class InitializeWindow extends Application {
 			newMatchOverview = (AnchorPane) loader.load();
 			Scene scene = new Scene(newMatchOverview);
 			Stage newWindow = new Stage();
-	        newWindow.setTitle("Nouveau match");
-	        newWindow.centerOnScreen();
+			newWindow.setTitle("Nouveau match");
+			newWindow.centerOnScreen();
 			newWindow.setScene(scene);
 			newWindow.initModality(Modality.WINDOW_MODAL);
 			newWindow.initOwner(primaryStage);
@@ -559,7 +588,7 @@ public class InitializeWindow extends Application {
 			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
 			return;
-		}		
+		}
 	}
 
 	public static void showModifyMatchWindow(Match match) {
@@ -582,7 +611,7 @@ public class InitializeWindow extends Application {
 			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
 			return;
-		}		
+		}
 	}
 
 	public static void showNewConfrontationWindow() {
@@ -593,8 +622,8 @@ public class InitializeWindow extends Application {
 			newConfrontationOverview = (AnchorPane) loader.load();
 			Scene scene = new Scene(newConfrontationOverview);
 			Stage newWindow = new Stage();
-	        newWindow.setTitle("Nouvelle confrontation");
-	        newWindow.centerOnScreen();
+			newWindow.setTitle("Nouvelle confrontation");
+			newWindow.centerOnScreen();
 			newWindow.setScene(scene);
 			newWindow.initModality(Modality.WINDOW_MODAL);
 			newWindow.initOwner(primaryStage);
@@ -603,8 +632,8 @@ public class InitializeWindow extends Application {
 			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
 			return;
-		}	
-		
+		}
+
 	}
 
 	public static void showModifyConfrontationWindow(Confrontation confrontation) {
@@ -627,8 +656,8 @@ public class InitializeWindow extends Application {
 			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
 			return;
-		}		
-		
+		}
+
 	}
 
 	public static void showPasswordModificationOverview(User user) {
@@ -637,7 +666,7 @@ public class InitializeWindow extends Application {
 			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/PasswordModificationOverview.fxml"));
 			AnchorPane passwordModificationOverview = (AnchorPane) loader.load();
 			PasswordModificationOverviewController controller = loader.getController();
-			controller.setUser(user); 
+			controller.setUser(user);
 			rootLayout.setCenter(passwordModificationOverview);
 
 		} catch (IOException e) {
@@ -645,6 +674,39 @@ public class InitializeWindow extends Application {
 			e.printStackTrace();
 			return;
 		}
-		
+	}
+
+	public static void showPasswordModificationWithBackButtonOverview(User user) {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(InitializeWindow.class
+					.getResource("resources/fxml/PasswordModificationWithBackButtonOverview.fxml"));
+			AnchorPane passwordModificationWithBackButtonOverview = (AnchorPane) loader.load();
+			PasswordModificationWithBackButtonOverviewController controller = loader.getController();
+			controller.setUser(user);
+			rootLayout.setCenter(passwordModificationWithBackButtonOverview);
+
+		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
+			e.printStackTrace();
+			return;
+		}
+	}
+
+	public static void showAccountOverview(String userLogin) {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/AccountOverview.fxml"));
+			AnchorPane accountOverview = (AnchorPane) loader.load();
+			AccountOverviewController controller = loader.getController();
+			controller.setUser(userLogin);
+			rootLayout.setCenter(accountOverview);
+
+		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
+			e.printStackTrace();
+			return;
+		}
+
 	}
 }

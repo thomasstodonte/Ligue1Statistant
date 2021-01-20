@@ -11,6 +11,7 @@ import com.statistant.ligue1.controller.TeamController;
 import com.statistant.ligue1.dao.DatabaseConnection;
 import com.statistant.ligue1.dao.NullRivalException;
 import com.statistant.ligue1.pojo.Confrontation;
+import com.statistant.ligue1.pojo.Match;
 import com.statistant.ligue1.pojo.Team;
 import com.statistant.ligue1.view.InitializeWindow;
 
@@ -1254,7 +1255,6 @@ public class Ligue1Utils {
 	}
 
 	public static void main(String[] args) {
-
 	}
 
 	public static void reportInfo(String log) {
@@ -1268,6 +1268,22 @@ public class Ligue1Utils {
 
 	public static boolean isAllowed(int standing) {
 		return (standing > 0 && standing < 21);
+	}
+
+	public static String[] getCurrentJournees() {
+		String currentJournees = "";
+		Collection<Match> matchesToCount = DatabaseConnection.getMatchesToCount();
+		Iterator<Match> iterator = matchesToCount.iterator();
+		while (iterator.hasNext()) {
+			Match match = iterator.next();
+			if (Ligue1Utils.isEmpty(currentJournees)) {
+				currentJournees = currentJournees+match.getJourney();
+			}
+			else {
+				currentJournees = currentJournees+";"+match.getJourney();
+			}
+		}
+		return currentJournees.split(";");
 	}
 
 }

@@ -15,7 +15,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-public class PasswordModificationOverviewController {
+public class PasswordModificationWithBackButtonOverviewController {
 	
 	private final StringProperty identifiant = new SimpleStringProperty();
 	@FXML private TextField login;
@@ -74,7 +74,11 @@ public class PasswordModificationOverviewController {
 			Ligue1Utils.reportError(e.getMessage());
 			return;
 		}
-		
+	}
+	
+	@FXML
+	public void handleBack() {
+		InitializeWindow.showAccountOverview(getLogin());
 	}
 
 	public void setUser(User user) {

@@ -1,13 +1,12 @@
 package com.statistant.ligue1.utils;
 
-import java.util.Date;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.statistant.ligue1.controller.ExpiredMembershipException;
 import com.statistant.ligue1.controller.IncoherentArgumentException;
-import com.statistant.ligue1.controller.NullPasswordException;
 import com.statistant.ligue1.controller.UnhandledPasswordException;
+import com.statistant.ligue1.dao.DatabaseConnection;
+import com.statistant.ligue1.dao.NullUserException;
 import com.statistant.ligue1.pojo.User;
 
 /**
@@ -25,12 +24,40 @@ public class AuthentificationUtils {
 		A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
 	};
 
-	public static void checkLicenceDateAvailable(User user) throws ExpiredMembershipException {
-		Date licenceEndedDate = user.getLicenceEndedDate();
-		Date today = new Date();
-		if (!licenceEndedDate.after(today)) {
+	public static void checkSubscribtionIsActive(User user) throws ExpiredMembershipException {
+		String subscribtionType = user.getSubscribtionType();
+		if (Ligue1Utils.isEmpty(subscribtionType)) {
 			throw new ExpiredMembershipException("L'abonnement de l'utilisateur " + user.getLogin()
 					+ " est périmé. Merci de contacter l'administrateur à l'adresse mail support@statistant.fr.");
+		}
+		switch (subscribtionType) {
+		case "EQUIPES":
+			if (user.getNbReportsLeft() == 0) {
+				throw new ExpiredMembershipException("L'abonnement de l'utilisateur " + user.getLogin()
+						+ " est périmé. Merci de contacter l'administrateur à l'adresse mail support@statistant.fr.");
+			}
+			break;
+		case "JOURNEES":
+			String journeesSubscribed = user.getJourneesSubscribed();
+			String[] tabSubscribedJournees = journeesSubscribed.split(";");
+			String[] tabCurrentJournees = Ligue1Utils.getCurrentJournees();
+			boolean isActive = false;
+			if (tabSubscribedJournees != null && tabCurrentJournees != null) {
+				for (int i = 0; i < tabSubscribedJournees.length; i++) {
+					for (int j = 0; j < tabCurrentJournees.length; j++) {
+						if (tabSubscribedJournees[i].equals(tabCurrentJournees[j])) {
+							isActive = true;
+						}
+					}
+				}
+			}
+			if (journeesSubscribed.equals("ALL"))
+				isActive = true;
+			if (!isActive) {
+				throw new ExpiredMembershipException("L'abonnement de l'utilisateur " + user.getLogin()
+						+ " est périmé. Merci de contacter l'administrateur à l'adresse mail support@statistant.fr.");
+			}
+			break;
 		}
 	}
 
@@ -367,32 +394,34 @@ public class AuthentificationUtils {
 		}
 		return false;
 	}
-	
+
 	public static void checkAreNotEmpty(String inputLogin, String inputPassword) throws IncoherentArgumentException {
 		if (Ligue1Utils.isEmpty(inputLogin) || Ligue1Utils.isEmpty(inputPassword)) {
 			throw new IncoherentArgumentException("Merci de renseigner les deux champs obligatoires ci-dessus.");
 		}
 	}
 
-	public static void checkPasswordEqualsConfirmation(String newPassword, String confirmationPassword) throws IncoherentArgumentException {
-		if (! newPassword.equals(confirmationPassword)) {
-			throw new IncoherentArgumentException("La confirmation du mot de passe n'est aps égale au mot de passe saisi. Merci de réitérer la saisie.");
+	public static void checkPasswordEqualsConfirmation(String newPassword, String confirmationPassword)
+			throws IncoherentArgumentException {
+		if (!newPassword.equals(confirmationPassword)) {
+			throw new IncoherentArgumentException(
+					"La confirmation du mot de passe n'est aps égale au mot de passe saisi. Merci de réitérer la saisie.");
 		}
-		
+
 	}
 
 	public static void checkPasswordMatchRequiredOptions(String newPassword) throws UnhandledPasswordException {
 		if (newPassword.length() < 7) {
-			throw new UnhandledPasswordException("Votre mot de passe doit comporter au moins 7 caractères. Merci de réitérer la saisie.");
+			throw new UnhandledPasswordException(
+					"Votre mot de passe doit comporter au moins 7 caractères. Merci de réitérer la saisie.");
 		}
 		if (containSpecialChar(newPassword)) {
-			throw new UnhandledPasswordException("Votre mot de passe ne doit pas comporter de caractères spéciaux. Merci de réitérer la saisie.");
+			throw new UnhandledPasswordException(
+					"Votre mot de passe ne doit pas comporter de caractères spéciaux. Merci de réitérer la saisie.");
 		}
-		
+
 	}
-	
+
 	public static void main(String[] args) {
-		String uncryptedPassword = uncrypt("sss");
-		System.out.println("uncrypted sss : "+uncryptedPassword);
 	}
 }

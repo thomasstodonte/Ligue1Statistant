@@ -16,6 +16,7 @@ import com.statistant.ligue1.dao.NullMatchException;
 import com.statistant.ligue1.dao.NullTeamException;
 import com.statistant.ligue1.pojo.Match;
 import com.statistant.ligue1.pojo.Statistic;
+import com.statistant.ligue1.utils.AuthentificationUtils;
 import com.statistant.ligue1.utils.Ligue1Utils;
 import com.statistant.ligue1.view.InitializeWindow;
 
@@ -77,7 +78,7 @@ public class MatchOverviewController {
 		return match;
 	}
 
-	private static void generateReportMatch(Match match) {
+	private static void generateReportMatch(Match match, String selectedDirectoryPath) {
 		String homeTeam = match.getHomeTeamNickname();
 		String awayTeam = match.getAwayTeamNickname();
 
@@ -98,7 +99,7 @@ public class MatchOverviewController {
 			}
 			if (stat != null) {
 				Ligue1Utils.reportInfo("Les statistiques du match " + matchName + " ont récupérées avec succès.");
-				GenerateStatisticsReport.generateReport(stat);
+				GenerateStatisticsReport.generateReport(stat, selectedDirectoryPath);
 				Ligue1Utils.reportInfo("Le rapport du match " + matchName + " a été généré avec succès.");
 			}
 		} catch (IOException | NullTeamException | NullConfrontationException | NullMatchException
@@ -111,6 +112,10 @@ public class MatchOverviewController {
 
 	@FXML
 	private void handleGenerateReport() {
+		String path = AuthentificationOverviewController.REPORT_PATH;
+		if (Ligue1Utils.isEmpty(path)) {
+			path = "Téléchargements";
+		}
 		Match match = null;
 		try {
 			match = getSelectedMatch();
@@ -118,23 +123,7 @@ public class MatchOverviewController {
 			Ligue1Utils.reportError(e.getMessage());
 			return;
 		}
-		generateReportMatch(match);
-		InitializeWindow.showMatchOverview();
-	}
-
-	@FXML
-	private void handleGenerateAllReports() {
-		Collection<Match> allMatches = DatabaseConnection.getAllMatches();
-		int count = 0;
-		for (Match match : allMatches) {
-			if (match.getActiveStatisticsReportGeneration() == 1) {
-				generateReportMatch(match);
-				count++;
-			}
-		}
-		if (count == 0) {
-			InitializeWindow.alertInfo("Tous les rapports ont déjà été générés.");
-		}
+		generateReportMatch(match, path);
 		InitializeWindow.showMatchOverview();
 	}
 
