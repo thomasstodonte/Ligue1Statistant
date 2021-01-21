@@ -1,5 +1,9 @@
 package com.statistant.ligue1.pojo;
 
+import com.statistant.ligue1.dao.DatabaseConnection;
+import com.statistant.ligue1.dao.NullTeamException;
+import com.statistant.ligue1.utils.Ligue1Utils;
+
 /**
  * An instance of a match.
  * 
@@ -10,6 +14,8 @@ public class Match {
 	String id;
 	String homeTeamNickname;
 	String awayTeamNickname;
+	String homeTeamName;
+	String awayTeamName;
 	String score;
 	Integer homeTeamWin;
 	Integer draw;
@@ -29,6 +35,13 @@ public class Match {
 		this.id = homeTeamNickname + "-" + awayTeamNickname;
 		this.homeTeamNickname = homeTeamNickname;
 		this.awayTeamNickname = awayTeamNickname;
+		try {
+			this.homeTeamName = DatabaseConnection.getTeamByNickname(homeTeamNickname).getName();
+			this.awayTeamName = DatabaseConnection.getTeamByNickname(awayTeamNickname).getName();
+		} catch (NullTeamException e) {
+			Ligue1Utils.reportError(e.getMessage());
+			return;
+		}
 		this.score = score;
 		this.homeTeamWin = homeTeamWin;
 		this.draw = draw;
@@ -49,6 +62,13 @@ public class Match {
 		this.id = homeTeamNickname + "-" + awayTeamNickname;
 		this.homeTeamNickname = homeTeamNickname;
 		this.awayTeamNickname = awayTeamNickname;
+		try {
+			this.homeTeamName = DatabaseConnection.getTeamByNickname(homeTeamNickname).getName();
+			this.awayTeamName = DatabaseConnection.getTeamByNickname(awayTeamNickname).getName();
+		} catch (NullTeamException e) {
+			Ligue1Utils.reportError(e.getMessage());
+			return;
+		}
 		this.score = score;
 		this.homeTeamWin = homeTeamWin;
 		this.draw = draw;
@@ -68,6 +88,13 @@ public class Match {
 		this.id = homeTeamNickname + "-" + awayTeamNickname;
 		this.homeTeamNickname = homeTeamNickname;
 		this.awayTeamNickname = awayTeamNickname;
+		try {
+			this.homeTeamName = DatabaseConnection.getTeamByNickname(homeTeamNickname).getName();
+			this.awayTeamName = DatabaseConnection.getTeamByNickname(awayTeamNickname).getName();
+		} catch (NullTeamException e) {
+			Ligue1Utils.reportError(e.getMessage());
+			return;
+		}
 		this.score = "";
 		this.homeTeamWin = 0;
 		this.draw = 0;
@@ -103,6 +130,22 @@ public class Match {
 
 	public void setAwayTeamNickname(String awayTeamNickname) {
 		this.awayTeamNickname = awayTeamNickname;
+	}
+
+	public String getHomeTeamName() {
+		return homeTeamName;
+	}
+
+	public void setHomeTeamName(String homeTeamName) {
+		this.homeTeamName = homeTeamName;
+	}
+
+	public String getAwayTeamName() {
+		return awayTeamName;
+	}
+
+	public void setAwayTeamName(String awayTeamName) {
+		this.awayTeamName = awayTeamName;
 	}
 
 	public String getScore() {

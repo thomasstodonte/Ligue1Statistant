@@ -16,12 +16,15 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 public class PasswordModificationOverviewController {
-	
+
 	private final StringProperty identifiant = new SimpleStringProperty();
-	@FXML private TextField login;
-	@FXML private PasswordField newPassword;
-	@FXML private PasswordField confirmationPassword;
-	
+	@FXML
+	private TextField login;
+	@FXML
+	private PasswordField newPassword;
+	@FXML
+	private PasswordField confirmationPassword;
+
 	public String getLogin() {
 		return login.getText();
 	}
@@ -61,20 +64,25 @@ public class PasswordModificationOverviewController {
 			user.setPasswordModified(1);
 			DatabaseConnection.createOrUpdateUser(user);
 			InitializeWindow.alertInfo("Votre mot de passe a été modifié avec succès.");
-			AuthentificationOverviewController.USER_CONNECTED = login;
-			AuthentificationOverviewController.REPORT_PATH = user.getReportPath();
-			AuthentificationOverviewController.JOURNEES_SUBSCRIBED = user.getJourneesSubscribed();
-			AuthentificationOverviewController.MY_TEAMS = user.getMyTeams();
-			AuthentificationOverviewController.SUBSCRIPTION_TYPE = user.getSubscribtionType();
-			AuthentificationOverviewController.NB_REPORTS_LEFT = user.getNbReportsLeft();
-			AuthentificationOverviewController.NB_REPORTS_PER_TEAM = user.getNbReportsPerTeam();
+			AuthentificationOverviewController.setUSER_LOGIN(user.getLogin());
+			AuthentificationOverviewController.setUSER_CONNECTED(DatabaseConnection.getUserByLogin(login));
+			AuthentificationOverviewController.setREPORT_PATH(user.getReportPath());
+			AuthentificationOverviewController.setJOURNEES_SUBSCRIBED(user.getJourneesSubscribed());
+			AuthentificationOverviewController.setMY_TEAMS(user.getMyTeams());
+			AuthentificationOverviewController.setSUBSCRIPTION_TYPE(user.getSubscribtionType());
+			AuthentificationOverviewController.setNB_REPORTS_LEFT(user.getNbReportsLeft());
+			AuthentificationOverviewController.setNB_REPORTS_PER_TEAM(user.getNbReportsPerTeam());
+			if (AuthentificationOverviewController.getSUBSCRIPTION_TYPE().equals("EQUIPES")
+					&& AuthentificationOverviewController.getNB_REPORTS_LEFT() == 0) {
+				InitializeWindow.alertError("L'abonnement de l'utilisateur " + user.getLogin()
+						+ " est arrivé à expiration. Merci de contacter l'administrateur à l'adresse mail \"support@statistant.fr\" pour modifier l'abonnement et pouvoir à nouveau générer des rapports.");
+			}
 			InitializeWindow.showMenuOverview();
-		}
-		catch (IncoherentArgumentException | NullUserException | UnhandledPasswordException e) {
+		} catch (IncoherentArgumentException | NullUserException | UnhandledPasswordException e) {
 			Ligue1Utils.reportError(e.getMessage());
 			return;
 		}
-		
+
 	}
 
 	public void setUser(User user) {

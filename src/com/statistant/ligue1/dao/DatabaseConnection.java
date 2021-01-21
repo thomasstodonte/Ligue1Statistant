@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -776,6 +777,7 @@ public class DatabaseConnection {
 			String update8 = getQueryToUpdateInTableUsers("email", user,
 					(Ligue1Utils.isEmpty(user.getEmail()) ? "" : user.getEmail()));
 			String update9 = getQueryToUpdateInTableUsers("nbReportsPerTeam", user, user.getNbReportsPerTeam());
+			String update10 = getQueryToUpdateInTableUsers("reportsAlreadyGenerated", user, user.getReportsAlreadyGenerated());
 			String create = getQueryToInsertIntoTableUsers(user);
 			ResultSet rs = st.executeQuery(select);
 			if (rs.next()) {
@@ -788,6 +790,7 @@ public class DatabaseConnection {
 				st.executeUpdate(update7);
 				st.executeUpdate(update8);
 				st.executeUpdate(update9);
+				st.executeUpdate(update10);
 			} else {
 				st.executeUpdate(create);
 			}
@@ -802,7 +805,7 @@ public class DatabaseConnection {
 		return "INSERT INTO users VALUES ('" + user.getLogin() + "','" + user.getPassword() + "','"
 				+ user.getReportPath() + "','" + user.getJourneesSubscribed() + "','" + user.getPasswordModified()
 				+ "','" + user.getMyTeams() + "','" + user.getNbReportsLeft() + "','" + user.getSubscribtionType()
-				+ "','" + user.getEmail() + "','" + user.getNbReportsPerTeam() + "')";
+				+ "','" + user.getEmail() + "','" + user.getNbReportsPerTeam() + "','" + user.getReportsAlreadyGenerated()+ "')";
 	}
 
 	private static String getQueryToUpdateInTableUsers(String field, User user, Object attribute) {
@@ -1287,7 +1290,7 @@ public class DatabaseConnection {
 				allMatches.add(match);
 			}
 		} catch (SQLException | NullMatchException e) {
-			Ligue1Utils.reportError("Erreur à la récupération de toutes les matchs de Ligue 1 : " + e.getMessage());
+			Ligue1Utils.reportError("Erreur à la récupération de tous les matchs de Ligue 1 : " + e.getMessage());
 			e.printStackTrace();
 			return null;
 		}
@@ -1309,12 +1312,28 @@ public class DatabaseConnection {
 				allMatches.add(match);
 			}
 		} catch (SQLException | NullMatchException e) {
-			Ligue1Utils.reportError("Erreur à la récupération de toutes les matchs de Ligue 1 pour l'équipe "
+			Ligue1Utils.reportError("Erreur à la récupération de tous les matchs de Ligue 1 pour l'équipe "
 					+ teamNickname + " : " + e.getMessage());
 			e.printStackTrace();
 			return null;
 		}
 		return allMatches;
+	}
+	
+	public static Collection<Confrontation> getAllConfrontationsForTeam(String team) throws NullConfrontationException {
+		List<Confrontation> allConfrontationsForTeam = new ArrayList<Confrontation>();
+		Collection<Confrontation> allConfrontations = getAllConfrontations();
+		Iterator<Confrontation> it = allConfrontations.iterator();
+		while (it.hasNext()) {
+			Confrontation confrontation = it.next();
+			if (confrontation.getMatch().startsWith(team)) {
+				allConfrontationsForTeam.add(confrontation);
+			}
+		}
+		if (allConfrontationsForTeam.isEmpty()) {
+			throw new NullConfrontationException("Il n'existe aucune confrontation pour l'équipe " + team);
+		}
+		return allConfrontationsForTeam;
 	}
 	
 	public static Collection<Match> getAllMatchesForJourney(String journey) {
@@ -1331,12 +1350,34 @@ public class DatabaseConnection {
 				allMatches.add(match);
 			}
 		} catch (SQLException | NullMatchException e) {
-			Ligue1Utils.reportError("Erreur à la récupération de toutes les matchs de Ligue 1 pour la journée "
+			Ligue1Utils.reportError("Erreur à la récupération de tous les matchs de Ligue 1 pour la journée "
 					+ journey + " : " + e.getMessage());
 			e.printStackTrace();
 			return null;
 		}
 		return allMatches;
+	}
+	
+	public static Collection<Confrontation> getAllConfrontationsForJourney(String journey) {
+		Connection cn = initializeOrGetConnection();
+		String query = "";
+		List<Confrontation> allConfrontations = new ArrayList<Confrontation>();
+		try {
+			Statement st = cn.createStatement();
+			query = "SELECT * FROM confrontations JOIN matches ON confrontations.match = matches.id WHERE matches.Journey = " + Integer.parseInt(journey);
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				String id = rs.getString("id");
+				Confrontation confrontaation = getConfrontation(id);
+				allConfrontations.add(confrontaation);
+			}
+		} catch (SQLException | NullConfrontationException e) {
+			Ligue1Utils.reportError("Erreur à la récupération de toutes les confrontations de Ligue 1 pour la journée "
+					+ journey + " : " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		return allConfrontations;
 	}
 
 	public static User getUserByLoginAndPassword(String login, String password) throws NullUserException {
@@ -1356,8 +1397,9 @@ public class DatabaseConnection {
 				String subscribtionType = rs.getString("subscribtionType");
 				String email = rs.getString("email");
 				int nbReportsPerTeam = rs.getInt("nbReportsPerTeam");
+				String reportsAlreadyGenerated = rs.getString("reportsAlreadyGenerated");
 				user = new User(login, password, reportPath, journeesSubscribed, passwordModified, myTeams,
-						nbReportsLeft, subscribtionType, email, nbReportsPerTeam);
+						nbReportsLeft, subscribtionType, email, nbReportsPerTeam, reportsAlreadyGenerated);
 			}
 		} catch (SQLException e) {
 			Ligue1Utils.reportError(
@@ -1390,8 +1432,9 @@ public class DatabaseConnection {
 				String subscribtionType = rs.getString("subscribtionType");
 				String email = rs.getString("email");
 				int nbReportsPerTeam = rs.getInt("nbReportsPerTeam");
+				String reportsAlreadyGenerated = rs.getString("reportsAlreadyGenerated");
 				user = new User(login, password, reportPath, journeesSubscribed, passwordModified, myTeams,
-						nbReportsLeft, subscribtionType, email, nbReportsPerTeam);
+						nbReportsLeft, subscribtionType, email, nbReportsPerTeam, reportsAlreadyGenerated);
 			}
 		} catch (SQLException e) {
 			Ligue1Utils.reportError("L'utilisateur " + login
@@ -1425,8 +1468,9 @@ public class DatabaseConnection {
 				String subscribtionType = rs.getString("subscribtionType");
 				String email = rs.getString("email");
 				int nbReportsPerTeam = rs.getInt("nbReportsPerTeam");
+				String reportsAlreadyGenerated = rs.getString("reportsAlreadyGenerated");
 				users.add(new User(login, password, reportPath, journeesSubscribed, passwordModified, myTeams,
-						nbReportsLeft, subscribtionType, email, nbReportsPerTeam));
+						nbReportsLeft, subscribtionType, email, nbReportsPerTeam, reportsAlreadyGenerated));
 			}
 		} catch (SQLException e) {
 			Ligue1Utils.reportError("Erreur à la récupération des utilisateurs : " + e.getMessage());

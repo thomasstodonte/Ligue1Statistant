@@ -17,9 +17,10 @@ public class User {
 	private String subscribtionType;
 	private String email;
 	private int nbReportsPerTeam;
+	private String reportsAlreadyGenerated;
 
 	public User(String login, String password, String reportPath, String journeesSubscribed, int passwordModified,
-			String myTeams, int nbReportsLeft, String subscribtionType, String email, int nbReportsPerTeam) {
+			String myTeams, int nbReportsLeft, String subscribtionType, String email, int nbReportsPerTeam, String reportsAlreadyGenerated) {
 		this.login = login;
 		this.password = password;
 		this.reportPath = reportPath;
@@ -30,6 +31,7 @@ public class User {
 		this.subscribtionType = subscribtionType;
 		this.email = email;
 		this.nbReportsPerTeam = nbReportsPerTeam;
+		this.reportsAlreadyGenerated = reportsAlreadyGenerated;
 	}
 
 	public User(String login, String password) {
@@ -42,6 +44,7 @@ public class User {
 		this.subscribtionType = "";
 		this.email = "";
 		this.nbReportsPerTeam = 0;
+		this.reportsAlreadyGenerated = "";
 	}
 
 	public String getLogin() {
@@ -122,6 +125,14 @@ public class User {
 
 	public void setNbReportsPerTeam(int nbReportsPerTeam) {
 		this.nbReportsPerTeam = nbReportsPerTeam;
+	}
+
+	public String getReportsAlreadyGenerated() {
+		return reportsAlreadyGenerated;
+	}
+
+	public void setReportsAlreadyGenerated(String reportsAlreadyGenerated) {
+		this.reportsAlreadyGenerated = reportsAlreadyGenerated;
 	}
 
 	public static void main(String[] args) {

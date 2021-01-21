@@ -61,13 +61,14 @@ public class PasswordModificationWithBackButtonOverviewController {
 			user.setPasswordModified(1);
 			DatabaseConnection.createOrUpdateUser(user);
 			InitializeWindow.alertInfo("Votre mot de passe a été modifié avec succès.");
-			AuthentificationOverviewController.USER_CONNECTED = login;
-			AuthentificationOverviewController.REPORT_PATH = user.getReportPath();
-			AuthentificationOverviewController.JOURNEES_SUBSCRIBED = user.getJourneesSubscribed();
-			AuthentificationOverviewController.MY_TEAMS = user.getMyTeams();
-			AuthentificationOverviewController.SUBSCRIPTION_TYPE = user.getSubscribtionType();
-			AuthentificationOverviewController.NB_REPORTS_LEFT = user.getNbReportsLeft();
-			AuthentificationOverviewController.NB_REPORTS_PER_TEAM = user.getNbReportsPerTeam();
+			AuthentificationOverviewController.setUSER_LOGIN(user.getLogin());
+			AuthentificationOverviewController.setUSER_CONNECTED(DatabaseConnection.getUserByLogin(login));
+			AuthentificationOverviewController.setREPORT_PATH(user.getReportPath());
+			AuthentificationOverviewController.setJOURNEES_SUBSCRIBED(user.getJourneesSubscribed());
+			AuthentificationOverviewController.setMY_TEAMS(user.getMyTeams());
+			AuthentificationOverviewController.setSUBSCRIPTION_TYPE(user.getSubscribtionType());
+			AuthentificationOverviewController.setNB_REPORTS_LEFT(user.getNbReportsLeft());
+			AuthentificationOverviewController.setNB_REPORTS_PER_TEAM(user.getNbReportsPerTeam());
 			InitializeWindow.showMenuOverview();
 		}
 		catch (IncoherentArgumentException | NullUserException | UnhandledPasswordException e) {

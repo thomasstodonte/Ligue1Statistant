@@ -12,6 +12,7 @@ import com.statistant.ligue1.pojo.User;
 import com.statistant.ligue1.utils.Ligue1Utils;
 import com.statistant.ligue1.view.resources.fxml.AccountOverviewController;
 import com.statistant.ligue1.view.resources.fxml.AuthentificationOverviewController;
+import com.statistant.ligue1.view.resources.fxml.MatchOverviewController;
 import com.statistant.ligue1.view.resources.fxml.ModifyConfrontationOverviewController;
 import com.statistant.ligue1.view.resources.fxml.ModifyMatchOverviewController;
 import com.statistant.ligue1.view.resources.fxml.PasswordModificationOverviewController;
@@ -37,21 +38,12 @@ import javafx.stage.Stage;
 public class InitializeWindow extends Application {
 
 	public static Stage primaryStage;
-	private Stage secondStage;
 	private static BorderPane rootLayout;
 	static TableView<Match> tableMatchs;
 	static TableView<Team> tableGeneralStanding;
 	static TableView<Team> tableAwayStanding;
 	static TableView<Team> tableHomeStanding;
 	static TableView<Confrontation> tableConfrontations;
-
-	public Stage getSecondStage() {
-		return this.secondStage;
-	}
-
-	public void setSecondStage(Stage stage) {
-		this.secondStage = stage;
-	}
 
 	public static TableView<Match> getTableMatchs() {
 		return tableMatchs;
@@ -102,8 +94,6 @@ public class InitializeWindow extends Application {
 		InitializeWindow.primaryStage.getIcons().add(image);
 		initRootLayout();
 		showAuthentificationOverview();
-		// showMenuOverview();
-
 	}
 
 	@Override
@@ -114,12 +104,9 @@ public class InitializeWindow extends Application {
 
 	public void initRootLayout() {
 		try {
-			// Load root layout from fxml file.
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/RootLayout.fxml"));
 			rootLayout = (BorderPane) loader.load();
-
-			// Show the scene containing the root layout.
 			Scene scene = new Scene(rootLayout);
 			primaryStage.setScene(scene);
 			primaryStage.show();
@@ -132,14 +119,10 @@ public class InitializeWindow extends Application {
 
 	public static void showMenuOverview() {
 		try {
-			// Load person overview.
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/MenuOverview.fxml"));
 			AnchorPane menuOverview = (AnchorPane) loader.load();
-
-			// Set person overview into the center of root layout.
 			rootLayout.setCenter(menuOverview);
-
 		} catch (IOException e) {
 			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
@@ -153,7 +136,6 @@ public class InitializeWindow extends Application {
 			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/AuthentificationOverview.fxml"));
 			AnchorPane authentificationOverview = (AnchorPane) loader.load();
 			rootLayout.setCenter(authentificationOverview);
-
 		} catch (IOException e) {
 			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
@@ -192,79 +174,45 @@ public class InitializeWindow extends Application {
 	@SuppressWarnings("unchecked")
 	public static void showMatchOverview() {
 		try {
-			// Load person overview.
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/MatchOverview.fxml"));
 			AnchorPane matchOverview = (AnchorPane) loader.load();
 			AnchorPane child = (AnchorPane) matchOverview.getChildren().get(2);
 
-			TableColumn<Match, String> id = new TableColumn<Match, String>("Id");
-			id.setCellValueFactory(new PropertyValueFactory<>("id"));
-			TableColumn<Match, String> homeTeamNickname = new TableColumn<Match, String>(
-					"Surnom de l'équipe à domicile");
-			homeTeamNickname.setCellValueFactory(new PropertyValueFactory<>("homeTeamNickname"));
-			TableColumn<Match, String> awayTeamNickname = new TableColumn<Match, String>(
-					"Surnom de l'équipe à l'extérieur");
-			awayTeamNickname.setCellValueFactory(new PropertyValueFactory<>("awayTeamNickname"));
+			TableColumn<Match, String> homeTeamName = new TableColumn<Match, String>(
+					"Nom de l'équipe à domicile");
+			homeTeamName.setCellValueFactory(new PropertyValueFactory<>("homeTeamName"));
+			TableColumn<Match, String> awayTeamName = new TableColumn<Match, String>(
+					"Nom de l'équipe à l'extérieur");
+			awayTeamName.setCellValueFactory(new PropertyValueFactory<>("awayTeamName"));
 			TableColumn<Match, String> score = new TableColumn<Match, String>("Score");
 			score.setCellValueFactory(new PropertyValueFactory<>("score"));
-			TableColumn<Match, Integer> homeTeamWin = new TableColumn<Match, Integer>(
-					"Victoire de l'équipe à domicile ?");
-			homeTeamWin.setCellValueFactory(new PropertyValueFactory<>("homeTeamWin"));
-			TableColumn<Match, Integer> draw = new TableColumn<Match, Integer>("Match nul ?");
-			draw.setCellValueFactory(new PropertyValueFactory<>("draw"));
-			TableColumn<Match, Integer> awayTeamWin = new TableColumn<Match, Integer>(
-					"Victoire de l'équipe à l'extérieur ?");
-			awayTeamWin.setCellValueFactory(new PropertyValueFactory<>("awayTeamWin"));
-			TableColumn<Match, Integer> isAnImportantGameForHomeTeam = new TableColumn<Match, Integer>(
-					"Match important pour l'équipe à domicile ?");
-			isAnImportantGameForHomeTeam
-					.setCellValueFactory(new PropertyValueFactory<>("isAnImportantGameForHomeTeam"));
-			TableColumn<Match, Integer> isAnImportantGameForAwayTeam = new TableColumn<Match, Integer>(
-					"Match important pour l'équipe à l'extérieur ?");
-			isAnImportantGameForAwayTeam
-					.setCellValueFactory(new PropertyValueFactory<>("isAnImportantGameForAwayTeam"));
-			TableColumn<Match, Integer> homeTeamHasABetterStanding = new TableColumn<Match, Integer>(
-					"L'équipe à domicile est-elle mieux classée ?");
-			homeTeamHasABetterStanding.setCellValueFactory(new PropertyValueFactory<>("homeTeamHasABetterStanding"));
-			TableColumn<Match, Integer> countMatch = new TableColumn<Match, Integer>("Match comptabilisé ?");
-			countMatch.setCellValueFactory(new PropertyValueFactory<>("countMatch"));
-			TableColumn<Match, Integer> activeStatisticsReportGeneration = new TableColumn<Match, Integer>(
-					"Activer la génération du rapport de statistiques du match ?");
-			activeStatisticsReportGeneration
-					.setCellValueFactory(new PropertyValueFactory<>("activeStatisticsReportGeneration"));
 			TableColumn<Match, Integer> journey = new TableColumn<Match, Integer>("Journée");
 			journey.setCellValueFactory(new PropertyValueFactory<>("journey"));
 
 			tableMatchs = new TableView<>();
-			if (AuthentificationOverviewController.SUBSCRIPTION_TYPE.equals("EQUIPES")) {
-				if (!AuthentificationOverviewController.MY_TEAMS.equals("ALL")) {
+			if (AuthentificationOverviewController.getSUBSCRIPTION_TYPE().equals("EQUIPES")) {
+				if (!AuthentificationOverviewController.getMY_TEAMS().equals("Toutes")) {
 					ObservableList<Match> matchesOfMyTeams = AuthentificationOverviewController.getMatchesOfMyTeams();
 					tableMatchs.setItems(matchesOfMyTeams);
-				}
-				else {
+				} else {
 					tableMatchs.setItems(getMatchs());
 				}
 			}
-			if (AuthentificationOverviewController.SUBSCRIPTION_TYPE.equals("JOURNEES")) {
-				if (!AuthentificationOverviewController.JOURNEES_SUBSCRIBED.equals("ALL")) {
-					ObservableList<Match> matchesOfMyJourneys = AuthentificationOverviewController.getMatchesOfMyJourneys();
+			if (AuthentificationOverviewController.getSUBSCRIPTION_TYPE().equals("JOURNEES")) {
+				if (!AuthentificationOverviewController.getJOURNEES_SUBSCRIBED().equals("Toutes")) {
+					ObservableList<Match> matchesOfMyJourneys = AuthentificationOverviewController
+							.getMatchesOfMyJourneys();
 					tableMatchs.setItems(matchesOfMyJourneys);
-				}
-				else {
+				} else {
 					tableMatchs.setItems(getMatchs());
 				}
 			}
-			tableMatchs.getColumns().addAll(id, journey, countMatch, homeTeamNickname, awayTeamNickname, score,
-					homeTeamWin, draw, awayTeamWin, isAnImportantGameForHomeTeam, isAnImportantGameForAwayTeam,
-					homeTeamHasABetterStanding, activeStatisticsReportGeneration);
+			tableMatchs.getColumns().addAll(journey, homeTeamName, score, awayTeamName);
 			journey.setComparator(journey.getComparator().reversed());
 			tableMatchs.getSortOrder().add(journey);
 			child.getChildren().add(tableMatchs);
-
-			// Set match overview into the center of root layout.
 			rootLayout.setCenter(matchOverview);
-
 		} catch (IOException e) {
 			Ligue1Utils.reportError(e.getMessage());
 			e.printStackTrace();
@@ -300,7 +248,24 @@ public class InitializeWindow extends Application {
 			recent5.setCellValueFactory(new PropertyValueFactory<>("recent5"));
 
 			tableConfrontations = new TableView<>();
-			tableConfrontations.setItems(getConfrontations());
+			if (AuthentificationOverviewController.getSUBSCRIPTION_TYPE().equals("EQUIPES")) {
+				if (!AuthentificationOverviewController.getMY_TEAMS().equals("Toutes")) {
+					ObservableList<Confrontation> confrontationsOfMyTeams = AuthentificationOverviewController
+							.getConfrontationsOfMyTeams();
+					tableConfrontations.setItems(confrontationsOfMyTeams);
+				} else {
+					tableConfrontations.setItems(getConfrontations());
+				}
+			}
+			if (AuthentificationOverviewController.getSUBSCRIPTION_TYPE().equals("JOURNEES")) {
+				if (!AuthentificationOverviewController.getJOURNEES_SUBSCRIBED().equals("Toutes")) {
+					ObservableList<Confrontation> confrontationsOfMyJourneys = AuthentificationOverviewController
+							.getConfrontationsOfMyJourneys();
+					tableConfrontations.setItems(confrontationsOfMyJourneys);
+				} else {
+					tableConfrontations.setItems(getConfrontations());
+				}
+			}
 			tableConfrontations.getColumns().addAll(match, recent1, recent2, recent3, recent4, recent5);
 			tableConfrontations.getSortOrder().add(match);
 
@@ -564,6 +529,22 @@ public class InitializeWindow extends Application {
 						"La saison a été enregistrée dans le dossier \"C:\\perso\\Ligue1\\sauvegardes\" avec succès.");
 			} else if (option.get() == ButtonType.CANCEL) {
 				Ligue1Utils.reportInfo("La saison de ligue 1 n'a finalement pas été réinitialisée.");
+			}
+		}
+
+	}
+
+	public static void showAlertGenerateReport(Match match, int nbReportsLeft) {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Génération d'un rapport");
+		alert.setHeaderText(null);
+		alert.setContentText("Etes-vous sûrs de vouloir générer le rapport du match " + match.getId()
+				+ " ? Attention ! Il vous reste " + nbReportsLeft
+				+ " rapport(s) à générer avant que votre abonnement n'arrive à expiration.");
+		Optional<ButtonType> option = alert.showAndWait();
+		if (option.get() != null) {
+			if (option.get() == ButtonType.OK) {
+				MatchOverviewController.generateReport(match);
 			}
 		}
 

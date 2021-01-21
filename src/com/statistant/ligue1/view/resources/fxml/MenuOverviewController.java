@@ -13,7 +13,7 @@ public class MenuOverviewController {
     
     @FXML
     private void handleAccount() {
-    	String userLogin = AuthentificationOverviewController.USER_CONNECTED;
+    	String userLogin = AuthentificationOverviewController.getUSER_LOGIN();
     	InitializeWindow.showAccountOverview(userLogin);
     }
     

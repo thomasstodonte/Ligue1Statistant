@@ -855,52 +855,52 @@ public class NewMatchOverviewController {
 		this.score = score;
 	}
 
-	public TextField getHomeTeamWin() {
-		return homeTeamWin;
+	public String getHomeTeamWin() {
+		return Ligue1Utils.convert01ToString(homeTeamWin.getText());
 	}
 
-	public void setHomeTeamWin(TextField homeTeamWin) {
-		this.homeTeamWin = homeTeamWin;
+	public void setHomeTeamWin(String string) {
+		this.homeTeamWin.setText(string);
 	}
 
-	public TextField getDraw() {
-		return draw;
+	public String getDraw() {
+		return Ligue1Utils.convert01ToString(draw.getText());
 	}
 
-	public void setDraw(TextField draw) {
-		this.draw = draw;
+	public void setDraw(String string) {
+		this.draw.setText(string);
 	}
 
-	public TextField getAwayTeamWin() {
-		return awayTeamWin;
+	public String getAwayTeamWin() {
+		return Ligue1Utils.convert01ToString(awayTeamWin.getText());
 	}
 
-	public void setAwayTeamWin(TextField awayTeamWin) {
-		this.awayTeamWin = awayTeamWin;
+	public void setAwayTeamWin(String string) {
+		this.awayTeamWin.setText(string);
 	}
 
-	public TextField getHomeTeamHasABetterStanding() {
-		return homeTeamHasABetterStanding;
+	public Integer getHomeTeamHasABetterStanding() {
+		return Ligue1Utils.convertStringTo01(homeTeamHasABetterStanding.getText());
 	}
 
-	public void setHomeTeamHasABetterStanding(TextField homeTeamHasABetterStanding) {
-		this.homeTeamHasABetterStanding = homeTeamHasABetterStanding;
+	public void setHomeTeamHasABetterStanding(String string) {
+		this.homeTeamHasABetterStanding.setText(string);
 	}
 
-	public TextField getIsAnImportantGameForHomeTeam() {
-		return isAnImportantGameForHomeTeam;
+	public Integer getIsAnImportantGameForHomeTeam() {
+		return Ligue1Utils.convertStringTo01(isAnImportantGameForHomeTeam.getText());
 	}
 
-	public void setIsAnImportantGameForHomeTeam(TextField isAnImportantGameForHomeTeam) {
-		this.isAnImportantGameForHomeTeam = isAnImportantGameForHomeTeam;
+	public void setIsAnImportantGameForHomeTeam(String string) {
+		this.isAnImportantGameForHomeTeam.setText(string);
 	}
 
-	public TextField getIsAnImportantGameForAwayTeam() {
-		return isAnImportantGameForAwayTeam;
+	public Integer getIsAnImportantGameForAwayTeam() {
+		return Ligue1Utils.convertStringTo01(isAnImportantGameForAwayTeam.getText());
 	}
 
-	public void setIsAnImportantGameForAwayTeam(TextField isAnImportantGameForAwayTeam) {
-		this.isAnImportantGameForAwayTeam = isAnImportantGameForAwayTeam;
+	public void setIsAnImportantGameForAwayTeam(String string) {
+		this.isAnImportantGameForAwayTeam.setText(string);
 	}
 
 	@FXML
@@ -1347,9 +1347,9 @@ public class NewMatchOverviewController {
 			MatchController.checkMatchParameters(isImportantGameForHomeTeam, isImportantGameForAwayTeam,
 					homeTeamHasBetterStanding);
 		} catch (NullTeamException | SameTeamsException e) {
-			getHomeTeamHasABetterStanding().setText("");
-			getIsAnImportantGameForHomeTeam().setText("");
-			getIsAnImportantGameForAwayTeam().setText("");
+			setHomeTeamHasABetterStanding("");
+			setIsAnImportantGameForHomeTeam("");
+			setIsAnImportantGameForAwayTeam("");
 			Ligue1Utils.reportError(e.getMessage());
 			return;
 		} catch (NullMatchParametersException e1) {
@@ -1364,29 +1364,28 @@ public class NewMatchOverviewController {
 			boolean allFieldsOkAfterMatch = checkAllFormFieldsAfterMatch();
 			if (allFieldsOkAfterMatch) {
 				String resultat = getScore().getText();
-//				String resultat = score.getText();
 				try {
 					MatchController.checkScore(resultat);
 					updateResultOnFormWithScore(resultat);
 				} catch (ScoreFormatException e) {
-					getHomeTeamWin().setText("");
-					getDraw().setText("");
-					getAwayTeamWin().setText("");
+					setHomeTeamWin("");
+					setDraw("");
+					setAwayTeamWin("");
 					Ligue1Utils.reportError(e.getMessage());
 					return;
 				}
-				Integer victoireEquipe1 = Integer.parseInt(getHomeTeamWin().getText());
-				Integer victoireEquipe2 = Integer.parseInt(getAwayTeamWin().getText());
-				Integer nul = Integer.parseInt(getDraw().getText());
+				Integer victoireEquipe1 = Ligue1Utils.convertStringTo01(getHomeTeamWin());
+				Integer victoireEquipe2 = Ligue1Utils.convertStringTo01(getAwayTeamWin());
+				Integer nul = Ligue1Utils.convertStringTo01(getDraw());
 				try {
 					updateImportantAndStanding(team1, team2);
 				} catch (NullTeamException e) {
 					Ligue1Utils.reportError(e.getMessage());
 					return;
 				}
-				Integer isImportantGameForHomeTeam = Integer.parseInt(getIsAnImportantGameForHomeTeam().getText());
-				Integer isImportantGameForAwayTeam = Integer.parseInt(getIsAnImportantGameForAwayTeam().getText());
-				Integer homeTeamHasBetterStanding = Integer.parseInt(getHomeTeamHasABetterStanding().getText());
+				Integer isImportantGameForHomeTeam = getIsAnImportantGameForHomeTeam();
+				Integer isImportantGameForAwayTeam = getIsAnImportantGameForAwayTeam();
+				Integer homeTeamHasBetterStanding = getHomeTeamHasABetterStanding();
 				Integer journee = Integer.parseInt(getJourney().getText());
 				Match match = new Match(team1, team2, resultat, victoireEquipe1, nul, victoireEquipe2,
 						isImportantGameForHomeTeam, isImportantGameForAwayTeam, homeTeamHasBetterStanding, journee);
@@ -1410,9 +1409,9 @@ public class NewMatchOverviewController {
 					Ligue1Utils.reportError(e.getMessage());
 					return;
 				}
-				Integer isImportantGameForHomeTeam = Integer.parseInt(getIsAnImportantGameForHomeTeam().getText());
-				Integer isImportantGameForAwayTeam = Integer.parseInt(getIsAnImportantGameForAwayTeam().getText());
-				Integer homeTeamHasBetterStanding = Integer.parseInt(getHomeTeamHasABetterStanding().getText());
+				Integer isImportantGameForHomeTeam = getIsAnImportantGameForHomeTeam();
+				Integer isImportantGameForAwayTeam = getIsAnImportantGameForAwayTeam();
+				Integer homeTeamHasBetterStanding = getHomeTeamHasABetterStanding();
 				Integer journee = Integer.parseInt(getJourney().getText());
 				Match match = new Match(team1, team2, isImportantGameForHomeTeam, isImportantGameForAwayTeam,
 						homeTeamHasBetterStanding, journee);
@@ -1463,8 +1462,8 @@ public class NewMatchOverviewController {
 
 	private boolean matchTermine() {
 		try {
-			MatchController.checkOnlyOneResult(Integer.parseInt(getHomeTeamWin().getText()),
-					Integer.parseInt(getAwayTeamWin().getText()), Integer.parseInt(getDraw().getText()));
+			MatchController.checkOnlyOneResult(Integer.parseInt(getHomeTeamWin()),
+					Integer.parseInt(getAwayTeamWin()), Integer.parseInt(getDraw()));
 		} catch (NullResultatException | NumberFormatException | UnhandledResultatException e) {
 			return false;
 		}
@@ -1536,43 +1535,41 @@ public class NewMatchOverviewController {
 		String equipeMieuxClassee = Ligue1Utils.getEquipeMieuxClassee(team1, team2);
 		if (!Ligue1Utils.isEmpty(equipeMieuxClassee)) {
 			if (equipeMieuxClassee.equals(e1)) {
-				getHomeTeamHasABetterStanding().setText("1");
+				setHomeTeamHasABetterStanding("Oui");
 			} else {
-				getHomeTeamHasABetterStanding().setText("0");
+				setHomeTeamHasABetterStanding("Non");
 			}
 		}
 		boolean matchImportantE1 = Ligue1Utils.getMatchImportant(e1, e2);
 		if (matchImportantE1) {
-			getIsAnImportantGameForHomeTeam().setText("1");
+			setIsAnImportantGameForHomeTeam("Oui");
 		} else {
-			getIsAnImportantGameForHomeTeam().setText("0");
+			setIsAnImportantGameForHomeTeam("Non");
 		}
 		boolean matchImportantE2 = Ligue1Utils.getMatchImportant(e2, e1);
 		if (matchImportantE2) {
-			getIsAnImportantGameForAwayTeam().setText("1");
+			setIsAnImportantGameForAwayTeam("Oui");
 		} else {
-			getIsAnImportantGameForAwayTeam().setText("0");
+			setIsAnImportantGameForAwayTeam("Non");
 		}
-//		InitializeWindow.alertInfo("Les données concernant l'importance du match ont été correctement mises à jour");
 	}
 
 	public void updateResultOnFormWithScore(String score) {
 		String[] split = score.split("-");
 		if (Integer.parseInt(split[0]) > Integer.parseInt(split[1])) {
-			getHomeTeamWin().setText("1");
-			getDraw().setText("0");
-			getAwayTeamWin().setText("0");
+			setHomeTeamWin("Oui");
+			setDraw("Non");
+			setAwayTeamWin("Non");
 		}
 		if (Integer.parseInt(split[0]) == Integer.parseInt(split[1])) {
-			getHomeTeamWin().setText("0");
-			getDraw().setText("1");
-			getAwayTeamWin().setText("0");
+			setHomeTeamWin("Non");
+			setDraw("Oui");
+			setAwayTeamWin("Non");
 		}
 		if (Integer.parseInt(split[0]) < Integer.parseInt(split[1])) {
-			getHomeTeamWin().setText("0");
-			getDraw().setText("0");
-			getAwayTeamWin().setText("1");
+			setHomeTeamWin("Non");
+			setDraw("Non");
+			setAwayTeamWin("Oui");
 		}
-//		InitializeWindow.alertInfo("Les informations liées au score ont été correctement mises à jour");
 	}
 }

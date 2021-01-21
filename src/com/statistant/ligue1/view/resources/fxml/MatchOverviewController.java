@@ -1,7 +1,6 @@
 package com.statistant.ligue1.view.resources.fxml;
 
 import java.io.IOException;
-import java.util.Collection;
 
 import com.statistant.ligue1.controller.CountMatch;
 import com.statistant.ligue1.controller.GenerateStatisticsReport;
@@ -14,9 +13,10 @@ import com.statistant.ligue1.controller.SameTeamsException;
 import com.statistant.ligue1.dao.DatabaseConnection;
 import com.statistant.ligue1.dao.NullMatchException;
 import com.statistant.ligue1.dao.NullTeamException;
+import com.statistant.ligue1.dao.NullUserException;
 import com.statistant.ligue1.pojo.Match;
 import com.statistant.ligue1.pojo.Statistic;
-import com.statistant.ligue1.utils.AuthentificationUtils;
+import com.statistant.ligue1.pojo.User;
 import com.statistant.ligue1.utils.Ligue1Utils;
 import com.statistant.ligue1.view.InitializeWindow;
 
@@ -112,19 +112,93 @@ public class MatchOverviewController {
 
 	@FXML
 	private void handleGenerateReport() {
-		String path = AuthentificationOverviewController.REPORT_PATH;
-		if (Ligue1Utils.isEmpty(path)) {
-			path = "Téléchargements";
-		}
 		Match match = null;
 		try {
 			match = getSelectedMatch();
+			int comptabilise = match.getCountMatch();
+			if (comptabilise == 1) {
+				InitializeWindow.alertError(
+						"Ce match est terminé. Il est impossible de générer un rapport sur un match déjà terminé");
+			} else { // Match en cours
+				if (AuthentificationOverviewController.getSUBSCRIPTION_TYPE().equals("EQUIPES")) {
+					if (AuthentificationOverviewController.getNB_REPORTS_LEFT() > 0 && !reportAlreadyGenerated(match)) {
+						InitializeWindow.showAlertGenerateReport(match,
+								AuthentificationOverviewController.getNB_REPORTS_LEFT());
+					} else {// EQUIPES && 0 crédit
+						if (!reportAlreadyGenerated(match)) {
+							InitializeWindow.alertError(
+									"Votre abonnement est malheureusement arrivé à expiration... Merci de contacter l'administrateur à l'adresse \"support@statistant.fr\" pour modifier votre abonnement.");
+						} else {
+							generateReport(match);
+						}
+					}
+				} else { // JOURNEE
+					generateReport(match);
+				}
+			}
 		} catch (NullResourceSelectedException e) {
 			Ligue1Utils.reportError(e.getMessage());
 			return;
 		}
-		generateReportMatch(match, path);
 		InitializeWindow.showMatchOverview();
+	}
+
+	public static void generateReport(Match match) {
+		String path = AuthentificationOverviewController.getREPORT_PATH();
+		if (Ligue1Utils.isEmpty(path)) {
+			path = "C:\\";
+		}
+		try {
+			if (AuthentificationOverviewController.getSUBSCRIPTION_TYPE().equals("EQUIPES")) {
+				generateReportMatch(match, path);
+				if (!reportAlreadyGenerated(match)) {
+					manageNbReportsLeft();
+					User user = AuthentificationOverviewController.getUSER_CONNECTED();
+					if (Ligue1Utils.isEmpty(user.getReportsAlreadyGenerated())) {
+						user.setReportsAlreadyGenerated(match.getId());
+					} else {
+						user.setReportsAlreadyGenerated(user.getReportsAlreadyGenerated() + ";" + match.getId());
+					}
+					DatabaseConnection.createOrUpdateUser(user);
+				}
+				if (AuthentificationOverviewController.getNB_REPORTS_LEFT() > 0) {
+					InitializeWindow
+							.alertInfo("Il vous reste encore " + AuthentificationOverviewController.getNB_REPORTS_LEFT()
+									+ " rapport(s) de matchs à générer avant expiration de l'abonnement.");
+				} else {
+					InitializeWindow.alertError(
+							"C'était votre dernier crédit de rapport ! Votre abonnement est malheureusement arrivé à expiration... Merci de contacter l'administrateur à l'adresse \"support@statistant.fr\" pour modifier votre abonnement.");
+				}
+			} else {
+				generateReportMatch(match, path);
+			}
+		} catch (NullUserException e) {
+			Ligue1Utils.reportError(e.getMessage());
+			return;
+		}
+	}
+
+	private static void manageNbReportsLeft() throws NullUserException {
+		User user = AuthentificationOverviewController.getUSER_CONNECTED();
+		int newCredit = user.getNbReportsLeft() - 1;
+		user.setNbReportsLeft(newCredit);
+		DatabaseConnection.createOrUpdateUser(user);
+		AuthentificationOverviewController
+				.setNB_REPORTS_LEFT(AuthentificationOverviewController.getNB_REPORTS_LEFT() - 1);
+	}
+
+	private static boolean reportAlreadyGenerated(Match match) {
+		User user = AuthentificationOverviewController.getUSER_CONNECTED();
+		String reports = user.getReportsAlreadyGenerated();
+		if (!Ligue1Utils.isEmpty(reports)) {
+			String[] split = reports.split(";");
+			for (String report : split) {
+				if (report.equals(match.getId())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }

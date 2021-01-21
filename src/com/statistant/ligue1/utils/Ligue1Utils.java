@@ -1286,4 +1286,34 @@ public class Ligue1Utils {
 		return currentJournees.split(";");
 	}
 
+	public static String convert01ToString(String text) {
+		if (text.equals("0")) {
+			return "Non";
+		}
+		if (text.equals("1")) {
+			return "Oui";
+		}
+		return "";
+	}
+
+	public static Integer convertStringTo01(String text) {
+		if (text.equals("Non")) {
+			return 0;
+		}
+		if (text.equals("Oui")) {
+			return 1;
+		}
+		return null;
+	}
+
+	public static String convert01ToString(int i) {
+		if (i==0) {
+			return "Non";
+		}
+		if (i==1) {
+			return "Oui";
+		}
+		return "";
+	}
+
 }

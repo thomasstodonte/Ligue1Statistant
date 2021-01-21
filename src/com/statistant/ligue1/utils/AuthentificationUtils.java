@@ -5,9 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.statistant.ligue1.controller.ExpiredMembershipException;
 import com.statistant.ligue1.controller.IncoherentArgumentException;
 import com.statistant.ligue1.controller.UnhandledPasswordException;
-import com.statistant.ligue1.dao.DatabaseConnection;
-import com.statistant.ligue1.dao.NullUserException;
 import com.statistant.ligue1.pojo.User;
+import com.statistant.ligue1.view.resources.fxml.AuthentificationOverviewController;
 
 /**
  * Class with methods used for authentification
@@ -32,10 +31,6 @@ public class AuthentificationUtils {
 		}
 		switch (subscribtionType) {
 		case "EQUIPES":
-			if (user.getNbReportsLeft() == 0) {
-				throw new ExpiredMembershipException("L'abonnement de l'utilisateur " + user.getLogin()
-						+ " est périmé. Merci de contacter l'administrateur à l'adresse mail support@statistant.fr.");
-			}
 			break;
 		case "JOURNEES":
 			String journeesSubscribed = user.getJourneesSubscribed();
@@ -51,7 +46,7 @@ public class AuthentificationUtils {
 					}
 				}
 			}
-			if (journeesSubscribed.equals("ALL"))
+			if (journeesSubscribed.equals("Toutes"))
 				isActive = true;
 			if (!isActive) {
 				throw new ExpiredMembershipException("L'abonnement de l'utilisateur " + user.getLogin()
@@ -421,7 +416,8 @@ public class AuthentificationUtils {
 		}
 
 	}
-
+	
 	public static void main(String[] args) {
+		
 	}
 }

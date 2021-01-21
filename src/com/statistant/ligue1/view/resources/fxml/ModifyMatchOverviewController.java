@@ -169,17 +169,17 @@ public class ModifyMatchOverviewController {
 		
 		setScore(match.getScore());
 		score.setText(String.valueOf(getScore()));
-		setHomeTeamWin(match.getHomeTeamWin());
+		setHomeTeamWin(Ligue1Utils.convert01ToString(match.getHomeTeamWin()));
 		homeTeamWin.setText(String.valueOf(getHomeTeamWin()));
-		setDraw(match.getDraw());
+		setDraw(Ligue1Utils.convert01ToString(match.getDraw()));
 		draw.setText(String.valueOf(getDraw()));
-		setAwayTeamWin(match.getAwayTeamWin());
+		setAwayTeamWin(Ligue1Utils.convert01ToString(match.getAwayTeamWin()));
 		awayTeamWin.setText(String.valueOf(getAwayTeamWin()));
-		setHomeTeamHasABetterStanding(match.getHomeTeamHasABetterStanding());
+		setHomeTeamHasABetterStanding(Ligue1Utils.convert01ToString(match.getHomeTeamHasABetterStanding()));
 		homeTeamHasABetterStanding.setText(String.valueOf(getHomeTeamHasABetterStanding()));
-		setIsAnImportantGameForHomeTeam(match.getIsAnImportantGameForHomeTeam());
+		setIsAnImportantGameForHomeTeam(Ligue1Utils.convert01ToString(match.getIsAnImportantGameForHomeTeam()));
 		isAnImportantGameForHomeTeam.setText(String.valueOf(getIsAnImportantGameForHomeTeam()));
-		setIsAnImportantGameForAwayTeam(match.getIsAnImportantGameForAwayTeam());
+		setIsAnImportantGameForAwayTeam(Ligue1Utils.convert01ToString(match.getIsAnImportantGameForAwayTeam()));
 		isAnImportantGameForAwayTeam.setText(String.valueOf(getIsAnImportantGameForAwayTeam()));
 	}
 
@@ -774,115 +774,114 @@ public class ModifyMatchOverviewController {
 	public Integer getFormHomeTeamWin() {
 		Integer returnInt = 0;
 		try {
-			returnInt = Integer.parseInt(this.homeTeamWin.getText());
+			returnInt = Ligue1Utils.convertStringTo01(this.homeTeamWin.getText());
 		} catch (NumberFormatException e) {
 		}
 		return returnInt;
 	}
 
-	public Integer getHomeTeamWin() {
-		return this.victoireE1.get();
+	public String getHomeTeamWin() {
+		return Ligue1Utils.convert01ToString(this.victoireE1.get());
 	}
 
-	public void setHomeTeamWin(Integer number) {
-		this.victoireE1.set(number);
-		homeTeamWin.setText(String.valueOf(number));
+	public void setHomeTeamWin(String string) {
+		this.victoireE1.set(Ligue1Utils.convertStringTo01(string));
+		homeTeamWin.setText(string);
 	}
 
 	public Integer getFormDraw() {
 		Integer returnInt = 0;
 		try {
-			returnInt = Integer.parseInt(this.draw.getText());
+			returnInt = Ligue1Utils.convertStringTo01(this.draw.getText());
 		} catch (NumberFormatException e) {
 		}
 		return returnInt;
 	}
 
-	public Integer getDraw() {
-		return this.nul.get();
+	public String getDraw() {
+		return Ligue1Utils.convert01ToString(this.nul.get());
 	}
 
-	public void setDraw(Integer number) {
-		this.nul.set(number);
-		draw.setText(String.valueOf(number));
+	public void setDraw(String text) {
+		this.nul.set(Ligue1Utils.convertStringTo01(text));
+		draw.setText(text);
 	}
 
 	public Integer getFormAwayTeamWin() {
 		Integer returnInt = 0;
 		try {
-			returnInt = Integer.parseInt(this.awayTeamWin.getText());
+			returnInt = Ligue1Utils.convertStringTo01(this.awayTeamWin.getText());
 		} catch (NumberFormatException e) {
 		}
 		return returnInt;
 	}
 
-	public Integer getAwayTeamWin() {
-		return this.victoireE2.get();
+	public String getAwayTeamWin() {
+		return Ligue1Utils.convert01ToString(this.victoireE2.get());
 	}
 
-	public void setAwayTeamWin(Integer number) {
-		this.victoireE2.set(number);
-		awayTeamWin.setText(String.valueOf(number));
+	public void setAwayTeamWin(String text) {
+		this.victoireE2.set(Ligue1Utils.convertStringTo01(text));
+		awayTeamWin.setText(text);
 	}
 
 	public Integer getFormHomeTeamHasABetterStanding() {
 		Integer returnInt = 0;
 		try {
-			returnInt = Integer.parseInt(this.homeTeamHasABetterStanding.getText());
+			returnInt = Ligue1Utils.convertStringTo01(this.homeTeamHasABetterStanding.getText());
 		} catch (NumberFormatException e) {
 		}
 		return returnInt;
 	}
 
-	public Integer getHomeTeamHasABetterStanding() {
-		return this.e1MieuxClassee.get();
+	public String getHomeTeamHasABetterStanding() {
+		return Ligue1Utils.convert01ToString(this.e1MieuxClassee.get());
 	}
 
-	public void setHomeTeamHasABetterStanding(Integer number) {
-		this.e1MieuxClassee.set(number);
-		homeTeamHasABetterStanding.setText(String.valueOf(number));
+	public void setHomeTeamHasABetterStanding(String text) {
+		this.e1MieuxClassee.set(Ligue1Utils.convertStringTo01(text));
+		homeTeamHasABetterStanding.setText(text);
 	}
 
 	public Integer getFormIsAnImportantGameForHomeTeam() {
 		Integer returnInt = 0;
 		try {
-			returnInt = Integer.parseInt(this.isAnImportantGameForHomeTeam.getText());
+			returnInt = Ligue1Utils.convertStringTo01(this.isAnImportantGameForHomeTeam.getText());
 		} catch (NumberFormatException e) {
 		}
 		return returnInt;
 	}
 
-	public Integer getIsAnImportantGameForHomeTeam() {
-		return this.e1Important.get();
+	public String getIsAnImportantGameForHomeTeam() {
+		return Ligue1Utils.convert01ToString(this.e1Important.get());
 	}
 
-	public void setIsAnImportantGameForHomeTeam(Integer number) {
-		this.e1Important.set(number);
-		isAnImportantGameForHomeTeam.setText(String.valueOf(number));
+	public void setIsAnImportantGameForHomeTeam(String text) {
+		this.e1Important.set(Ligue1Utils.convertStringTo01(text));
+		isAnImportantGameForHomeTeam.setText(text);
 	}
 
 	public Integer getFormIsAnImportantGameForAwayTeam() {
 		Integer returnInt = 0;
 		try {
-			returnInt = Integer.parseInt(this.isAnImportantGameForAwayTeam.getText());
+			returnInt = Ligue1Utils.convertStringTo01(this.isAnImportantGameForAwayTeam.getText());
 		} catch (NumberFormatException e) {
 		}
 		return returnInt;
 	}
 
-	public Integer getIsAnImportantGameForAwayTeam() {
-		return this.e2Important.get();
+	public String getIsAnImportantGameForAwayTeam() {
+		return Ligue1Utils.convert01ToString(this.e2Important.get());
 	}
 
-	public void setIsAnImportantGameForAwayTeam(Integer number) {
-		this.e2Important.set(number);
-		isAnImportantGameForAwayTeam.setText(String.valueOf(number));
+	public void setIsAnImportantGameForAwayTeam(String text) {
+		this.e2Important.set(Ligue1Utils.convertStringTo01(text));
+		isAnImportantGameForAwayTeam.setText(text);
 	}
 
 	@FXML
 	private void handleValidate() {
 		String resultat = getFormScore();
-//		String resultat = score.getText();
 		if (!Ligue1Utils.isEmpty(resultat)) {
 			try {
 				MatchController.checkScore(resultat);
@@ -1018,9 +1017,9 @@ public class ModifyMatchOverviewController {
 			Ligue1Utils.reportError(e.getMessage());
 			return false;
 		}
-		Integer victoireEquipe1 = Integer.parseInt(homeTeamWin.getText());
-		Integer victoireEquipe2 = Integer.parseInt(awayTeamWin.getText());
-		Integer nul = Integer.parseInt(draw.getText());
+		Integer victoireEquipe1 = Ligue1Utils.convertStringTo01(homeTeamWin.getText());
+		Integer victoireEquipe2 = Ligue1Utils.convertStringTo01(awayTeamWin.getText());
+		Integer nul = Ligue1Utils.convertStringTo01(draw.getText());
 		try {
 			MatchController.checkOnlyOneResult(victoireEquipe1, victoireEquipe2, nul);
 		} catch (NullResultatException | UnhandledResultatException e) {
@@ -1044,21 +1043,20 @@ public class ModifyMatchOverviewController {
 	public void updateResultOnFormWithScore(String score) {
 		String[] split = score.split("-");
 		if (Integer.parseInt(split[0]) > Integer.parseInt(split[1])) {
-			homeTeamWin.setText("1");
-			draw.setText("0");
-			awayTeamWin.setText("0");
+			setHomeTeamWin("Oui");
+			setDraw("Non");
+			setAwayTeamWin("Non");
 		}
 		if (Integer.parseInt(split[0]) == Integer.parseInt(split[1])) {
-			homeTeamWin.setText("0");
-			draw.setText("1");
-			awayTeamWin.setText("0");
+			setHomeTeamWin("Non");
+			setDraw("Oui");
+			setAwayTeamWin("Non");
 		}
 		if (Integer.parseInt(split[0]) < Integer.parseInt(split[1])) {
-			homeTeamWin.setText("0");
-			draw.setText("0");
-			awayTeamWin.setText("1");
+			setHomeTeamWin("Non");
+			setDraw("Non");
+			setAwayTeamWin("Oui");
 		}
-//		InitializeWindow.alertInfo("Les informations liées au score ont été correctement mises à jour");
 	}
 
 }

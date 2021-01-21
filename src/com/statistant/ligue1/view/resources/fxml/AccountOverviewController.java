@@ -3,9 +3,7 @@ package com.statistant.ligue1.view.resources.fxml;
 import java.io.File;
 
 import com.statistant.ligue1.dao.DatabaseConnection;
-import com.statistant.ligue1.dao.NullUserException;
 import com.statistant.ligue1.pojo.User;
-import com.statistant.ligue1.utils.Ligue1Utils;
 import com.statistant.ligue1.view.InitializeWindow;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -89,7 +87,7 @@ public class AccountOverviewController {
 	public void setReportPath(String reportPath) {
 		this.emplacement.set(reportPath);
 		this.reportPath.setText(reportPath);
-		AuthentificationOverviewController.REPORT_PATH = reportPath;
+		AuthentificationOverviewController.setREPORT_PATH(reportPath);
 	}
 
 	public String getSubscribtionType() {
@@ -99,7 +97,7 @@ public class AccountOverviewController {
 	public void setSubscribtionType(String subscribtionType) {
 		this.typeAbo.set(subscribtionType);
 		this.subscribtionType.setValue(subscribtionType);
-		AuthentificationOverviewController.SUBSCRIPTION_TYPE = subscribtionType;
+		AuthentificationOverviewController.setSUBSCRIPTION_TYPE(subscribtionType);
 	}
 
 	public String getTeams() {
@@ -109,7 +107,7 @@ public class AccountOverviewController {
 	public void setTeams(String teams) {
 		this.teams.setText(teams);
 		this.equipes.set(teams);
-		AuthentificationOverviewController.MY_TEAMS = teams;
+		AuthentificationOverviewController.setMY_TEAMS(teams);
 	}
 
 	public Integer getNbReportsPerTeam() {
@@ -119,7 +117,7 @@ public class AccountOverviewController {
 	public void setNbReportsPerTeam(String nbReportsPerTeam) {
 		this.nbReportsPerTeam.setText(nbReportsPerTeam);
 		this.nbRapportsParEquipe.set(nbReportsPerTeam);
-		AuthentificationOverviewController.NB_REPORTS_PER_TEAM = Integer.parseInt(nbReportsPerTeam);
+		AuthentificationOverviewController.setNB_REPORTS_PER_TEAM(Integer.parseInt(nbReportsPerTeam));
 	}
 
 	public Integer getNbReportsLeft() {
@@ -129,7 +127,7 @@ public class AccountOverviewController {
 	public void setNbReportsLeft(String nbReportsLeft) {
 		this.nbReportsLeft.setText(nbReportsLeft);
 		this.nbRapportsRestants.set(nbReportsLeft);
-		AuthentificationOverviewController.NB_REPORTS_LEFT = Integer.parseInt(nbReportsLeft);
+		AuthentificationOverviewController.setNB_REPORTS_LEFT(Integer.parseInt(nbReportsLeft));
 	}
 
 	public String getJourneys() {
@@ -139,7 +137,7 @@ public class AccountOverviewController {
 	public void setJourneys(String journeys) {
 		this.journeys.setText(journeys);
 		this.journees.set(journeys);
-		AuthentificationOverviewController.JOURNEES_SUBSCRIBED = journeys;
+		AuthentificationOverviewController.setJOURNEES_SUBSCRIBED(journeys);
 	}
 
 	@FXML
@@ -149,14 +147,8 @@ public class AccountOverviewController {
 
 	@FXML
 	public void handleModifyPassword() {
-		User user;
-		try {
-			user = DatabaseConnection.getUserByLogin(AuthentificationOverviewController.USER_CONNECTED);
-			InitializeWindow.showPasswordModificationWithBackButtonOverview(user);
-		} catch (NullUserException e) {
-			Ligue1Utils.reportError(e.getMessage());
-			return;
-		}
+		User user = AuthentificationOverviewController.getUSER_CONNECTED();
+		InitializeWindow.showPasswordModificationWithBackButtonOverview(user);
 	}
 	
 	@FXML
@@ -165,60 +157,42 @@ public class AccountOverviewController {
 		File selectedFile = selector.showDialog(InitializeWindow.primaryStage);
 		String reportPath = selectedFile.getAbsolutePath();
 		setReportPath(reportPath);
-		User user;
-		try {
-			user = DatabaseConnection.getUserByLogin(AuthentificationOverviewController.USER_CONNECTED);
-			user.setReportPath(getReportPath());
-			DatabaseConnection.createOrUpdateUser(user);
-		} catch (NullUserException e) {
-			Ligue1Utils.reportError(e.getMessage());
-			return;
-		}
+		User user = AuthentificationOverviewController.getUSER_CONNECTED();
+		user.setReportPath(getReportPath());
+		DatabaseConnection.createOrUpdateUser(user);
 	}
 	
 	@FXML
 	private void initialize() {
 		subscribtionType.setItems(abonnements);
-		String userLogin = AuthentificationOverviewController.USER_CONNECTED;
-		try {
-			User user = DatabaseConnection.getUserByLogin(userLogin);
-			String abo = user.getSubscribtionType();
-			subscribtionType.setValue(abo);
-			if (abo.equals("EQUIPES")) {
-				journeys.setVisible(false);
-				textJourneys.setVisible(false);
-				nbReportsLeft.setVisible(true);
-				textNbReportsLeft.setVisible(true);
-				nbReportsPerTeam.setVisible(true);
-				textNbReportsPerTeam.setVisible(true);
-				teams.setVisible(true);
-				textTeams.setVisible(true);				
-			}
-			if (abo.equals("JOURNEES")) {
-				journeys.setVisible(true);
-				textJourneys.setVisible(true);
-				nbReportsLeft.setVisible(false);
-				textNbReportsLeft.setVisible(false);
-				nbReportsPerTeam.setVisible(false);
-				textNbReportsPerTeam.setVisible(false);
-				teams.setVisible(false);
-				textTeams.setVisible(false);	
-			}
-			
-		} catch (NullUserException e) {
-			Ligue1Utils.reportError(e.getMessage());
-			return;
+		User user = AuthentificationOverviewController.getUSER_CONNECTED();
+		String abo = user.getSubscribtionType();
+		subscribtionType.setValue(abo);
+		if (abo.equals("EQUIPES")) {
+			journeys.setVisible(false);
+			textJourneys.setVisible(false);
+			nbReportsLeft.setVisible(true);
+			textNbReportsLeft.setVisible(true);
+			nbReportsPerTeam.setVisible(true);
+			textNbReportsPerTeam.setVisible(true);
+			teams.setVisible(true);
+			textTeams.setVisible(true);				
+		}
+		if (abo.equals("JOURNEES")) {
+			journeys.setVisible(true);
+			textJourneys.setVisible(true);
+			nbReportsLeft.setVisible(false);
+			textNbReportsLeft.setVisible(false);
+			nbReportsPerTeam.setVisible(false);
+			textNbReportsPerTeam.setVisible(false);
+			teams.setVisible(false);
+			textTeams.setVisible(false);	
 		}
 	}
 
 	public void setUser(String userLogin) {
-		User user;
-		try {
-			user = DatabaseConnection.getUserByLogin(userLogin);
-		} catch (NullUserException e) {
-			Ligue1Utils.reportError(e.getMessage());
-			return;
-		}
+		User user = AuthentificationOverviewController.getUSER_CONNECTED();
+		
 		identifiant.set(user.getLogin());
 		setLogin(user.getLogin());
 		login.setText(getLogin());
