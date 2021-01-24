@@ -21,6 +21,7 @@ import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 public class ModifyMatchOverviewController {
@@ -113,6 +114,11 @@ public class ModifyMatchOverviewController {
 	private final StringProperty resultat = new SimpleStringProperty();
 	@FXML
 	private TextField score;
+	
+	private final StringProperty commentaire = new SimpleStringProperty();
+	@FXML
+	private TextArea comment;
+	
 	@FXML
 	private MenuButton awayTeamPossibilities;
 
@@ -181,6 +187,8 @@ public class ModifyMatchOverviewController {
 		isAnImportantGameForHomeTeam.setText(String.valueOf(getIsAnImportantGameForHomeTeam()));
 		setIsAnImportantGameForAwayTeam(Ligue1Utils.convert01ToString(match.getIsAnImportantGameForAwayTeam()));
 		isAnImportantGameForAwayTeam.setText(String.valueOf(getIsAnImportantGameForAwayTeam()));
+		setComment(match.getComment());
+		comment.setText(getCommentaire());
 	}
 
 	public MenuItem getUn() {
@@ -753,6 +761,19 @@ public class ModifyMatchOverviewController {
 		this.resultat.set(string);
 		score.setText(String.valueOf(string));
 	}
+	
+	public String getFormComment() {
+		return this.comment.getText();
+	}
+
+	public String getCommentaire() {
+		return this.commentaire.get();
+	}
+
+	public void setComment(String string) {
+		this.commentaire.set(string);
+		comment.setText(String.valueOf(string));
+	}
 
 	public String getFormHomeTeamPossibilities() {
 		return this.homeTeamPossibilities.getText();
@@ -919,8 +940,9 @@ public class ModifyMatchOverviewController {
 				Integer isImportantGameForAwayTeam = getFormIsAnImportantGameForAwayTeam();
 				Integer homeTeamHasBetterStanding = getFormHomeTeamHasABetterStanding();
 				Integer journee = getJourneyNumber();
+				String comment = getCommentaire();
 				Match match = new Match(team1, team2, resultat, victoireEquipe1, nul, victoireEquipe2,
-						isImportantGameForHomeTeam, isImportantGameForAwayTeam, homeTeamHasBetterStanding, journee);
+						isImportantGameForHomeTeam, isImportantGameForAwayTeam, homeTeamHasBetterStanding, journee, comment);
 				DatabaseConnection.createOrUpdateMatch(match);
 				Ligue1Utils.reportInfo("Match " + match.getId() + " modifié avec succès.");
 				InitializeWindow.alertInfo("Match " + match.getId() + " modifié avec succès.");
@@ -942,8 +964,9 @@ public class ModifyMatchOverviewController {
 				Integer isImportantGameForAwayTeam = getFormIsAnImportantGameForAwayTeam();
 				Integer homeTeamHasBetterStanding = getFormHomeTeamHasABetterStanding();
 				Integer journee = Integer.parseInt(getJourney().getText());
+				String comment = getFormComment();
 				Match match = new Match(team1, team2, isImportantGameForHomeTeam, isImportantGameForAwayTeam,
-						homeTeamHasBetterStanding, journee);
+						homeTeamHasBetterStanding, journee, comment);
 				DatabaseConnection.createOrUpdateMatch(match);
 				Ligue1Utils.reportInfo("Match " + match.getId() + " modifié avec succès.");
 				InitializeWindow.alertInfo("Match " + match.getId() + " modifié avec succès.");

@@ -18,6 +18,7 @@ import com.statistant.ligue1.view.InitializeWindow;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 public class NewMatchOverviewController {
@@ -198,6 +199,8 @@ public class NewMatchOverviewController {
 	private TextField isAnImportantGameForHomeTeam;
 	@FXML
 	private TextField isAnImportantGameForAwayTeam;
+	@FXML
+	private TextArea comment;
 
 	public MenuItem getAsm1() {
 		return asm1;
@@ -903,6 +906,14 @@ public class NewMatchOverviewController {
 		this.isAnImportantGameForAwayTeam.setText(string);
 	}
 
+	public TextArea getComment() {
+		return comment;
+	}
+
+	public void setComment(TextArea comment) {
+		this.comment = comment;
+	}
+
 	@FXML
 	private void handleJourneyUn() {
 		String selectedJourney = getUn().getText();
@@ -1387,8 +1398,9 @@ public class NewMatchOverviewController {
 				Integer isImportantGameForAwayTeam = getIsAnImportantGameForAwayTeam();
 				Integer homeTeamHasBetterStanding = getHomeTeamHasABetterStanding();
 				Integer journee = Integer.parseInt(getJourney().getText());
+				String comment = getComment().getText();
 				Match match = new Match(team1, team2, resultat, victoireEquipe1, nul, victoireEquipe2,
-						isImportantGameForHomeTeam, isImportantGameForAwayTeam, homeTeamHasBetterStanding, journee);
+						isImportantGameForHomeTeam, isImportantGameForAwayTeam, homeTeamHasBetterStanding, journee, comment);
 				try {
 					DatabaseConnection.getMatch(match.getId());
 					Ligue1Utils.reportError(
@@ -1413,8 +1425,9 @@ public class NewMatchOverviewController {
 				Integer isImportantGameForAwayTeam = getIsAnImportantGameForAwayTeam();
 				Integer homeTeamHasBetterStanding = getHomeTeamHasABetterStanding();
 				Integer journee = Integer.parseInt(getJourney().getText());
+				String comment = getComment().getText();
 				Match match = new Match(team1, team2, isImportantGameForHomeTeam, isImportantGameForAwayTeam,
-						homeTeamHasBetterStanding, journee);
+						homeTeamHasBetterStanding, journee, comment);
 				try {
 					DatabaseConnection.getMatch(match.getId());
 					Ligue1Utils.reportError(

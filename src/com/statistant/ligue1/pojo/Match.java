@@ -17,6 +17,7 @@ public class Match {
 	String homeTeamName;
 	String awayTeamName;
 	String score;
+	String comment;
 	Integer homeTeamWin;
 	Integer draw;
 	Integer awayTeamWin;
@@ -31,7 +32,7 @@ public class Match {
 	public Match(String homeTeamNickname, String awayTeamNickname, String score, int homeTeamWin, int draw,
 			int awayTeamWin, int isAnImportantGameForHomeTeam, int isAnImportantGameForAwayTeam,
 			int homeTeamHasABetterStanding, int resetAllSeason, int countMatch, int activeStatisticsReportGeneration,
-			int journey) {
+			int journey, String comment) {
 		this.id = homeTeamNickname + "-" + awayTeamNickname;
 		this.homeTeamNickname = homeTeamNickname;
 		this.awayTeamNickname = awayTeamNickname;
@@ -53,12 +54,13 @@ public class Match {
 		this.countMatch = countMatch;
 		this.activeStatisticsReportGeneration = activeStatisticsReportGeneration;
 		this.journey = journey;
+		this.comment = comment;
 	}
 	
 	public Match(String homeTeamNickname, String awayTeamNickname, String score, int homeTeamWin, int draw,
 			int awayTeamWin, int isAnImportantGameForHomeTeam, int isAnImportantGameForAwayTeam,
 			int homeTeamHasABetterStanding,
-			int journey) {
+			int journey, String comment) {
 		this.id = homeTeamNickname + "-" + awayTeamNickname;
 		this.homeTeamNickname = homeTeamNickname;
 		this.awayTeamNickname = awayTeamNickname;
@@ -80,11 +82,12 @@ public class Match {
 		this.countMatch = 0;
 		this.activeStatisticsReportGeneration = 0;
 		this.journey = journey;
+		this.comment = comment;
 	}
 	
 	public Match(String homeTeamNickname, String awayTeamNickname, int isAnImportantGameForHomeTeam, int isAnImportantGameForAwayTeam,
 			int homeTeamHasABetterStanding,
-			int journey) {
+			int journey, String comment) {
 		this.id = homeTeamNickname + "-" + awayTeamNickname;
 		this.homeTeamNickname = homeTeamNickname;
 		this.awayTeamNickname = awayTeamNickname;
@@ -106,6 +109,7 @@ public class Match {
 		this.countMatch = 0;
 		this.activeStatisticsReportGeneration = 1;
 		this.journey = journey;
+		this.comment = comment;
 	}
 
 	public String getHomeTeamNickname() {
@@ -154,6 +158,14 @@ public class Match {
 
 	public void setScore(String score) {
 		this.score = score;
+	}
+	
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 	public int getHomeTeamWin() {

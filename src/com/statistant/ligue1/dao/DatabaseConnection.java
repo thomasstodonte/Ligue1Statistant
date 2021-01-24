@@ -777,7 +777,8 @@ public class DatabaseConnection {
 			String update8 = getQueryToUpdateInTableUsers("email", user,
 					(Ligue1Utils.isEmpty(user.getEmail()) ? "" : user.getEmail()));
 			String update9 = getQueryToUpdateInTableUsers("nbReportsPerTeam", user, user.getNbReportsPerTeam());
-			String update10 = getQueryToUpdateInTableUsers("reportsAlreadyGenerated", user, user.getReportsAlreadyGenerated());
+			String update10 = getQueryToUpdateInTableUsers("reportsAlreadyGenerated", user,
+					user.getReportsAlreadyGenerated());
 			String create = getQueryToInsertIntoTableUsers(user);
 			ResultSet rs = st.executeQuery(select);
 			if (rs.next()) {
@@ -805,7 +806,8 @@ public class DatabaseConnection {
 		return "INSERT INTO users VALUES ('" + user.getLogin() + "','" + user.getPassword() + "','"
 				+ user.getReportPath() + "','" + user.getJourneesSubscribed() + "','" + user.getPasswordModified()
 				+ "','" + user.getMyTeams() + "','" + user.getNbReportsLeft() + "','" + user.getSubscribtionType()
-				+ "','" + user.getEmail() + "','" + user.getNbReportsPerTeam() + "','" + user.getReportsAlreadyGenerated()+ "')";
+				+ "','" + user.getEmail() + "','" + user.getNbReportsPerTeam() + "','"
+				+ user.getReportsAlreadyGenerated() + "')";
 	}
 
 	private static String getQueryToUpdateInTableUsers(String field, User user, Object attribute) {
@@ -1260,10 +1262,10 @@ public class DatabaseConnection {
 				int countMatch = rs.getInt("Comptabilise");
 				int activeStatisticsReportGeneration = rs.getInt("RapportStatistiques");
 				int journey = rs.getInt("Journey");
-
+				String comment = rs.getString("Comment");
 				match = new Match(homeTeamNickname, awayTeamNickname, score, homeTeamWin, draw, awayTeamWin,
 						isAnImportantGameForHomeTeam, isAnImportantGameForAwayTeam, homeTeamHasABetterStanding,
-						resetAllSeason, countMatch, activeStatisticsReportGeneration, journey);
+						resetAllSeason, countMatch, activeStatisticsReportGeneration, journey, comment);
 			}
 		} catch (SQLException e) {
 			Ligue1Utils.reportError("Erreur à la récupération du match " + matchName);
@@ -1319,7 +1321,7 @@ public class DatabaseConnection {
 		}
 		return allMatches;
 	}
-	
+
 	public static Collection<Confrontation> getAllConfrontationsForTeam(String team) throws NullConfrontationException {
 		List<Confrontation> allConfrontationsForTeam = new ArrayList<Confrontation>();
 		Collection<Confrontation> allConfrontations = getAllConfrontations();
@@ -1335,7 +1337,7 @@ public class DatabaseConnection {
 		}
 		return allConfrontationsForTeam;
 	}
-	
+
 	public static Collection<Match> getAllMatchesForJourney(String journey) {
 		Connection cn = initializeOrGetConnection();
 		String query = "";
@@ -1350,21 +1352,22 @@ public class DatabaseConnection {
 				allMatches.add(match);
 			}
 		} catch (SQLException | NullMatchException e) {
-			Ligue1Utils.reportError("Erreur à la récupération de tous les matchs de Ligue 1 pour la journée "
-					+ journey + " : " + e.getMessage());
+			Ligue1Utils.reportError("Erreur à la récupération de tous les matchs de Ligue 1 pour la journée " + journey
+					+ " : " + e.getMessage());
 			e.printStackTrace();
 			return null;
 		}
 		return allMatches;
 	}
-	
+
 	public static Collection<Confrontation> getAllConfrontationsForJourney(String journey) {
 		Connection cn = initializeOrGetConnection();
 		String query = "";
 		List<Confrontation> allConfrontations = new ArrayList<Confrontation>();
 		try {
 			Statement st = cn.createStatement();
-			query = "SELECT * FROM confrontations JOIN matches ON confrontations.match = matches.id WHERE matches.Journey = " + Integer.parseInt(journey);
+			query = "SELECT * FROM confrontations JOIN matches ON confrontations.match = matches.id WHERE matches.Journey = "
+					+ Integer.parseInt(journey);
 			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
 				String id = rs.getString("id");
@@ -1566,6 +1569,7 @@ public class DatabaseConnection {
 			String update12 = getQueryToUpdateInTableMatches("RapportStatistiques", match,
 					match.getActiveStatisticsReportGeneration());
 			String update13 = getQueryToUpdateInTableMatches("Journey", match, match.getJourney());
+			String update14 = getQueryToUpdateInTableMatches("Comment", match, match.getComment());
 			String create = getQueryToInsertIntoTableMatches(match);
 			ResultSet rs = st.executeQuery(select);
 			if (rs.next()) {
@@ -1582,18 +1586,19 @@ public class DatabaseConnection {
 				st.executeUpdate(update11);
 				st.executeUpdate(update12);
 				st.executeUpdate(update13);
+				st.executeUpdate(update14);
 			} else {
 				st.executeUpdate(create);
 			}
 		} catch (SQLException e) {
-			Ligue1Utils.reportError("Erreur à la récupération de toutes les matchs de Ligue 1 : " + e.getMessage());
+			Ligue1Utils.reportError("Erreur à la création / mise à jour du match " + match.getId() + " : " + e.getMessage());
 			e.printStackTrace();
 			return;
 		}
 	}
 
 	public static String getQueryToUpdateInTableMatches(String field, Match match, Object attribute) {
-		return "UPDATE matches SET " + field + " = '" + attribute + "'  WHERE matches.id = \""
+		return "UPDATE matches SET " + field + " = \"" + attribute + "\"  WHERE matches.id = \""
 				+ match.getHomeTeamNickname() + "-" + match.getAwayTeamNickname() + "\"";
 
 	}
@@ -1610,7 +1615,8 @@ public class DatabaseConnection {
 				+ match.getAwayTeamWin() + "','" + match.getIsAnImportantGameForHomeTeam() + "','"
 				+ match.getIsAnImportantGameForAwayTeam() + "','" + match.getHomeTeamHasABetterStanding() + "','"
 				+ match.getResetAllSeason() + "','" + match.getCountMatch() + "','" + match.getScore() + "','"
-				+ match.getActiveStatisticsReportGeneration() + "','" + match.getJourney() + "')";
+				+ match.getActiveStatisticsReportGeneration() + "','" + match.getJourney() + "','" + match.getComment()
+				+ "')";
 	}
 
 	public static String getQueryToUpdateInTableConfrontations(String field, Confrontation confrontation,

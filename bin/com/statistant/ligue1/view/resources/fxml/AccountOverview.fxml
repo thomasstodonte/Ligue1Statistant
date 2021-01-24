@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.statistant.ligue1.view.resources.fxml.AccountOverviewController">
+   <children>
+      <VBox layoutX="37.0" layoutY="85.0" prefHeight="200.0" prefWidth="86.0">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Identifiant" />
+            <TextField fx:id="login" disable="true" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Adresse email" />
+            <TextField fx:id="email" disable="true" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mot de passe" />
+            <PasswordField fx:id="password" disable="true" />
+            <Button mnemonicParsing="false" onAction="#handleModifyPassword" text="Modifier" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Emplacement de génération des rapports" />
+            <TextField fx:id="reportPath" disable="true" prefHeight="200.0" prefWidth="200.0" />
+            <Button mnemonicParsing="false" onAction="#handleModifyReportPath" text="Modifier l'emplacement" />
+         </children>
+      </VBox>
+      <Text layoutX="199.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mes informations" textAlignment="CENTER" />
+      <ButtonBar layoutX="112.0" layoutY="328.0" prefHeight="40.0" prefWidth="334.0">
+        <buttons>
+          <Button fx:id="menu" mnemonicParsing="false" onAction="#handleBackToMainMenu" text="Menu principal">
+          <cursor>
+             <Cursor fx:constant="HAND" />
+          </cursor></Button>
+        </buttons>
+      </ButtonBar>
+      <VBox layoutX="300.0" layoutY="85.0" prefHeight="200.0" prefWidth="86.0">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Type d'abonnement" />
+            <ChoiceBox fx:id="subscribtionType" disable="true" prefWidth="150.0" />
+            <Text fx:id="textTeams" strokeType="OUTSIDE" strokeWidth="0.0" text="Equipes souscrites" />
+            <TextField fx:id="teams" disable="true" />
+            <Text fx:id="textNbReportsPerTeam" strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre de raports par équipe" />
+            <TextField fx:id="nbReportsPerTeam" disable="true" />
+            <Text fx:id="textNbReportsLeft" strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre de raports restants" />
+            <TextField fx:id="nbReportsLeft" disable="true" />
+         </children>
+      </VBox>
+      <VBox layoutX="301.0" layoutY="128.0" prefHeight="157.0" prefWidth="162.0">
+         <children>
+            <Text fx:id="textJourneys" strokeType="OUTSIDE" strokeWidth="0.0" text="Journées souscrites" />
+            <TextField fx:id="journeys" disable="true" />
+         </children>
+      </VBox>
+      <Text layoutX="301.0" layoutY="290.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pour modifier/compléter votre abonnement," />
+      <Text layoutX="300.0" layoutY="306.0" strokeType="OUTSIDE" strokeWidth="0.0" text="merci de contacter l'administrateur par email" />
+      <Text layoutX="300.0" layoutY="322.0" strokeType="OUTSIDE" strokeWidth="0.0" text="à l'adresse : support@statistant.fr" />
+   </children>
+</AnchorPane>

@@ -3,10 +3,7 @@ package com.statistant.ligue1.controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -52,7 +49,7 @@ public class GenerateStatisticsReport {
 			throws IOException, NullTeamException, NullConfrontationException, NullMatchException,
 			InvalidNumberToConvertFromBooleanException, NullStatisticException {
 
-		Configuration config = new Configuration(5, 6F, 6F,0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 6F);
+		Configuration config = new Configuration(5, 6F, 6F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 6F);
 		String match = statistics.getMatch();
 		String[] teams = match.split("-");
 		String homeTeam = teams[0];
@@ -62,15 +59,22 @@ public class GenerateStatisticsReport {
 		int journey = matchEntity.getJourney();
 
 		XWPFDocument document = new XWPFDocument();
-		File dossier = new File(selectedDirectoryPath + "\\Journée "+journey);
+		File dossier = new File(selectedDirectoryPath + "\\Journée " + journey);
 		dossier.mkdir();
 		File rapport_match = new File(
-				selectedDirectoryPath + "\\Journée "+journey + "\\Rapport " + matchEntity.getId() + ".docx");
+				selectedDirectoryPath + "\\Journée " + journey + "\\Rapport " + matchEntity.getId() + ".docx");
 		FileOutputStream out = new FileOutputStream(rapport_match);
 		TreeMap<String, String> mapTreeStatsGenerales = new TreeMap<>();
 		mapTreeStatsGenerales = getTreeMapStatsVictoires(statistics, match, homeTeam, awayTeam);
 		String generalStandingOfHomeTeam;
 		String generalStandingOfAwayTeam;
+		writeTitleInWordDocument("RAPPORT STATISTIQUES DU MATCH " + match + " :", document);
+		String comment = matchEntity.getComment();
+		if (!Ligue1Utils.isEmpty(comment)) {
+			Map<String, String> mapComment = new HashMap<>();
+			mapComment.put("A savoir", comment);
+			writeMapInWordDocument("Informations importantes", mapComment, document);
+		}
 		try {
 			generalStandingOfHomeTeam = getGeneralStandingAndPointsNumber(homeTeam);
 			generalStandingOfAwayTeam = getGeneralStandingAndPointsNumber(awayTeam);
@@ -161,6 +165,7 @@ public class GenerateStatisticsReport {
 
 		InitializeWindow.alertInfo("Le rapport du match " + match + " a bien été enregistré dans le dossier "
 				+ rapport_match.getAbsolutePath());
+
 	}
 
 	private static String getGeneralStandingAndPointsNumber(String teamNickname)
@@ -2716,133 +2721,144 @@ public class GenerateStatisticsReport {
 		document.createParagraph().createRun().setText("");
 	}
 
-	public static void main(String[] args) {
-		try {
-			List<Configuration> allConfigs = new ArrayList<Configuration>();
-//			Configuration config1 = new Configuration(1, 0.1F, 0.1F, 0.1F, 3F, 3F, 3F, 3F, 6F, 6F);
-//			Configuration config2 = new Configuration(2, 6F, 0.1F, 0.1F, 3F, 3F, 3F, 3F, 6F, 6F);
-//			Configuration config3 = new Configuration(3, 1F, 1F, 3F, 6F, 3F, 6F, 6F, 6F, 1F);
-//			Configuration config4 = new Configuration(4, 1.5F, 1F, 2F, 1F, 2F, 1F, 2F, 2F, 1.5F);
-//			Configuration config5 = new Configuration(5, 6F, 6F,0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 6F);
-			Configuration config1 = new Configuration(1, 1F, 2F, 3F, 4F, 5F, 6F, 7F, 8F, 9F);
-			Configuration config2 = new Configuration(2, 9F, 8F, 7F, 6F, 5F, 4F, 3F, 2F, 1F);
-			Configuration config3 = new Configuration(3, 1F, 9F, 1F, 9F, 1F, 9F, 1F, 9F, 1F);
-			Configuration config4 = new Configuration(4, 9F, 1F, 9F, 1F, 9F, 1F, 9F, 1F, 9F);
-			Configuration config5 = new Configuration(5, 1F, 1F, 1F, 1F, 1F, 1F, 1F, 1F, 1F);
-			allConfigs.add(config1);
-			allConfigs.add(config2);
-			allConfigs.add(config3);
-			allConfigs.add(config4);
-			allConfigs.add(config5);
-			Iterator<Configuration> iteratorConfigs = allConfigs.iterator();
-			while (iteratorConfigs.hasNext()) {
-				Configuration config = iteratorConfigs.next();
-				List<Statistic> allStats = new ArrayList<Statistic>();
-				Statistic statASSESCO = DatabaseConnection.getStatistic("FCN-SRFC");
-				Statistic statFCLNO = DatabaseConnection.getStatistic("FCL-ASM");
-				Statistic statFCNDFCO = DatabaseConnection.getStatistic("FCM-FCGB");
-				Statistic statLOSCFCGB = DatabaseConnection.getStatistic("SB29-OGCN");
-				Statistic statOGCNSRFC = DatabaseConnection.getStatistic("RCS-NO");
-				Statistic statOMASM = DatabaseConnection.getStatistic("OL-RCL");
-				Statistic statPSGOL = DatabaseConnection.getStatistic("LOSC-SCO");
-				Statistic statRCLMHSC = DatabaseConnection.getStatistic("ASSE-PSG");
-				Statistic statRCSFCM = DatabaseConnection.getStatistic("OM-MHSC");
-				Statistic statSB29SDR = DatabaseConnection.getStatistic("SDR-DFCO");
-				allStats.add(statASSESCO);
-				allStats.add(statSB29SDR);
-				allStats.add(statFCLNO);
-				allStats.add(statFCNDFCO);
-				allStats.add(statLOSCFCGB);
-				allStats.add(statOGCNSRFC);
-				allStats.add(statOMASM);
-				allStats.add(statPSGOL);
-				allStats.add(statRCLMHSC);
-				allStats.add(statRCSFCM);
-				Iterator<Statistic> iteratorMatchs = allStats.iterator();
-				int nbReussite = 0;
-				Float pourcentageReussite = 0F;
+	private static void writeTitleInWordDocument(String title, XWPFDocument document) {
+		XWPFParagraph paragraph = document.createParagraph();
+		XWPFRun run = paragraph.createRun();
+		run.setText(title);
+		run.setBold(true);
+		run.setFontSize(14);
+		document.createParagraph().createRun().setText("");
+	}
 
-				while (iteratorMatchs.hasNext()) {
-					Statistic stat = iteratorMatchs.next();
-					String match = stat.getMatch();
-					String[] teams = match.split("-");
-					String homeTeam = teams[0];
-					String awayTeam = teams[1];
-					Float homeTeamProbability = getProbabilityPointsForHomeTeam(stat, match, homeTeam, awayTeam,
-							config);
-					Float drawProbability = getDrawProbabilityPoints(stat, match, homeTeam, awayTeam, config);
-					Float awayTeamProbability = getProbabilityPointsForAwayTeam(stat, match, homeTeam, awayTeam,
-							config);
-					float total = homeTeamProbability + drawProbability + awayTeamProbability;
-					System.out.println("CONFIG " + config.getId() + " : \n");
-					System.out.println(homeTeam + " : "
-							+ (getProbabilityPointsForHomeTeam(stat, match, homeTeam, awayTeam, config) / total) * 100);
-					System.out.println("NUL : "
-							+ (getDrawProbabilityPoints(stat, match, homeTeam, awayTeam, config) / total) * 100);
-					System.out.println(awayTeam + " : "
-							+ (getProbabilityPointsForAwayTeam(stat, match, homeTeam, awayTeam, config) / total) * 100
-							+ "\n");
-					switch (stat.getMatch()) {
-					case "FCN-SRFC":
-						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "FCL-ASM":
-						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "FCM-FCGB":
-						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "SB29-OGCN":
-						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "RCS-NO":
-						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "OL-RCL":
-						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "LOSC-SCO":
-						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "ASSE-PSG":
-						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "OM-MHSC":
-						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					case "SDR-DFCO":
-						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
-							nbReussite++;
-						}
-						break;
-					}
-				}
-				pourcentageReussite = (nbReussite / 10F * 100);
-				System.out.println("-------------------------------------------------");
-				System.out.println("TAUX DE REUSSITE CONFIGURATION NUMERO " + config.getId() + " : " +pourcentageReussite + "%");
-				System.out.println("-------------------------------------------------");
-			}
-		} catch (NullStatisticException | InvalidNumberToConvertFromBooleanException | NullTeamException
-				| NullMatchException e) {
-			System.out.println("Erreur à la récupération des statistiques du match " + e.getMessage());
-		}
+	public static void main(String[] args) {
+//		convertToPdf("C:\\perso\\Ligue1", "PSG-MHSC", 21);
+//		try {
+//			List<Configuration> allConfigs = new ArrayList<Configuration>();
+////			Configuration config1 = new Configuration(1, 0.1F, 0.1F, 0.1F, 3F, 3F, 3F, 3F, 6F, 6F);
+////			Configuration config2 = new Configuration(2, 6F, 0.1F, 0.1F, 3F, 3F, 3F, 3F, 6F, 6F);
+////			Configuration config3 = new Configuration(3, 1F, 1F, 3F, 6F, 3F, 6F, 6F, 6F, 1F);
+////			Configuration config4 = new Configuration(4, 1.5F, 1F, 2F, 1F, 2F, 1F, 2F, 2F, 1.5F);
+////			Configuration config5 = new Configuration(5, 6F, 6F,0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 6F);
+//			Configuration config1 = new Configuration(1, 1F, 2F, 3F, 4F, 5F, 6F, 7F, 8F, 9F);
+//			Configuration config2 = new Configuration(2, 9F, 8F, 7F, 6F, 5F, 4F, 3F, 2F, 1F);
+//			Configuration config3 = new Configuration(3, 1F, 9F, 1F, 9F, 1F, 9F, 1F, 9F, 1F);
+//			Configuration config4 = new Configuration(4, 9F, 1F, 9F, 1F, 9F, 1F, 9F, 1F, 9F);
+//			Configuration config5 = new Configuration(5, 1F, 1F, 1F, 1F, 1F, 1F, 1F, 1F, 1F);
+//			allConfigs.add(config1);
+//			allConfigs.add(config2);
+//			allConfigs.add(config3);
+//			allConfigs.add(config4);
+//			allConfigs.add(config5);
+//			Iterator<Configuration> iteratorConfigs = allConfigs.iterator();
+//			while (iteratorConfigs.hasNext()) {
+//				Configuration config = iteratorConfigs.next();
+//				List<Statistic> allStats = new ArrayList<Statistic>();
+//				Statistic statASSESCO = DatabaseConnection.getStatistic("FCN-SRFC");
+//				Statistic statFCLNO = DatabaseConnection.getStatistic("FCL-ASM");
+//				Statistic statFCNDFCO = DatabaseConnection.getStatistic("FCM-FCGB");
+//				Statistic statLOSCFCGB = DatabaseConnection.getStatistic("SB29-OGCN");
+//				Statistic statOGCNSRFC = DatabaseConnection.getStatistic("RCS-NO");
+//				Statistic statOMASM = DatabaseConnection.getStatistic("OL-RCL");
+//				Statistic statPSGOL = DatabaseConnection.getStatistic("LOSC-SCO");
+//				Statistic statRCLMHSC = DatabaseConnection.getStatistic("ASSE-PSG");
+//				Statistic statRCSFCM = DatabaseConnection.getStatistic("OM-MHSC");
+//				Statistic statSB29SDR = DatabaseConnection.getStatistic("SDR-DFCO");
+//				allStats.add(statASSESCO);
+//				allStats.add(statSB29SDR);
+//				allStats.add(statFCLNO);
+//				allStats.add(statFCNDFCO);
+//				allStats.add(statLOSCFCGB);
+//				allStats.add(statOGCNSRFC);
+//				allStats.add(statOMASM);
+//				allStats.add(statPSGOL);
+//				allStats.add(statRCLMHSC);
+//				allStats.add(statRCSFCM);
+//				Iterator<Statistic> iteratorMatchs = allStats.iterator();
+//				int nbReussite = 0;
+//				Float pourcentageReussite = 0F;
+//
+//				while (iteratorMatchs.hasNext()) {
+//					Statistic stat = iteratorMatchs.next();
+//					String match = stat.getMatch();
+//					String[] teams = match.split("-");
+//					String homeTeam = teams[0];
+//					String awayTeam = teams[1];
+//					Float homeTeamProbability = getProbabilityPointsForHomeTeam(stat, match, homeTeam, awayTeam,
+//							config);
+//					Float drawProbability = getDrawProbabilityPoints(stat, match, homeTeam, awayTeam, config);
+//					Float awayTeamProbability = getProbabilityPointsForAwayTeam(stat, match, homeTeam, awayTeam,
+//							config);
+//					float total = homeTeamProbability + drawProbability + awayTeamProbability;
+//					System.out.println("CONFIG " + config.getId() + " : \n");
+//					System.out.println(homeTeam + " : "
+//							+ (getProbabilityPointsForHomeTeam(stat, match, homeTeam, awayTeam, config) / total) * 100);
+//					System.out.println("NUL : "
+//							+ (getDrawProbabilityPoints(stat, match, homeTeam, awayTeam, config) / total) * 100);
+//					System.out.println(awayTeam + " : "
+//							+ (getProbabilityPointsForAwayTeam(stat, match, homeTeam, awayTeam, config) / total) * 100
+//							+ "\n");
+//					switch (stat.getMatch()) {
+//					case "FCN-SRFC":
+//						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "FCL-ASM":
+//						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "FCM-FCGB":
+//						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "SB29-OGCN":
+//						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "RCS-NO":
+//						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "OL-RCL":
+//						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "LOSC-SCO":
+//						if (awayTeamProbability > homeTeamProbability && drawProbability < awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "ASSE-PSG":
+//						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "OM-MHSC":
+//						if (drawProbability < homeTeamProbability && homeTeamProbability > awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					case "SDR-DFCO":
+//						if (drawProbability > homeTeamProbability && drawProbability > awayTeamProbability) {
+//							nbReussite++;
+//						}
+//						break;
+//					}
+//				}
+//				pourcentageReussite = (nbReussite / 10F * 100);
+//				System.out.println("-------------------------------------------------");
+//				System.out.println(
+//						"TAUX DE REUSSITE CONFIGURATION NUMERO " + config.getId() + " : " + pourcentageReussite + "%");
+//				System.out.println("-------------------------------------------------");
+//			}
+//		} catch (NullStatisticException | InvalidNumberToConvertFromBooleanException | NullTeamException
+//				| NullMatchException e) {
+//			System.out.println("Erreur à la récupération des statistiques du match " + e.getMessage());
+//		}
 	}
 }
