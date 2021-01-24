@@ -1569,7 +1569,7 @@ public class DatabaseConnection {
 			String update12 = getQueryToUpdateInTableMatches("RapportStatistiques", match,
 					match.getActiveStatisticsReportGeneration());
 			String update13 = getQueryToUpdateInTableMatches("Journey", match, match.getJourney());
-			String update14 = getQueryToUpdateInTableMatches("Comment", match, match.getComment());
+			String update14 = getQueryToUpdateInTableMatches("Comment", match, (Ligue1Utils.isEmpty(match.getComment()) ? "" : match.getComment()));
 			String create = getQueryToInsertIntoTableMatches(match);
 			ResultSet rs = st.executeQuery(select);
 			if (rs.next()) {

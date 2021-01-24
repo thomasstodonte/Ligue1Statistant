@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Text?>
 
-
-<BorderPane prefHeight="800.0" prefWidth="1200.0" xmlns:fx="http://javafx.com/fxml/1" />
+<BorderPane stylesheets="@../css/statistant.css" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <Text id="title" fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" text="Statistant : votre assistant sur les statistiques de la Ligue 1" textAlignment="CENTER" wrappingWidth="1201.7526500225067" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="34.0" left="34.0" right="34.0" top="34.0" />
+         </BorderPane.margin>
+      </Text>
+   </top>
+</BorderPane>

@@ -22,6 +22,7 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -30,7 +31,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -121,7 +121,7 @@ public class InitializeWindow extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/MenuOverview.fxml"));
-			AnchorPane menuOverview = (AnchorPane) loader.load();
+			BorderPane menuOverview = (BorderPane) loader.load();
 			rootLayout.setCenter(menuOverview);
 		} catch (IOException e) {
 			Ligue1Utils.reportError(e.getMessage());
@@ -134,7 +134,7 @@ public class InitializeWindow extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/AuthentificationOverview.fxml"));
-			AnchorPane authentificationOverview = (AnchorPane) loader.load();
+			BorderPane authentificationOverview = (BorderPane) loader.load();
 			rootLayout.setCenter(authentificationOverview);
 		} catch (IOException e) {
 			Ligue1Utils.reportError(e.getMessage());
@@ -176,8 +176,7 @@ public class InitializeWindow extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/MatchOverview.fxml"));
-			AnchorPane matchOverview = (AnchorPane) loader.load();
-			AnchorPane child = (AnchorPane) matchOverview.getChildren().get(2);
+			BorderPane matchOverview = (BorderPane) loader.load();
 
 			TableColumn<Match, String> homeTeamName = new TableColumn<Match, String>(
 					"Nom de l'équipe à domicile");
@@ -189,6 +188,8 @@ public class InitializeWindow extends Application {
 			score.setCellValueFactory(new PropertyValueFactory<>("score"));
 			TableColumn<Match, Integer> journey = new TableColumn<Match, Integer>("Journée");
 			journey.setCellValueFactory(new PropertyValueFactory<>("journey"));
+			TableColumn<Match, String> comment = new TableColumn<Match, String>("Commentaire");
+			comment.setCellValueFactory(new PropertyValueFactory<>("comment"));
 
 			tableMatchs = new TableView<>();
 			if (AuthentificationOverviewController.getSUBSCRIPTION_TYPE().equals("EQUIPES")) {
@@ -208,10 +209,12 @@ public class InitializeWindow extends Application {
 					tableMatchs.setItems(getMatchs());
 				}
 			}
-			tableMatchs.getColumns().addAll(journey, homeTeamName, score, awayTeamName);
+			tableMatchs.getColumns().addAll(journey, homeTeamName, score, awayTeamName, comment);
 			journey.setComparator(journey.getComparator().reversed());
 			tableMatchs.getSortOrder().add(journey);
-			child.getChildren().add(tableMatchs);
+			tableMatchs.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+			matchOverview.setCenter(tableMatchs);
+			matchOverview.setPadding(new Insets(10,10,10,10));
 			rootLayout.setCenter(matchOverview);
 		} catch (IOException e) {
 			Ligue1Utils.reportError(e.getMessage());
@@ -226,8 +229,7 @@ public class InitializeWindow extends Application {
 			// Load person overview.
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/ConfrontationOverview.fxml"));
-			AnchorPane confrontationOverview = (AnchorPane) loader.load();
-			AnchorPane child = (AnchorPane) confrontationOverview.getChildren().get(2);
+			BorderPane confrontationOverview = (BorderPane) loader.load();
 
 			TableColumn<Confrontation, String> match = new TableColumn<Confrontation, String>("Match");
 			match.setCellValueFactory(new PropertyValueFactory<>("match"));
@@ -268,9 +270,9 @@ public class InitializeWindow extends Application {
 			}
 			tableConfrontations.getColumns().addAll(match, recent1, recent2, recent3, recent4, recent5);
 			tableConfrontations.getSortOrder().add(match);
-
-			child.getChildren().add(tableConfrontations);
-
+			tableConfrontations.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+			confrontationOverview.setPadding(new Insets(10,10,10,10));
+			confrontationOverview.setCenter(tableConfrontations);
 			rootLayout.setCenter(confrontationOverview);
 
 		} catch (IOException e) {
@@ -286,9 +288,7 @@ public class InitializeWindow extends Application {
 			// Load person overview.
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/StandingOverview.fxml"));
-			AnchorPane standingOverview = (AnchorPane) loader.load();
-
-			AnchorPane child = (AnchorPane) standingOverview.getChildren().get(2);
+			BorderPane standingOverview = (BorderPane) loader.load();
 
 			TableColumn<Team, String> standing = new TableColumn<Team, String>("Classement");
 			standing.setCellValueFactory(new PropertyValueFactory<>("standing"));
@@ -335,9 +335,9 @@ public class InitializeWindow extends Application {
 					nbDraws, nbLosses, recent1, recent2, recent3, recent4, recent5);
 			tableGeneralStanding.getSortOrder().add(standing);
 			tableGeneralStanding.setCenterShape(true);
-
-			child.getChildren().add(tableGeneralStanding);
-
+			tableGeneralStanding.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+			standingOverview.setCenter(tableGeneralStanding);
+			standingOverview.setPadding(new Insets(10,10,10,10));
 			rootLayout.setCenter(standingOverview);
 
 		} catch (IOException e) {
@@ -353,9 +353,7 @@ public class InitializeWindow extends Application {
 			// Load person overview.
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/StandingOverview.fxml"));
-			AnchorPane homeStandingOverview = (AnchorPane) loader.load();
-
-			AnchorPane child = (AnchorPane) homeStandingOverview.getChildren().get(2);
+			BorderPane homeStandingOverview = (BorderPane) loader.load();
 
 			TableColumn<Team, String> standing = new TableColumn<Team, String>("Classement");
 			standing.setCellValueFactory(new PropertyValueFactory<>("homeStanding"));
@@ -402,9 +400,9 @@ public class InitializeWindow extends Application {
 					nbDraws, nbLosses, recent1, recent2, recent3, recent4, recent5);
 			tableHomeStanding.getSortOrder().add(standing);
 			tableHomeStanding.setCenterShape(true);
-
-			child.getChildren().add(tableHomeStanding);
-
+			tableHomeStanding.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+			homeStandingOverview.setCenter(tableHomeStanding);
+			homeStandingOverview.setPadding(new Insets(10,10,10,10));
 			rootLayout.setCenter(homeStandingOverview);
 
 		} catch (IOException e) {
@@ -419,9 +417,7 @@ public class InitializeWindow extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/StandingOverview.fxml"));
-			AnchorPane awayStandingOverview = (AnchorPane) loader.load();
-
-			AnchorPane child = (AnchorPane) awayStandingOverview.getChildren().get(2);
+			BorderPane awayStandingOverview = (BorderPane) loader.load();
 
 			TableColumn<Team, String> standing = new TableColumn<Team, String>("Classement");
 			standing.setCellValueFactory(new PropertyValueFactory<>("awayStanding"));
@@ -468,9 +464,9 @@ public class InitializeWindow extends Application {
 					nbDraws, nbLosses, recent1, recent2, recent3, recent4, recent5);
 			tableAwayStanding.getSortOrder().add(standing);
 			tableAwayStanding.setCenterShape(true);
-
-			child.getChildren().add(tableAwayStanding);
-
+			tableAwayStanding.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+			awayStandingOverview.setCenter(tableAwayStanding);
+			awayStandingOverview.setPadding(new Insets(10,10,10,10));
 			rootLayout.setCenter(awayStandingOverview);
 
 		} catch (IOException e) {
@@ -552,11 +548,11 @@ public class InitializeWindow extends Application {
 
 	public static void showNewMatchWindow() {
 
-		AnchorPane newMatchOverview;
+		BorderPane newMatchOverview;
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(InitializeWindow.class.getResource("resources/fxml/NewMatchOverview.fxml"));
 		try {
-			newMatchOverview = (AnchorPane) loader.load();
+			newMatchOverview = (BorderPane) loader.load();
 			Scene scene = new Scene(newMatchOverview);
 			Stage newWindow = new Stage();
 			newWindow.setTitle("Nouveau match");
@@ -573,11 +569,11 @@ public class InitializeWindow extends Application {
 	}
 
 	public static void showModifyMatchWindow(Match match) {
-		AnchorPane modifyMatchOverview;
+		BorderPane modifyMatchOverview;
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(InitializeWindow.class.getResource("resources/fxml/ModifyMatchOverview.fxml"));
 		try {
-			modifyMatchOverview = (AnchorPane) loader.load();
+			modifyMatchOverview = (BorderPane) loader.load();
 			Stage modifyWindow = new Stage();
 			modifyWindow.setTitle("Modification match");
 			modifyWindow.centerOnScreen();
@@ -596,11 +592,11 @@ public class InitializeWindow extends Application {
 	}
 
 	public static void showNewConfrontationWindow() {
-		AnchorPane newConfrontationOverview;
+		BorderPane newConfrontationOverview;
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(InitializeWindow.class.getResource("resources/fxml/NewConfrontationOverview.fxml"));
 		try {
-			newConfrontationOverview = (AnchorPane) loader.load();
+			newConfrontationOverview = (BorderPane) loader.load();
 			Scene scene = new Scene(newConfrontationOverview);
 			Stage newWindow = new Stage();
 			newWindow.setTitle("Nouvelle confrontation");
@@ -618,11 +614,11 @@ public class InitializeWindow extends Application {
 	}
 
 	public static void showModifyConfrontationWindow(Confrontation confrontation) {
-		AnchorPane modifyConfrontationOverview;
+		BorderPane modifyConfrontationOverview;
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(InitializeWindow.class.getResource("resources/fxml/ModifyConfrontationOverview.fxml"));
 		try {
-			modifyConfrontationOverview = (AnchorPane) loader.load();
+			modifyConfrontationOverview = (BorderPane) loader.load();
 			Stage modifyWindow = new Stage();
 			modifyWindow.setTitle("Modification confrontation");
 			modifyWindow.centerOnScreen();
@@ -645,7 +641,7 @@ public class InitializeWindow extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/PasswordModificationOverview.fxml"));
-			AnchorPane passwordModificationOverview = (AnchorPane) loader.load();
+			BorderPane passwordModificationOverview = (BorderPane) loader.load();
 			PasswordModificationOverviewController controller = loader.getController();
 			controller.setUser(user);
 			rootLayout.setCenter(passwordModificationOverview);
@@ -662,7 +658,7 @@ public class InitializeWindow extends Application {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(InitializeWindow.class
 					.getResource("resources/fxml/PasswordModificationWithBackButtonOverview.fxml"));
-			AnchorPane passwordModificationWithBackButtonOverview = (AnchorPane) loader.load();
+			BorderPane passwordModificationWithBackButtonOverview = (BorderPane) loader.load();
 			PasswordModificationWithBackButtonOverviewController controller = loader.getController();
 			controller.setUser(user);
 			rootLayout.setCenter(passwordModificationWithBackButtonOverview);
@@ -678,7 +674,7 @@ public class InitializeWindow extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/AccountOverview.fxml"));
-			AnchorPane accountOverview = (AnchorPane) loader.load();
+			BorderPane accountOverview = (BorderPane) loader.load();
 			AccountOverviewController controller = loader.getController();
 			controller.setUser(userLogin);
 			rootLayout.setCenter(accountOverview);
