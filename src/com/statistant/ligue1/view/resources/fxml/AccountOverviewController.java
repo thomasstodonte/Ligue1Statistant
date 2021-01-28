@@ -11,48 +11,74 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 
 public class AccountOverviewController {
-	
+
 	private final StringProperty identifiant = new SimpleStringProperty();
-	@FXML private TextField login;
-	
+	@FXML
+	private TextField login;
+
 	private final StringProperty adresseMail = new SimpleStringProperty();
-	@FXML private TextField email;
-	
+	@FXML
+	private TextField email;
+
 	private final StringProperty motDePasse = new SimpleStringProperty();
-	@FXML private PasswordField password;
-	
+	@FXML
+	private PasswordField password;
+
 	private final StringProperty emplacement = new SimpleStringProperty();
-	@FXML private TextField reportPath;
-	
+	@FXML
+	private TextField reportPath;
+
 	private final StringProperty typeAbo = new SimpleStringProperty();
-	@FXML private ChoiceBox<String> subscribtionType;
-	
-	ObservableList<String> abonnements = FXCollections.observableArrayList("EQUIPES","JOURNEES");
-	
+	@FXML
+	private ChoiceBox<String> subscribtionType;
+
+	ObservableList<String> abonnements = FXCollections.observableArrayList("EQUIPES", "JOURNEES");
+
 	private final StringProperty equipes = new SimpleStringProperty();
-	@FXML private TextField teams;
-	
+	@FXML
+	private TextField teams;
+
 	private final StringProperty nbRapportsParEquipe = new SimpleStringProperty();
-	@FXML private TextField nbReportsPerTeam;
-	
+	@FXML
+	private TextField nbReportsPerTeam;
+
 	private final StringProperty nbRapportsRestants = new SimpleStringProperty();
-	@FXML private TextField nbReportsLeft;
-	
+	@FXML
+	private TextField nbReportsLeft;
+
 	private final StringProperty journees = new SimpleStringProperty();
-	@FXML private TextField journeys;
-	
-	@FXML private Text textNbReportsPerTeam;
-	@FXML private Text textNbReportsLeft;
-	@FXML private Text textTeams;
-	@FXML private Text textJourneys;
-	
+	@FXML
+	private TextField journeys;
+
+	@FXML
+	private Text textNbReportsPerTeam;
+	@FXML
+	private Text textNbReportsLeft;
+	@FXML
+	private Text textTeams;
+	@FXML
+	private Text textJourneys;
+	@FXML
+	private Button menu;
+
+	public Button getMenu() {
+		return menu;
+	}
+
+	public void setMenu(Button menu) {
+		this.menu = menu;
+	}
+
 	public String getLogin() {
 		return login.getText();
 	}
@@ -61,7 +87,7 @@ public class AccountOverviewController {
 		this.identifiant.set(login);
 		this.login.setText(login);
 	}
-	
+
 	public String getEmail() {
 		return email.getText();
 	}
@@ -150,7 +176,7 @@ public class AccountOverviewController {
 		User user = AuthentificationOverviewController.getUSER_CONNECTED();
 		InitializeWindow.showPasswordModificationWithBackButtonOverview(user);
 	}
-	
+
 	@FXML
 	public void handleModifyReportPath() {
 		DirectoryChooser selector = new DirectoryChooser();
@@ -161,7 +187,7 @@ public class AccountOverviewController {
 		user.setReportPath(getReportPath());
 		DatabaseConnection.createOrUpdateUser(user);
 	}
-	
+
 	@FXML
 	private void initialize() {
 		subscribtionType.setItems(abonnements);
@@ -176,7 +202,7 @@ public class AccountOverviewController {
 			nbReportsPerTeam.setVisible(true);
 			textNbReportsPerTeam.setVisible(true);
 			teams.setVisible(true);
-			textTeams.setVisible(true);				
+			textTeams.setVisible(true);
 		}
 		if (abo.equals("JOURNEES")) {
 			journeys.setVisible(true);
@@ -186,45 +212,51 @@ public class AccountOverviewController {
 			nbReportsPerTeam.setVisible(false);
 			textNbReportsPerTeam.setVisible(false);
 			teams.setVisible(false);
-			textTeams.setVisible(false);	
+			textTeams.setVisible(false);
 		}
+		Button btn = getMenu();
+		Image img = new Image(this.getClass().getResource("../images/maison.png").toExternalForm());
+		ImageView view = new ImageView(img);
+		btn.setGraphic(view);
+		setMenu(btn);
+
 	}
 
 	public void setUser(String userLogin) {
 		User user = AuthentificationOverviewController.getUSER_CONNECTED();
-		
+
 		identifiant.set(user.getLogin());
 		setLogin(user.getLogin());
 		login.setText(getLogin());
-		
+
 		adresseMail.set(user.getEmail());
 		setEmail(user.getEmail());
 		email.setText(getEmail());
-		
+
 		motDePasse.set(user.getPassword());
 		setPassword(user.getPassword());
 		password.setText(getPassword());
-		
+
 		emplacement.set(user.getReportPath());
 		setReportPath(user.getReportPath());
 		reportPath.setText(getReportPath());
-		
+
 		typeAbo.set(user.getSubscribtionType());
 		setSubscribtionType(user.getSubscribtionType());
 		subscribtionType.setValue(getSubscribtionType());
-		
+
 		equipes.set(user.getMyTeams());
 		setTeams(user.getMyTeams());
 		teams.setText(getTeams());
-		
+
 		nbRapportsParEquipe.set(String.valueOf(user.getNbReportsPerTeam()));
 		setNbReportsPerTeam(String.valueOf(user.getNbReportsPerTeam()));
 		nbReportsPerTeam.setText(String.valueOf(getNbReportsPerTeam()));
-		
+
 		nbRapportsRestants.set(String.valueOf(user.getNbReportsLeft()));
 		setNbReportsLeft(String.valueOf(user.getNbReportsLeft()));
 		nbReportsLeft.setText(String.valueOf(getNbReportsLeft()));
-		
+
 		journees.set(user.getJourneesSubscribed());
 		setJourneys(user.getJourneesSubscribed());
 		journeys.setText(getJourneys());

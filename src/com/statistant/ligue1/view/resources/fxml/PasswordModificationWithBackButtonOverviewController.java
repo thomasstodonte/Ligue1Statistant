@@ -12,8 +12,11 @@ import com.statistant.ligue1.view.InitializeWindow;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class PasswordModificationWithBackButtonOverviewController {
 	
@@ -21,7 +24,27 @@ public class PasswordModificationWithBackButtonOverviewController {
 	@FXML private TextField login;
 	@FXML private PasswordField newPassword;
 	@FXML private PasswordField confirmationPassword;
+	@FXML
+	private Button validate;
+	@FXML
+	private Button back;
 	
+	public Button getValidate() {
+		return validate;
+	}
+
+	public void setValidate(Button validate) {
+		this.validate = validate;
+	}
+
+	public Button getBack() {
+		return back;
+	}
+
+	public void setBack(Button back) {
+		this.back = back;
+	}
+
 	public String getLogin() {
 		return login.getText();
 	}
@@ -45,6 +68,21 @@ public class PasswordModificationWithBackButtonOverviewController {
 
 	public void setConfirmationPassword(PasswordField confirmationPassword) {
 		this.confirmationPassword = confirmationPassword;
+	}
+	
+	@FXML
+	private void initialize() {
+		Button btnValidate = getValidate();
+		Image imgValidate = new Image(this.getClass().getResource("../images/connection.png").toExternalForm());
+		ImageView viewValidate = new ImageView(imgValidate);
+		btnValidate.setGraphic(viewValidate);
+		setValidate(btnValidate);
+		
+		Button btnBack = getBack();
+		Image imgBack = new Image(this.getClass().getResource("../images/retour.png").toExternalForm());
+		ImageView viewBack = new ImageView(imgBack);
+		btnBack.setGraphic(viewBack);
+		setBack(btnBack);
 	}
 
 	@FXML

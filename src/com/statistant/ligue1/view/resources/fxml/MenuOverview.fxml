@@ -16,30 +16,45 @@
    <bottom>
       <ButtonBar id="ButtonBar" BorderPane.alignment="CENTER">
          <buttons>
-            <Button fx:id="account" alignment="CENTER" mnemonicParsing="false" onAction="#handleAccount" text="Mon compte" textAlignment="CENTER">
+         <Button fx:id="resetAllSeason" alignment="CENTER" mnemonicParsing="false" onAction="#handleResetAllSeason" text="Réinitialiser la saison" textAlignment="CENTER">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
             </Button>
-            <Button fx:id="matchs" mnemonicParsing="false" onAction="#handleMatchs" text="Matchs">
+            <Button fx:id="matchs" defaultButton="true" mnemonicParsing="false" onAction="#handleMatchs" text="Matchs">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
             </Button>
             <Button fx:id="standings" mnemonicParsing="false" onAction="#handleStandings" text="Classements">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
             </Button>
             <Button fx:id="confrontations" mnemonicParsing="false" onAction="#handleConfrontations" text="Confrontations">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
             </Button>
-            <Button fx:id="resetAllSeason" alignment="CENTER" mnemonicParsing="false" onAction="#handleResetAllSeason" text="Réinitialiser la saison" textAlignment="CENTER">
+            <Button fx:id="account" alignment="CENTER" mnemonicParsing="false" onAction="#handleAccount" text="Mon compte" textAlignment="CENTER">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <padding>
+                  <Insets bottom="8.0" left="10.0" right="10.0" top="8.0" />
+               </padding>
             </Button>
          </buttons>
          <padding>

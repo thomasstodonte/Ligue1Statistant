@@ -15,6 +15,10 @@ import com.statistant.ligue1.pojo.Match;
 import com.statistant.ligue1.pojo.Team;
 import com.statistant.ligue1.view.InitializeWindow;
 
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
 /**
  * Basic operations.
  * 

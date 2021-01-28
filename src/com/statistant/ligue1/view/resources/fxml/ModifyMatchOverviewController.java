@@ -19,10 +19,12 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class ModifyMatchOverviewController {
 	
@@ -119,6 +121,8 @@ public class ModifyMatchOverviewController {
 	@FXML
 	private TextArea comment;
 	
+	@FXML private Button validate;
+	
 	@FXML
 	private MenuButton awayTeamPossibilities;
 
@@ -147,6 +151,14 @@ public class ModifyMatchOverviewController {
 	private final IntegerProperty e2Important = new SimpleIntegerProperty();
 	@FXML
 	private TextField isAnImportantGameForAwayTeam;
+
+	public Button getValidate() {
+		return validate;
+	}
+
+	public void setValidate(Button validate) {
+		this.validate = validate;
+	}
 
 	public void setMatch(Match match) {
 		setJourney(match.getJourney());
@@ -946,6 +958,8 @@ public class ModifyMatchOverviewController {
 				DatabaseConnection.createOrUpdateMatch(match);
 				Ligue1Utils.reportInfo("Match " + match.getId() + " modifié avec succès.");
 				InitializeWindow.alertInfo("Match " + match.getId() + " modifié avec succès.");
+				Stage stage = (Stage) getValidate().getScene().getWindow();
+				stage.close();
 				InitializeWindow.showMatchOverview();
 			}
 		} else {
@@ -970,6 +984,8 @@ public class ModifyMatchOverviewController {
 				DatabaseConnection.createOrUpdateMatch(match);
 				Ligue1Utils.reportInfo("Match " + match.getId() + " modifié avec succès.");
 				InitializeWindow.alertInfo("Match " + match.getId() + " modifié avec succès.");
+				Stage stage = (Stage) getValidate().getScene().getWindow();
+				stage.close();
 				InitializeWindow.showMatchOverview();
 			}
 		}

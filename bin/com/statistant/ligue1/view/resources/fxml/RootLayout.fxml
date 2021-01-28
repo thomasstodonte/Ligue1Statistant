@@ -12,4 +12,11 @@
          </BorderPane.margin>
       </Text>
    </top>
+   <bottom>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Retrouvez-nous sur le site http://statistant.fr" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+      </Text>
+   </bottom>
 </BorderPane>

@@ -21,10 +21,101 @@ import com.statistant.ligue1.utils.Ligue1Utils;
 import com.statistant.ligue1.view.InitializeWindow;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class MatchOverviewController {
 
+	@FXML private Button nouveau;
+	@FXML private Button modifier;
+	@FXML private Button menuPrincipal;
+	@FXML private Button generateReport;
+	@FXML private Button comptabiliser;
+
+	public Button getGenerateReport() {
+		return generateReport;
+	}
+
+	public void setGenerateReport(Button generateReport) {
+		this.generateReport = generateReport;
+	}
+
+	public Button getComptabiliser() {
+		return comptabiliser;
+	}
+
+	public void setComptabiliser(Button comptabiliser) {
+		this.comptabiliser = comptabiliser;
+	}
+
+	public Button getNouveau() {
+		return nouveau;
+	}
+
+	public void setNouveau(Button nouveau) {
+		this.nouveau = nouveau;
+	}
+
+	public Button getModifier() {
+		return modifier;
+	}
+
+	public void setModifier(Button modifier) {
+		this.modifier = modifier;
+	}
+
+	public Button getMenuPrincipal() {
+		return menuPrincipal;
+	}
+
+	public void setMenuPrincipal(Button menuPrincipal) {
+		this.menuPrincipal = menuPrincipal;
+	}
+	
+	@FXML
+	private void initialize() {
+		Button btnMenu = getMenuPrincipal();
+		Image imgMenu = new Image(this.getClass().getResource("../images/maison.png").toExternalForm());
+		ImageView viewMenu = new ImageView(imgMenu);
+		btnMenu.setGraphic(viewMenu);
+		setMenuPrincipal(btnMenu);
+		
+		Button btnGenerate = getGenerateReport();
+		Image imgGenerate = new Image(this.getClass().getResource("../images/rapport.png").toExternalForm());
+		ImageView viewGenerate = new ImageView(imgGenerate);
+		btnGenerate.setGraphic(viewGenerate);
+		setGenerateReport(btnGenerate);
+
+		Button btnNouveau = getNouveau();
+		Image imgNouveau = new Image(this.getClass().getResource("../images/plus.png").toExternalForm());
+		ImageView viewNouveau = new ImageView(imgNouveau);
+		btnNouveau.setGraphic(viewNouveau);
+		if (!AuthentificationOverviewController.getUSER_LOGIN().equals("sysadmin")) {
+			btnNouveau.setVisible(false);
+		}
+		setNouveau(btnNouveau);
+
+		Button btnModifier = getModifier();
+		Image imgModifier = new Image(this.getClass().getResource("../images/modifier.png").toExternalForm());
+		ImageView viewModifier = new ImageView(imgModifier);
+		btnModifier.setGraphic(viewModifier);
+		if (!AuthentificationOverviewController.getUSER_LOGIN().equals("sysadmin")) {
+			btnModifier.setVisible(false);
+		}
+		setModifier(btnModifier);
+		
+		Button btnCount = getComptabiliser();
+		Image imgCount = new Image(this.getClass().getResource("../images/ballon.png").toExternalForm());
+		ImageView viewCount = new ImageView(imgCount);
+		btnCount.setGraphic(viewCount);
+		if (!AuthentificationOverviewController.getUSER_LOGIN().equals("sysadmin")) {
+			btnCount.setVisible(false);
+		}
+		setComptabiliser(btnCount);
+	}
+	
 	@FXML
 	private void handleMainMenu() {
 		InitializeWindow.showMenuOverview();

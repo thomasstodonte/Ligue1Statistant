@@ -21,8 +21,11 @@ import com.statistant.ligue1.view.InitializeWindow;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class AuthentificationOverviewController {
 
@@ -103,6 +106,26 @@ public class AuthentificationOverviewController {
 	private TextField login;
 	@FXML
 	private PasswordField password;
+	@FXML
+	private Button connection;
+	@FXML
+	private Button forgottenPassword;
+	
+	public Button getConnection() {
+		return connection;
+	}
+
+	public void setConnection(Button connection) {
+		this.connection = connection;
+	}
+
+	public Button getForgottenPassword() {
+		return forgottenPassword;
+	}
+
+	public void setForgottenPassword(Button forgottenPassword) {
+		this.forgottenPassword = forgottenPassword;
+	}
 
 	public TextField getLogin() {
 		return login;
@@ -118,6 +141,21 @@ public class AuthentificationOverviewController {
 
 	public void setPassword(PasswordField password) {
 		this.password = password;
+	}
+	
+	@FXML
+	private void initialize() {
+		Button btnConnection = getConnection();
+		Image imgConnect = new Image(this.getClass().getResource("../images/connection.png").toExternalForm());
+		ImageView viewConnect = new ImageView(imgConnect);
+		btnConnection.setGraphic(viewConnect);
+		setConnection(btnConnection);
+		
+		Button btnForgottenPassword = getForgottenPassword();
+		Image imgForgottenPassword = new Image(this.getClass().getResource("../images/question.png").toExternalForm());
+		ImageView viewForgottenPassword = new ImageView(imgForgottenPassword);
+		btnForgottenPassword.setGraphic(viewForgottenPassword);
+		setForgottenPassword(btnForgottenPassword);
 	}
 
 	@FXML
