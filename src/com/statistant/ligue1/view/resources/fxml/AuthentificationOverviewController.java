@@ -145,17 +145,17 @@ public class AuthentificationOverviewController {
 	
 	@FXML
 	private void initialize() {
-		Button btnConnection = getConnection();
-		Image imgConnect = new Image(this.getClass().getResource("../images/connection.png").toExternalForm());
-		ImageView viewConnect = new ImageView(imgConnect);
-		btnConnection.setGraphic(viewConnect);
-		setConnection(btnConnection);
+//		Button btnConnection = getConnection();
+//		Image imgConnect = new Image(this.getClass().getResource("../images/connection.png").toExternalForm());
+//		ImageView viewConnect = new ImageView(imgConnect);
+//		btnConnection.setGraphic(viewConnect);
+//		setConnection(btnConnection);
 		
-		Button btnForgottenPassword = getForgottenPassword();
-		Image imgForgottenPassword = new Image(this.getClass().getResource("../images/question.png").toExternalForm());
-		ImageView viewForgottenPassword = new ImageView(imgForgottenPassword);
-		btnForgottenPassword.setGraphic(viewForgottenPassword);
-		setForgottenPassword(btnForgottenPassword);
+//		Button btnForgottenPassword = getForgottenPassword();
+//		Image imgForgottenPassword = new Image(this.getClass().getResource("../images/question.png").toExternalForm());
+//		ImageView viewForgottenPassword = new ImageView(imgForgottenPassword);
+//		btnForgottenPassword.setGraphic(viewForgottenPassword);
+//		setForgottenPassword(btnForgottenPassword);
 	}
 
 	@FXML

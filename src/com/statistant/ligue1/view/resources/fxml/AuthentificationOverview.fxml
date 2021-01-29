@@ -11,7 +11,7 @@
 
 <BorderPane prefWidth="733.0" stylesheets="@../css/statistant.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.statistant.ligue1.view.resources.fxml.AuthentificationOverviewController">
    <top>
-      <Text id="Bienvenue" strokeType="OUTSIDE" strokeWidth="0.0" text="Bienvenue ! Pour accéder à l'application ainsi qu'à tout son contenu, merci de vous identifier." wrappingWidth="876.650390625" BorderPane.alignment="CENTER">
+      <Text id="Bienvenue" strokeType="OUTSIDE" strokeWidth="0.0" text="Bienvenue ! Pour accéder à l'application ainsi qu'à tout son contenu, merci de vous identifier." wrappingWidth="876.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>

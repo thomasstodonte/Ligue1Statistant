@@ -1,8 +1,12 @@
 package com.statistant.ligue1.view;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Optional;
+
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 import com.statistant.ligue1.dao.DatabaseConnection;
 import com.statistant.ligue1.pojo.Confrontation;
@@ -132,9 +136,7 @@ public class InitializeWindow extends Application {
 
 	public static void showAuthentificationOverview() {
 		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/AuthentificationOverview.fxml"));
-			BorderPane authentificationOverview = (BorderPane) loader.load();
+			BorderPane authentificationOverview = (BorderPane) FXMLLoader.load(InitializeWindow.class.getResource("resources/fxml/AuthentificationOverview.fxml"));
 			rootLayout.setCenter(authentificationOverview);
 		} catch (IOException e) {
 			Ligue1Utils.reportError(e.getMessage());

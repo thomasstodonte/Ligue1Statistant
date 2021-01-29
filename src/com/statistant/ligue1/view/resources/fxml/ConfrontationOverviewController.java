@@ -44,25 +44,25 @@ public class ConfrontationOverviewController {
 
 	@FXML
 	private void initialize() {
-		Button btnMenu = getMenuPrincipal();
-		Image imgMenu = new Image(this.getClass().getResource("../images/maison.png").toExternalForm());
-		ImageView viewMenu = new ImageView(imgMenu);
-		btnMenu.setGraphic(viewMenu);
-		setMenuPrincipal(btnMenu);
+//		Button btnMenu = getMenuPrincipal();
+//		Image imgMenu = new Image(this.getClass().getResource("../images/maison.png").toExternalForm());
+//		ImageView viewMenu = new ImageView(imgMenu);
+//		btnMenu.setGraphic(viewMenu);
+//		setMenuPrincipal(btnMenu);
 
 		Button btnNouveau = getNouveau();
-		Image imgNouveau = new Image(this.getClass().getResource("../images/plus.png").toExternalForm());
-		ImageView viewNouveau = new ImageView(imgNouveau);
-		btnNouveau.setGraphic(viewNouveau);
+//		Image imgNouveau = new Image(this.getClass().getResource("../images/plus.png").toExternalForm());
+//		ImageView viewNouveau = new ImageView(imgNouveau);
+//		btnNouveau.setGraphic(viewNouveau);
 		if (!AuthentificationOverviewController.getUSER_LOGIN().equals("sysadmin")) {
 			btnNouveau.setVisible(false);
 		}
 		setNouveau(btnNouveau);
 
 		Button btnModifier = getModifier();
-		Image imgModifier = new Image(this.getClass().getResource("../images/modifier.png").toExternalForm());
-		ImageView viewModifier = new ImageView(imgModifier);
-		btnModifier.setGraphic(viewModifier);
+//		Image imgModifier = new Image(this.getClass().getResource("../images/modifier.png").toExternalForm());
+//		ImageView viewModifier = new ImageView(imgModifier);
+//		btnModifier.setGraphic(viewModifier);
 		if (!AuthentificationOverviewController.getUSER_LOGIN().equals("sysadmin")) {
 			btnModifier.setVisible(false);
 		}

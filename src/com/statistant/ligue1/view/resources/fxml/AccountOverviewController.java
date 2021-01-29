@@ -216,11 +216,11 @@ public class AccountOverviewController {
 			teams.setVisible(false);
 			textTeams.setVisible(false);
 		}
-		Button btn = getMenu();
-		Image img = new Image(this.getClass().getResource("../images/maison.png").toExternalForm());
-		ImageView view = new ImageView(img);
-		btn.setGraphic(view);
-		setMenu(btn);
+//		Button btn = getMenu();
+//		Image img = new Image(this.getClass().getResource("../images/maison.png").toExternalForm());
+//		ImageView view = new ImageView(img);
+//		btn.setGraphic(view);
+//		setMenu(btn);
 
 	}
 

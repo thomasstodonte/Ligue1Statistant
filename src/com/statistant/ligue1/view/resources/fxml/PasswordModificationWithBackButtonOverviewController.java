@@ -72,17 +72,17 @@ public class PasswordModificationWithBackButtonOverviewController {
 	
 	@FXML
 	private void initialize() {
-		Button btnValidate = getValidate();
-		Image imgValidate = new Image(this.getClass().getResource("../images/connection.png").toExternalForm());
-		ImageView viewValidate = new ImageView(imgValidate);
-		btnValidate.setGraphic(viewValidate);
-		setValidate(btnValidate);
+//		Button btnValidate = getValidate();
+//		Image imgValidate = new Image(this.getClass().getResource("../images/connection.png").toExternalForm());
+//		ImageView viewValidate = new ImageView(imgValidate);
+//		btnValidate.setGraphic(viewValidate);
+//		setValidate(btnValidate);
 		
-		Button btnBack = getBack();
-		Image imgBack = new Image(this.getClass().getResource("../images/retour.png").toExternalForm());
-		ImageView viewBack = new ImageView(imgBack);
-		btnBack.setGraphic(viewBack);
-		setBack(btnBack);
+//		Button btnBack = getBack();
+//		Image imgBack = new Image(this.getClass().getResource("../images/retour.png").toExternalForm());
+//		ImageView viewBack = new ImageView(imgBack);
+//		btnBack.setGraphic(viewBack);
+//		setBack(btnBack);
 	}
 
 	@FXML

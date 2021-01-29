@@ -34,7 +34,7 @@ public class DatabaseConnection {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				connection = DriverManager
-						.getConnection("jdbc:mysql://localhost/ligue1?user=root&password=root&useSSL=false");
+						.getConnection("jdbc:mysql://localhost/ligue1?user=root&password=root&useSSL=false&serverTimezone=UTC");
 			} catch (SQLException | ClassNotFoundException e) {
 				Ligue1Utils.reportError("Erreur à la connexion à la base de données Ligue1 : " + e.getMessage());
 				e.printStackTrace();

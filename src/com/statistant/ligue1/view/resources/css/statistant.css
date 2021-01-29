@@ -7,7 +7,7 @@ Text, Button, Label, TextProperty, MenuItem{
 	-fx-font-size: 16px;
 }
 TextField{
-	-fx-font-family: 'Elephant';
+	-fx-font-family: 'Verdana';
 	-fx-font-size: 14px;
 }
 Button{
