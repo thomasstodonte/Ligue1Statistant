@@ -4,9 +4,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.statistant.ligue1.controller.ExpiredMembershipException;
 import com.statistant.ligue1.controller.IncoherentArgumentException;
+import com.statistant.ligue1.controller.IncompatibleEmailException;
 import com.statistant.ligue1.controller.UnhandledPasswordException;
+import com.statistant.ligue1.dao.DatabaseConnection;
+import com.statistant.ligue1.dao.NullUserException;
 import com.statistant.ligue1.pojo.User;
-import com.statistant.ligue1.view.resources.fxml.AuthentificationOverviewController;
 
 /**
  * Class with methods used for authentification
@@ -53,6 +55,15 @@ public class AuthentificationUtils {
 						+ " est périmé. Merci de contacter l'administrateur à l'adresse mail support@statistant.fr.");
 			}
 			break;
+		}
+	}
+	
+	public static void emailMatchesLogin(String email, String login)
+			throws NullUserException, IncompatibleEmailException {
+		User user = DatabaseConnection.getUserByLogin(login);
+		if (Ligue1Utils.isEmpty(email) || !email.equals(user.getEmail())) {
+			throw new IncompatibleEmailException(
+					"L'adresse email saisie ne correspond pas à celle enregistrée pour cet utilisateur. Merci de réitérer la saisie.");
 		}
 	}
 

@@ -181,11 +181,13 @@ public class AccountOverviewController {
 	public void handleModifyReportPath() {
 		DirectoryChooser selector = new DirectoryChooser();
 		File selectedFile = selector.showDialog(InitializeWindow.primaryStage);
-		String reportPath = selectedFile.getAbsolutePath();
-		setReportPath(reportPath);
-		User user = AuthentificationOverviewController.getUSER_CONNECTED();
-		user.setReportPath(getReportPath());
-		DatabaseConnection.createOrUpdateUser(user);
+		if (selectedFile != null) {
+			String reportPath = selectedFile.getAbsolutePath();
+			setReportPath(reportPath);
+			User user = AuthentificationOverviewController.getUSER_CONNECTED();
+			user.setReportPath(getReportPath());
+			DatabaseConnection.createOrUpdateUser(user);
+		}
 	}
 
 	@FXML

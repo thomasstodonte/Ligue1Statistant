@@ -4,6 +4,7 @@ import com.statistant.ligue1.view.InitializeWindow;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -19,8 +20,38 @@ public class MenuOverviewController {
 	private Button confrontations;
 	@FXML
 	private Button resetAllSeason;
+	@FXML
+	private MenuButton admin;
+	@FXML
+	private Button users;
+	@FXML
+	private Button subscribtions;
     
-    public Button getAccount() {
+    public MenuButton getAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(MenuButton admin) {
+		this.admin = admin;
+	}
+
+	public Button getUsers() {
+		return users;
+	}
+
+	public void setUsers(Button users) {
+		this.users = users;
+	}
+
+	public Button getSubscribtions() {
+		return subscribtions;
+	}
+
+	public void setSubscribtions(Button subscribtions) {
+		this.subscribtions = subscribtions;
+	}
+
+	public Button getAccount() {
 		return account;
 	}
 
@@ -89,11 +120,30 @@ public class MenuOverviewController {
 		}
 		setResetAllSeason(btnReset);
 		
+		MenuButton admin = getAdmin();
+		Image imgAdmin = new Image(this.getClass().getResource("../images/parametres.png").toExternalForm());
+		ImageView viewAdmin = new ImageView(imgAdmin);
+		admin.setGraphic(viewAdmin);
+		if (! AuthentificationOverviewController.getUSER_LOGIN().equals("sysadmin")) {
+			admin.setVisible(false);
+		}
+		setAdmin(admin);
+		
 		Button btnStandings = getStandings();
 		Image imgStandings = new Image(this.getClass().getResource("../images/classement.png").toExternalForm());
 		ImageView viewStandings = new ImageView(imgStandings);
 		btnStandings.setGraphic(viewStandings);
 		setStandings(btnStandings);
+	}
+	
+	@FXML
+	private void handleUsers() {
+		InitializeWindow.showUserModificationOverview();
+	}
+	
+	@FXML
+	private void handleSubscribtions() {
+		InitializeWindow.showSubscribtionModificationOverview();
 	}
 
 	@FXML

@@ -2,7 +2,7 @@
 	-fx-font-weight: bold;
 	-fx-font-size: 20px;
 }
-Text, Button, Label, TextProperty, MenuItem, MenuButton{
+Text, Button, Label, TextProperty, MenuItem{
 	-fx-font-family: 'Copperplate Gothic Light';
 	-fx-font-size: 16px;
 }
@@ -23,12 +23,19 @@ Button:pressed{
 Button:disabled{
 	-fx-background-color: #abb0af;
 }
-TableView{
-	-fx-background-color: #abb0af;
-	-fx-font-family: 'Copperplate Gothic Light';
-	-fx-font-size: 12px;
-	-fx-text-alignment: center;
-}
 .root{
 	-fx-background-color:#ffffff;
+}
+#admin{
+	-fx-font-family: 'Copperplate Gothic Light';
+	-fx-font-size: 16px;
+	-fx-padding:10px;
+	-fx-background-color:#c9e1f5;
+}
+#admin:hover{
+	-fx-cursor:hand;
+	-fx-text-fill:#ffffff;
+}
+#admin:pressed{
+	-fx-cursor:wait;
 }

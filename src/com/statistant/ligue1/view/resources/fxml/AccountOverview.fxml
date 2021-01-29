@@ -44,9 +44,9 @@
    <center>
       <SplitPane dividerPositions="0.5" BorderPane.alignment="CENTER">
          <items>
-            <Pane maxWidth="300.0">
+            <Pane maxWidth="400.0">
                <children>
-                  <VBox prefHeight="284.0" prefWidth="300.0" spacing="3.0">
+                  <VBox prefHeight="284.0" prefWidth="400.0" spacing="3.0">
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Identifiant" />
                         <TextField fx:id="login" disable="true" maxWidth="150.0">

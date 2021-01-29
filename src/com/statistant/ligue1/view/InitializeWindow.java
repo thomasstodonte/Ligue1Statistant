@@ -686,4 +686,30 @@ public class InitializeWindow extends Application {
 		}
 
 	}
+
+	public static void showUserModificationOverview() {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/UserModificationOverview.fxml"));
+			BorderPane userModificationOverview = (BorderPane) loader.load();
+			rootLayout.setCenter(userModificationOverview);
+		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
+			e.printStackTrace();
+			return;
+		}
+	}
+
+	public static void showSubscribtionModificationOverview() {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/SubscribtionModificationOverview.fxml"));
+			BorderPane subscribtionModificationOverview = (BorderPane) loader.load();
+			rootLayout.setCenter(subscribtionModificationOverview);
+		} catch (IOException e) {
+			Ligue1Utils.reportError(e.getMessage());
+			e.printStackTrace();
+			return;
+		}
+	}
 }
