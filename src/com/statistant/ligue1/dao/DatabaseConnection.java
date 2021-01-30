@@ -27,14 +27,19 @@ import com.statistant.ligue1.utils.Ligue1Utils;
 
 public class DatabaseConnection {
 
-	public static Connection connection;
-
+	private static Connection connection;
+	private static final String CONNECTION_HOST = "sql7.freesqldatabase.com";
+	private static final String CONNECTION_DB_NAME = "sql7389725";
+	private static final String CONNECTION_USER_NAME = "sql7389725";
+	private static final String CONNECTION_USER_PASSWORD = "aiTk1mchzl";
+	private static final String CONNECTION_PATH = "jdbc:mysql://"+CONNECTION_HOST+"/"+CONNECTION_DB_NAME+"?user="+CONNECTION_USER_NAME+"&password="+CONNECTION_USER_PASSWORD+"&useSSL=false&serverTimezone=UTC";
+	
 	public static Connection initializeOrGetConnection() {
 		if (connection == null) {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				connection = DriverManager
-						.getConnection("jdbc:mysql://localhost/ligue1?user=root&password=root&useSSL=false&serverTimezone=UTC");
+						.getConnection(CONNECTION_PATH);
 			} catch (SQLException | ClassNotFoundException e) {
 				Ligue1Utils.reportError("Erreur à la connexion à la base de données Ligue1 : " + e.getMessage());
 				e.printStackTrace();
@@ -778,7 +783,7 @@ public class DatabaseConnection {
 					(Ligue1Utils.isEmpty(user.getEmail()) ? "" : user.getEmail()));
 			String update9 = getQueryToUpdateInTableUsers("nbReportsPerTeam", user, user.getNbReportsPerTeam());
 			String update10 = getQueryToUpdateInTableUsers("reportsAlreadyGenerated", user,
-					user.getReportsAlreadyGenerated());
+					(Ligue1Utils.isEmpty(user.getReportsAlreadyGenerated()) ? "" : user.getReportsAlreadyGenerated()));
 			String create = getQueryToInsertIntoTableUsers(user);
 			ResultSet rs = st.executeQuery(select);
 			if (rs.next()) {
@@ -1762,10 +1767,10 @@ public class DatabaseConnection {
 	public static File saveAllSeason() {
 		Properties properties = new Properties();
 		properties.setProperty(MysqlExportService.JDBC_CONNECTION_STRING,
-				"jdbc:mysql://localhost/ligue1?user=root&password=root&useSSL=false");
-		properties.setProperty(MysqlExportService.DB_NAME, "ligue1");
-		properties.setProperty(MysqlExportService.DB_USERNAME, "root");
-		properties.setProperty(MysqlExportService.DB_PASSWORD, "root");
+				CONNECTION_PATH);
+		properties.setProperty(MysqlExportService.DB_NAME, CONNECTION_DB_NAME);
+		properties.setProperty(MysqlExportService.DB_USERNAME, CONNECTION_USER_NAME);
+		properties.setProperty(MysqlExportService.DB_PASSWORD, CONNECTION_USER_PASSWORD);
 		properties.setProperty(MysqlExportService.PRESERVE_GENERATED_ZIP, "true");
 		properties.setProperty(MysqlExportService.PRESERVE_GENERATED_SQL_FILE, "true");
 		String file = new File("C:\\perso\\Ligue1\\sauvegardes").getPath();
