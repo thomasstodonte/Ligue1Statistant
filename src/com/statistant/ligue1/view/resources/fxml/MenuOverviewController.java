@@ -93,47 +93,47 @@ public class MenuOverviewController {
 	
 	@FXML
 	private void initialize() {
-//		Button btnAccount = getAccount();
-//		Image imgAccount = new Image(this.getClass().getResource("../images/profil.png").toExternalForm());
-//		ImageView viewAccount = new ImageView(imgAccount);
-//		btnAccount.setGraphic(viewAccount);
-//		setAccount(btnAccount);
+		Button btnAccount = getAccount();
+		Image imgAccount = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/profil.png").toExternalForm());
+		ImageView viewAccount = new ImageView(imgAccount);
+		btnAccount.setGraphic(viewAccount);
+		setAccount(btnAccount);
 		
-//		Button btnConfrontations = getConfrontations();
-//		Image imgConfrontations = new Image(this.getClass().getResource("../images/eclair.png").toExternalForm());
-//		ImageView viewConfrontations = new ImageView(imgConfrontations);
-//		btnConfrontations.setGraphic(viewConfrontations);
-//		setConfrontations(btnConfrontations);
+		Button btnConfrontations = getConfrontations();
+		Image imgConfrontations = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/eclair.png").toExternalForm());
+		ImageView viewConfrontations = new ImageView(imgConfrontations);
+		btnConfrontations.setGraphic(viewConfrontations);
+		setConfrontations(btnConfrontations);
 		
-//		Button btnMatchs = getMatchs();
-//		Image imgMatchs = new Image(this.getClass().getResource("../images/score.png").toExternalForm());
-//		ImageView viewmatchs = new ImageView(imgMatchs);
-//		btnMatchs.setGraphic(viewmatchs);
-//		setMatchs(btnMatchs);
+		Button btnMatchs = getMatchs();
+		Image imgMatchs = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/score.png").toExternalForm());
+		ImageView viewmatchs = new ImageView(imgMatchs);
+		btnMatchs.setGraphic(viewmatchs);
+		setMatchs(btnMatchs);
 		
 		Button btnReset = getResetAllSeason();
-//		Image imgReset = new Image(this.getClass().getResource("../images/attention.png").toExternalForm());
-//		ImageView viewReset = new ImageView(imgReset);
-//		btnReset.setGraphic(viewReset);
+		Image imgReset = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/attention.png").toExternalForm());
+		ImageView viewReset = new ImageView(imgReset);
+		btnReset.setGraphic(viewReset);
 		if (! AuthentificationOverviewController.getUSER_LOGIN().equals("sysadmin")) {
 			btnReset.setVisible(false);
 		}
 		setResetAllSeason(btnReset);
 		
 		MenuButton admin = getAdmin();
-//		Image imgAdmin = new Image(this.getClass().getResource("../images/parametres.png").toExternalForm());
-//		ImageView viewAdmin = new ImageView(imgAdmin);
-//		admin.setGraphic(viewAdmin);
+		Image imgAdmin = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/parametres.png").toExternalForm());
+		ImageView viewAdmin = new ImageView(imgAdmin);
+		admin.setGraphic(viewAdmin);
 		if (! AuthentificationOverviewController.getUSER_LOGIN().equals("sysadmin")) {
 			admin.setVisible(false);
 		}
 		setAdmin(admin);
 		
-//		Button btnStandings = getStandings();
-//		Image imgStandings = new Image(this.getClass().getResource("../images/classement.png").toExternalForm());
-//		ImageView viewStandings = new ImageView(imgStandings);
-//		btnStandings.setGraphic(viewStandings);
-//		setStandings(btnStandings);
+		Button btnStandings = getStandings();
+		Image imgStandings = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/classement.png").toExternalForm());
+		ImageView viewStandings = new ImageView(imgStandings);
+		btnStandings.setGraphic(viewStandings);
+		setStandings(btnStandings);
 	}
 	
 	@FXML

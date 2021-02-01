@@ -65,11 +65,11 @@ public class PasswordModificationOverviewController {
 	
 	@FXML
 	private void initialize() {
-//		Button btnValidate = getValidate();
-//		Image imgValidate = new Image(this.getClass().getResource("../images/connection.png").toExternalForm());
-//		ImageView viewValidate = new ImageView(imgValidate);
-//		btnValidate.setGraphic(viewValidate);
-//		setValidate(btnValidate);
+		Button btnValidate = getValidate();
+		Image imgValidate = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/connection.png").toExternalForm());
+		ImageView viewValidate = new ImageView(imgValidate);
+		btnValidate.setGraphic(viewValidate);
+		setValidate(btnValidate);
 	}
 
 	@FXML

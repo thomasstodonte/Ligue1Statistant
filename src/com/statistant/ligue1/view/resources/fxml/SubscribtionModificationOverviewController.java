@@ -154,16 +154,16 @@ public class SubscribtionModificationOverviewController {
 	@FXML
 	private void initialize() {
 		subscribtionType.setItems(abonnements);
-//		Button btnMenu = getMenu();
-//		Image imgMenu = new Image(this.getClass().getResource("../images/maison.png").toExternalForm());
-//		ImageView viewMenu = new ImageView(imgMenu);
-//		btnMenu.setGraphic(viewMenu);
-//		setMenu(btnMenu);
+		Button btnMenu = getMenu();
+		Image imgMenu = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/maison.png").toExternalForm());
+		ImageView viewMenu = new ImageView(imgMenu);
+		btnMenu.setGraphic(viewMenu);
+		setMenu(btnMenu);
 
-//		Button btnValidate = getMenu();
-//		Image imgValidate = new Image(this.getClass().getResource("../images/modifier.png").toExternalForm());
-//		ImageView viewValidate = new ImageView(imgValidate);
-//		btnValidate.setGraphic(viewValidate);
-//		setMenu(btnValidate);
+		Button btnValidate = getMenu();
+		Image imgValidate = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/modifier.png").toExternalForm());
+		ImageView viewValidate = new ImageView(imgValidate);
+		btnValidate.setGraphic(viewValidate);
+		setMenu(btnValidate);
 	}
 }

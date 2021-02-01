@@ -31,6 +31,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -352,7 +353,6 @@ public class InitializeWindow extends Application {
 	@SuppressWarnings("unchecked")
 	public static void showHomeStandingOverview() {
 		try {
-			// Load person overview.
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(InitializeWindow.class.getResource("resources/fxml/StandingOverview.fxml"));
 			BorderPane homeStandingOverview = (BorderPane) loader.load();
@@ -447,7 +447,7 @@ public class InitializeWindow extends Application {
 
 			TableColumn<Team, Integer> recent1 = new TableColumn<Team, Integer>("recent1");
 			recent1.setCellValueFactory(new PropertyValueFactory<>("awayRecent1"));
-
+			
 			TableColumn<Team, Integer> recent2 = new TableColumn<Team, Integer>("recent2");
 			recent2.setCellValueFactory(new PropertyValueFactory<>("awayRecent2"));
 

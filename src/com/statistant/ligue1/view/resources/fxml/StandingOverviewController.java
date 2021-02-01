@@ -52,29 +52,29 @@ public class StandingOverviewController {
 
 	@FXML
 	private void initialize() {
-//		Button btnMenu = getMenuPrincipal();
-//		Image imgMenu = new Image(this.getClass().getResource("../images/maison.png").toExternalForm());
-//		ImageView viewMenu = new ImageView(imgMenu);
-//		btnMenu.setGraphic(viewMenu);
-//		setMenuPrincipal(btnMenu);
+		Button btnMenu = getMenuPrincipal();
+		Image imgMenu = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/maison.png").toExternalForm());
+		ImageView viewMenu = new ImageView(imgMenu);
+		btnMenu.setGraphic(viewMenu);
+		setMenuPrincipal(btnMenu);
 
-//		Button btnGeneral = getGeneral();
-//		Image imgGeneral = new Image(this.getClass().getResource("../images/ballon.png").toExternalForm());
-//		ImageView viewGeneral = new ImageView(imgGeneral);
-//		btnGeneral.setGraphic(viewGeneral);
-//		setGeneral(btnGeneral);
+		Button btnGeneral = getGeneral();
+		Image imgGeneral = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/ballon.png").toExternalForm());
+		ImageView viewGeneral = new ImageView(imgGeneral);
+		btnGeneral.setGraphic(viewGeneral);
+		setGeneral(btnGeneral);
 
-//		Button btnDomicile = getDomicile();
-//		Image imgDomicile = new Image(this.getClass().getResource("../images/maison.png").toExternalForm());
-//		ImageView viewDomicile = new ImageView(imgDomicile);
-//		btnDomicile.setGraphic(viewDomicile);
-//		setDomicile(btnDomicile);
+		Button btnDomicile = getDomicile();
+		Image imgDomicile = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/maison.png").toExternalForm());
+		ImageView viewDomicile = new ImageView(imgDomicile);
+		btnDomicile.setGraphic(viewDomicile);
+		setDomicile(btnDomicile);
 		
-//		Button btnExterieur = getExterieur();
-//		Image imgExterieur = new Image(this.getClass().getResource("../images/avion.png").toExternalForm());
-//		ImageView viewExterieur = new ImageView(imgExterieur);
-//		btnExterieur.setGraphic(viewExterieur);
-//		setExterieur(btnExterieur);
+		Button btnExterieur = getExterieur();
+		Image imgExterieur = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/avion.png").toExternalForm());
+		ImageView viewExterieur = new ImageView(imgExterieur);
+		btnExterieur.setGraphic(viewExterieur);
+		setExterieur(btnExterieur);
 	}
 
 	@FXML

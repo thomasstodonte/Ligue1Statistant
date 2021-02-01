@@ -41,7 +41,7 @@ public class DatabaseConnection {
 				connection = DriverManager
 						.getConnection(CONNECTION_PATH);
 			} catch (SQLException | ClassNotFoundException e) {
-				Ligue1Utils.reportError("Erreur à la connexion à la base de données Ligue1 : " + e.getMessage());
+				Ligue1Utils.reportError("Erreur à la connexion à la base de données ! Merci de vérifier votre connexion internet.");
 				e.printStackTrace();
 				return null;
 			}

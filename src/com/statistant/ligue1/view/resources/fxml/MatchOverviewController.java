@@ -76,40 +76,40 @@ public class MatchOverviewController {
 	
 	@FXML
 	private void initialize() {
-//		Button btnMenu = getMenuPrincipal();
-//		Image imgMenu = new Image(this.getClass().getResource("../images/maison.png").toExternalForm());
-//		ImageView viewMenu = new ImageView(imgMenu);
-//		btnMenu.setGraphic(viewMenu);
-//		setMenuPrincipal(btnMenu);
+		Button btnMenu = getMenuPrincipal();
+		Image imgMenu = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/maison.png").toExternalForm());
+		ImageView viewMenu = new ImageView(imgMenu);
+		btnMenu.setGraphic(viewMenu);
+		setMenuPrincipal(btnMenu);
 		
-//		Button btnGenerate = getGenerateReport();
-//		Image imgGenerate = new Image(this.getClass().getResource("../images/rapport.png").toExternalForm());
-//		ImageView viewGenerate = new ImageView(imgGenerate);
-//		btnGenerate.setGraphic(viewGenerate);
-//		setGenerateReport(btnGenerate);
+		Button btnGenerate = getGenerateReport();
+		Image imgGenerate = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/rapport.png").toExternalForm());
+		ImageView viewGenerate = new ImageView(imgGenerate);
+		btnGenerate.setGraphic(viewGenerate);
+		setGenerateReport(btnGenerate);
 
 		Button btnNouveau = getNouveau();
-//		Image imgNouveau = new Image(this.getClass().getResource("../images/plus.png").toExternalForm());
-//		ImageView viewNouveau = new ImageView(imgNouveau);
-//		btnNouveau.setGraphic(viewNouveau);
+		Image imgNouveau = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/plus.png").toExternalForm());
+		ImageView viewNouveau = new ImageView(imgNouveau);
+		btnNouveau.setGraphic(viewNouveau);
 		if (!AuthentificationOverviewController.getUSER_LOGIN().equals("sysadmin")) {
 			btnNouveau.setVisible(false);
 		}
 		setNouveau(btnNouveau);
 
 		Button btnModifier = getModifier();
-//		Image imgModifier = new Image(this.getClass().getResource("../images/modifier.png").toExternalForm());
-//		ImageView viewModifier = new ImageView(imgModifier);
-//		btnModifier.setGraphic(viewModifier);
+		Image imgModifier = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/modifier.png").toExternalForm());
+		ImageView viewModifier = new ImageView(imgModifier);
+		btnModifier.setGraphic(viewModifier);
 		if (!AuthentificationOverviewController.getUSER_LOGIN().equals("sysadmin")) {
 			btnModifier.setVisible(false);
 		}
 		setModifier(btnModifier);
 		
 		Button btnCount = getComptabiliser();
-//		Image imgCount = new Image(this.getClass().getResource("../images/ballon.png").toExternalForm());
-//		ImageView viewCount = new ImageView(imgCount);
-//		btnCount.setGraphic(viewCount);
+		Image imgCount = new Image(this.getClass().getResource("/com/statistant/ligue1/view/resources/images/ballon.png").toExternalForm());
+		ImageView viewCount = new ImageView(imgCount);
+		btnCount.setGraphic(viewCount);
 		if (!AuthentificationOverviewController.getUSER_LOGIN().equals("sysadmin")) {
 			btnCount.setVisible(false);
 		}
