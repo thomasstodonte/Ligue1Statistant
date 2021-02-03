@@ -216,7 +216,7 @@ public class ModifyConfrontationOverviewController {
 			e.printStackTrace();
 		}
 		InitializeWindow.alertInfo("Confrontations " + confrontation.getMatch() + " et "+ reversedConfrontation.getMatch() +" créées avec succès.");
-		InitializeWindow.showConfrontationOverview();
+//		InitializeWindow.showConfrontationOverview();
 	}
 
 	private void checkAllFieldsAreOK() throws ScoreFormatException {

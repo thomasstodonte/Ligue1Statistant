@@ -960,7 +960,7 @@ public class ModifyMatchOverviewController {
 				InitializeWindow.alertInfo("Match " + match.getId() + " modifié avec succès.");
 				Stage stage = (Stage) getValidate().getScene().getWindow();
 				stage.close();
-				InitializeWindow.showMatchOverview();
+//				InitializeWindow.showMatchOverview();
 			}
 		} else {
 			boolean allFieldsOkBeforeMatch = checkAllFormFieldsBeforeMatch();
@@ -986,7 +986,7 @@ public class ModifyMatchOverviewController {
 				InitializeWindow.alertInfo("Match " + match.getId() + " modifié avec succès.");
 				Stage stage = (Stage) getValidate().getScene().getWindow();
 				stage.close();
-				InitializeWindow.showMatchOverview();
+//				InitializeWindow.showMatchOverview();
 			}
 		}
 	}

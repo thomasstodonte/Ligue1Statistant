@@ -788,7 +788,7 @@ public class NewConfrontationOverviewController {
 		}
 		InitializeWindow.alertInfo("Confrontations " + confrontation.getMatch() + " et "
 				+ reversedConfrontation.getMatch() + " créées avec succès.");
-		InitializeWindow.showConfrontationOverview();
+//		InitializeWindow.showConfrontationOverview();
 	}
 
 	private void checkConfrontationDoesNotExist(String matchName) throws AlreadyExistingConfrontationException {

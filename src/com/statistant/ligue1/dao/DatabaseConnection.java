@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.codec.digest.UnixCrypt;
 import org.apache.commons.lang3.StringUtils;
 
 import com.smattme.MysqlExportService;
@@ -28,16 +29,27 @@ import com.statistant.ligue1.utils.Ligue1Utils;
 public class DatabaseConnection {
 
 	private static Connection connection;
-	private static final String CONNECTION_HOST = "sql7.freesqldatabase.com";
-	private static final String CONNECTION_DB_NAME = "sql7389725";
-	private static final String CONNECTION_USER_NAME = "sql7389725";
-	private static final String CONNECTION_USER_PASSWORD = "aiTk1mchzl";
-	private static final String CONNECTION_PATH = "jdbc:mysql://"+CONNECTION_HOST+"/"+CONNECTION_DB_NAME+"?user="+CONNECTION_USER_NAME+"&password="+CONNECTION_USER_PASSWORD+"&useSSL=false&serverTimezone=UTC";
+//	private static final String CONNECTION_HOST = "sql7.freesqldatabase.com";
+//	private static final String CONNECTION_DB_NAME = "sql7389725";
+//	private static final String CONNECTION_USER_NAME = "sql7389725";
+//	private static final String CONNECTION_USER_PASSWORD = "aiTk1mchzl";
+	
+//	private static final String CONNECTION_HOST = "localhost";
+//	private static final String CONNECTION_DB_NAME = "ligue1";
+//	private static final String CONNECTION_USER_NAME = "root";
+//	private static final String CONNECTION_USER_PASSWORD = "root";
+	
+	private static final String CONNECTION_HOST = "b7q4nakx4g10qis4qldc-mysql.services.clever-cloud.com";
+	private static final String CONNECTION_DB_NAME = "b7q4nakx4g10qis4qldc";
+	private static final String CONNECTION_USER_NAME = "uli3zxq0og6xa4zp";
+	private static final String CONNECTION_USER_PASSWORD = "cM7IzDnQwPOF3dXy3q7";
+//	private static final String CONNECTION_PATH = "jdbc:mysql://"+CONNECTION_HOST+"/"+CONNECTION_DB_NAME+"?user="+CONNECTION_USER_NAME+"&password="+CONNECTION_USER_PASSWORD+"&useSSL=false&serverTimezone=UTC";
+	private static final String CONNECTION_PATH = "jdbc:mysql://uli3zxq0og6xa4zp:cM7IzDnQwPOF3dXy3q7@b7q4nakx4g10qis4qldc-mysql.services.clever-cloud.com:20045/b7q4nakx4g10qis4qldc";
 	
 	public static Connection initializeOrGetConnection() {
 		if (connection == null) {
 			try {
-				Class.forName("com.mysql.jdbc.Driver");
+				Class.forName("com.mysql.cj.jdbc.Driver");
 				connection = DriverManager
 						.getConnection(CONNECTION_PATH);
 			} catch (SQLException | ClassNotFoundException e) {
@@ -1807,8 +1819,6 @@ public class DatabaseConnection {
 	}
 
 	public static void main(String[] args) {
-		Collection<Match> allMatchesForTeam = getAllMatchesForJourney("20");
-		System.out.println(allMatchesForTeam.size());
 	}
 
 }

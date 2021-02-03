@@ -1,12 +1,8 @@
 package com.statistant.ligue1.view;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Optional;
-
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 import com.statistant.ligue1.dao.DatabaseConnection;
 import com.statistant.ligue1.pojo.Confrontation;
@@ -31,7 +27,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -485,8 +480,6 @@ public class InitializeWindow extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-
-	// crée une fenêtre d'alerte
 
 	public static void alertError(String message) {
 		Alert alert = new Alert(AlertType.ERROR);

@@ -1409,7 +1409,7 @@ public class NewMatchOverviewController {
 					DatabaseConnection.createOrUpdateMatch(match);
 					Ligue1Utils.reportInfo("Match " + match.getId() + " créé avec succès.");
 					InitializeWindow.alertInfo("Match " + match.getId() + " créé avec succès.");
-					InitializeWindow.showMatchOverview();
+//					InitializeWindow.showMatchOverview();
 				}
 			}
 		} else {
@@ -1436,7 +1436,7 @@ public class NewMatchOverviewController {
 					DatabaseConnection.createOrUpdateMatch(match);
 					Ligue1Utils.reportInfo("Match " + match.getId() + " créé avec succès.");
 					InitializeWindow.alertInfo("Match " + match.getId() + " créé avec succès.");
-					InitializeWindow.showMatchOverview();
+//					InitializeWindow.showMatchOverview();
 				}
 			}
 		}

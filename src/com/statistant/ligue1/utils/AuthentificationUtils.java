@@ -429,6 +429,5 @@ public class AuthentificationUtils {
 	}
 	
 	public static void main(String[] args) {
-		
 	}
 }
